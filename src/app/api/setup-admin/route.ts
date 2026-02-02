@@ -8,9 +8,6 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
     try {
-        // 🚨 FORÇAR VARIÁVEL DE AMBIENTE HARDCODED 🚨
-        process.env.DATABASE_URL = "postgresql://postgres.zocffccwjjyelwrgunhu:eusouumlobo@aws-0-us-west-2.pooler.supabase.com:6543/postgres?pgbouncer=true";
-
         console.log('🔄 Iniciando configuração de admin...')
 
         const email = 'iule@imi.com'
