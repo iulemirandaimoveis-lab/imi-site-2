@@ -7,7 +7,10 @@ const nextConfig = {
     },
     experimental: {
         optimizePackageImports: ['framer-motion'],
+        serverComponentsExternalPackages: ['jsonwebtoken', 'bcryptjs'],
     },
+    // Force Node.js runtime for all routes (fixes Edge Runtime incompatibility)
+    runtime: 'nodejs',
 }
 
 module.exports = nextConfig
