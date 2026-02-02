@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createTrackingLink } from '@/services/tracking.service'
 
+export const runtime = 'nodejs';
+
 /**
  * POST /api/tracking/link
  * Cria um link exclusivo para um cliente visualizar um imóvel

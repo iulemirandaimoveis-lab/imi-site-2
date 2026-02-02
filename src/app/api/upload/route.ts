@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { nanoid } from 'nanoid'
 
+export const runtime = 'nodejs';
+
 /**
  * POST /api/upload
  * Upload de imagens para Supabase Storage

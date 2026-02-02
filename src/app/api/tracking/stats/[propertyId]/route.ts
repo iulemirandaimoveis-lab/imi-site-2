@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPropertyStats, getTopEngagedClients } from '@/services/tracking.service'
 
+export const runtime = 'nodejs';
+
 /**
  * GET /api/tracking/stats/[propertyId]
  * Busca estatísticas detalhadas de um imóvel

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { logCtaClick } from '@/services/tracking.service'
 
+export const runtime = 'nodejs';
+
 /**
  * POST /api/tracking/cta
  * Registra clique em CTA (Call to Action)

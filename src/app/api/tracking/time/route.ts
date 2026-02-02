@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { updateAccessTime } from '@/services/tracking.service'
 
+export const runtime = 'nodejs';
+
 /**
  * POST /api/tracking/time
  * Atualiza tempo de permanência em um acesso

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { logPropertyAccess } from '@/services/tracking.service'
 import { UAParser } from 'ua-parser-js'
 
+export const runtime = 'nodejs';
+
 /**
  * POST /api/tracking/access
  * Registra um acesso ao imóvel via link exclusivo

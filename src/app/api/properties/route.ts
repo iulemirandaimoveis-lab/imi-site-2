@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { supabaseAdmin } from '@/lib/supabase'
 
+export const runtime = 'nodejs';
+
 /**
  * GET /api/properties
  * Lista todos os imóveis (com filtros opcionais)
