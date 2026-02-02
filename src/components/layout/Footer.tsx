@@ -11,6 +11,7 @@ const footerNavigation = {
         { name: 'Sobre', href: '/sobre' },
         { name: 'Conteúdo', href: '/conteudo' },
         { name: 'Contato', href: '/contato' },
+        { name: 'Backoffice', href: '/backoffice' },
     ],
     legal: [
         { name: 'Política de Privacidade', href: '/privacidade' },
