@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter, Playfair_Display } from 'next/font/google'
 import '../globals.css'
+import BackofficeShell from '@/components/backoffice/Shell'
 
 const inter = Inter({
     subsets: ['latin'],
@@ -28,7 +29,9 @@ export default function BackofficeLayout({
     return (
         <html lang="pt-BR" className={`${inter.variable} ${playfair.variable}`}>
             <body className="bg-neutral-50">
-                {children}
+                <BackofficeShell>
+                    {children}
+                </BackofficeShell>
             </body>
         </html>
     )

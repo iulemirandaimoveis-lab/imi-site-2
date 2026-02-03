@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+
 import { ArrowUpTrayIcon, XMarkIcon, PhotoIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 
@@ -79,9 +79,19 @@ export default function ImageUpload({ images, onChange, maxFiles = 10 }: ImageUp
                     alt: file.name.split('.')[0]
                 })
 
-            } catch (error) {
+            } catch (error: any) {
                 console.error('Error uploading file:', error)
-                alert('Erro ao fazer upload da imagem. Tente novamente.')
+
+                const errorMessage = error.message || JSON.stringify(error)
+
+                // Specific error for missing bucket
+                if (errorMessage.includes('bucket not found') || error.error?.includes('Bucket not found') || error.statusCode === '404') {
+                    alert('CONFIGURAÇÃO PENDENTE: O bucket "properties" não foi encontrado no Supabase.\n\nPor favor, crie o bucket "properties" no painel do Supabase como "Public".')
+                } else if (errorMessage.includes('security check') || error.statusCode === '403') {
+                    alert('ERRO DE PERMISSÃO: Verifique as políticas (RLS) do Storage no Supabase.\n\nCertifique-se que o bucket "properties" é PÚBLICO e permite INSERT e SELECT.')
+                } else {
+                    alert(`Erro ao fazer upload da imagem: ${errorMessage}\n\nTente novamente ou contate o suporte.`)
+                }
             }
         }
 
