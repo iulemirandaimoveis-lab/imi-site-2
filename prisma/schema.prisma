@@ -7,9 +7,8 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  // URL Dummy para garantir que o build passe sem precisar de variáveis de ambiente reais
-  url       = "postgresql://dummy:dummy@localhost:5432/dummy"
-  directUrl = "postgresql://dummy:dummy@localhost:5432/dummy"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // ===== USERS (Admin) =====
