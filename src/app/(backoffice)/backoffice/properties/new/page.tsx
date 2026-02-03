@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import BackofficeSidebar from '@/components/backoffice/Sidebar'
+import ImageUpload from '@/components/forms/ImageUpload'
 import {
     ArrowLeftIcon,
     PhotoIcon,
@@ -47,7 +48,7 @@ const initialForm: PropertyFormData = {
     status: 'AVAILABLE',
     isFeatured: false,
     isExclusive: false,
-    images: [] // TODO: Implement image upload
+    images: []
 }
 
 export default function NewPropertyPage() {
@@ -66,6 +67,10 @@ export default function NewPropertyPage() {
         }))
     }
 
+    const handleImagesChange = (newImages: { url: string; alt: string }[]) => {
+        setFormData(prev => ({ ...prev, images: newImages }))
+    }
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setIsSubmitting(true)
@@ -77,6 +82,11 @@ export default function NewPropertyPage() {
                 throw new Error('Preencha os campos obrigatórios (Título, Preço, Bairro)')
             }
 
+            // Require at least 1 image unless it's just an analysis
+            if (formData.images.length === 0 && formData.status !== 'ANALYSIS') {
+                throw new Error('Adicione pelo menos uma imagem do imóvel')
+            }
+
             const payload = {
                 ...formData,
                 price: parseFloat(formData.price.replace(/[^\d.,]/g, '').replace(',', '.')),
@@ -84,8 +94,8 @@ export default function NewPropertyPage() {
                 bedrooms: parseInt(formData.bedrooms) || 0,
                 bathrooms: parseInt(formData.bathrooms) || 0,
                 parkingSpots: parseInt(formData.parkingSpots) || 0,
-                // Add dummy image if none provided to avoid break
-                images: formData.images.length > 0 ? formData.images : [{ url: 'https://placehold.co/600x400', alt: 'Placeholder', isPrimary: true }]
+                // Using real images
+                images: formData.images
             }
 
             const response = await fetch('/api/properties', {
@@ -204,6 +214,18 @@ export default function NewPropertyPage() {
                                     />
                                 </div>
                             </div>
+                        </div>
+
+                        {/* Section 1.5: Media */}
+                        <div className="bg-white rounded-2xl border border-neutral-200 p-8 shadow-sm">
+                            <h2 className="text-lg font-semibold text-neutral-900 mb-6 flex items-center gap-2">
+                                <PhotoIcon className="w-5 h-5 text-primary-700" />
+                                Fotos do Imóvel
+                            </h2>
+                            <ImageUpload
+                                images={formData.images}
+                                onChange={handleImagesChange}
+                            />
                         </div>
 
                         {/* Section 2: Details */}

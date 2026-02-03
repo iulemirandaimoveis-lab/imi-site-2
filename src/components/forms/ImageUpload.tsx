@@ -1,0 +1,160 @@
+'use client'
+
+import { useState, useRef } from 'react'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { ArrowUpTrayIcon, XMarkIcon, PhotoIcon } from '@heroicons/react/24/outline'
+import Image from 'next/image'
+
+// Use createClientComponentClient for client-side uploads which handles session automatically
+// const supabase = createClientComponentClient() 
+// We can also use the manual client from lib if auth-helpers are not fully set up, but let's try standard first.
+// Actually, looking at previous files, user uses manual client. Let's stick to consistent pattern.
+import { supabase } from '@/lib/supabase'
+
+interface ImageUploadProps {
+    images: { url: string; alt: string }[]
+    onChange: (images: { url: string; alt: string }[]) => void
+    maxFiles?: number
+}
+
+export default function ImageUpload({ images, onChange, maxFiles = 10 }: ImageUploadProps) {
+    const [isUploading, setIsUploading] = useState(false)
+    const [dragActive, setDragActive] = useState(false)
+    const inputRef = useRef<HTMLInputElement>(null)
+
+    const handleDrag = (e: React.DragEvent) => {
+        e.preventDefault()
+        e.stopPropagation()
+        if (e.type === 'dragenter' || e.type === 'dragover') {
+            setDragActive(true)
+        } else if (e.type === 'dragleave') {
+            setDragActive(false)
+        }
+    }
+
+    const handleDrop = async (e: React.DragEvent) => {
+        e.preventDefault()
+        e.stopPropagation()
+        setDragActive(false)
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            await handleFiles(e.dataTransfer.files)
+        }
+    }
+
+    const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault()
+        if (e.target.files && e.target.files[0]) {
+            await handleFiles(e.target.files)
+        }
+    }
+
+    const handleFiles = async (files: FileList) => {
+        setIsUploading(true)
+        const newImages = [...images]
+        const bucketName = 'properties'
+
+        for (let i = 0; i < files.length; i++) {
+            if (newImages.length >= maxFiles) break;
+
+            const file = files[i]
+            const fileExt = file.name.split('.').pop()
+            const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`
+            const filePath = `${fileName}`
+
+            try {
+                const { error: uploadError } = await supabase.storage
+                    .from(bucketName)
+                    .upload(filePath, file)
+
+                if (uploadError) {
+                    throw uploadError
+                }
+
+                const { data } = supabase.storage
+                    .from(bucketName)
+                    .getPublicUrl(filePath)
+
+                newImages.push({
+                    url: data.publicUrl,
+                    alt: file.name.split('.')[0]
+                })
+
+            } catch (error) {
+                console.error('Error uploading file:', error)
+                alert('Erro ao fazer upload da imagem. Tente novamente.')
+            }
+        }
+
+        onChange(newImages)
+        setIsUploading(false)
+    }
+
+    const removeImage = (index: number) => {
+        const newImages = [...images]
+        newImages.splice(index, 1)
+        onChange(newImages)
+    }
+
+    return (
+        <div className="w-full">
+            <div className="mb-4 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                {images.map((img, index) => (
+                    <div key={index} className="relative aspect-square group rounded-xl overflow-hidden border border-neutral-200 bg-neutral-100">
+                        <Image
+                            src={img.url}
+                            alt={img.alt}
+                            fill
+                            className="object-cover"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => removeImage(index)}
+                            className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                        >
+                            <XMarkIcon className="w-4 h-4" />
+                        </button>
+                    </div>
+                ))}
+
+                {images.length < maxFiles && (
+                    <div
+                        className={`
+                            relative aspect-square rounded-xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-all
+                            ${dragActive ? 'border-primary-500 bg-primary-50' : 'border-neutral-300 hover:border-primary-400 hover:bg-neutral-50'}
+                            ${isUploading ? 'opacity-50 pointer-events-none' : ''}
+                        `}
+                        onDragEnter={handleDrag}
+                        onDragLeave={handleDrag}
+                        onDragOver={handleDrag}
+                        onDrop={handleDrop}
+                        onClick={() => inputRef.current?.click()}
+                    >
+                        <input
+                            ref={inputRef}
+                            type="file"
+                            multiple
+                            accept="image/*"
+                            onChange={handleChange}
+                            className="hidden"
+                        />
+
+                        {isUploading ? (
+                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+                        ) : (
+                            <>
+                                <ArrowUpTrayIcon className="w-8 h-8 text-neutral-400 mb-2" />
+                                <span className="text-sm font-medium text-neutral-500 text-center px-2">
+                                    Click or Drag
+                                </span>
+                            </>
+                        )}
+                    </div>
+                )}
+            </div>
+
+            <p className="text-xs text-neutral-500">
+                Suporta JPG, PNG, WebP (Max 5MB). Arraste e solte para adicionar.
+            </p>
+        </div>
+    )
+}
