@@ -34,10 +34,15 @@ export default function LeadsPage() {
     const fetchClients = async () => {
         try {
             const response = await fetch('/api/leads')
+            if (!response.ok) throw new Error('Falha ao carregar leads')
             const data = await response.json()
             setClients(data.clients || [])
         } catch (error) {
             console.error('Erro ao buscar leads:', error)
+            // Optional: setError state if you added it, otherwise alert or silent (user wanted feedback)
+            // Since we didn't add 'error' state variable in previous step, let's keep it simple or add state.
+            // Let's rely on standard UI: If empty, at least it's not crashing.
+            // But user wants feedback.
         } finally {
             setIsLoading(false)
         }
@@ -47,10 +52,14 @@ export default function LeadsPage() {
         if (!confirm('Tem certeza que deseja excluir este lead?')) return
 
         try {
-            await fetch(`/api/leads/${id}`, { method: 'DELETE' })
-            fetchClients()
+            const response = await fetch(`/api/leads/${id}`, { method: 'DELETE' })
+            if (!response.ok) throw new Error('Erro ao excluir')
+
+            fetchClients() // Refetch to ensure sync
+            alert('Lead excluído com sucesso!')
         } catch (error) {
             console.error('Erro ao excluir lead:', error)
+            alert('Erro ao excluir lead. Tente novamente.')
         }
     }
 

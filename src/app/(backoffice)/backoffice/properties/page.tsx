@@ -37,26 +37,43 @@ export default function PropertiesPage() {
         fetchProperties()
     }, [])
 
+    const [error, setError] = useState('')
+
+    useEffect(() => {
+        fetchProperties()
+    }, [])
+
     const fetchProperties = async () => {
+        setIsLoading(true)
+        setError('')
         try {
             const response = await fetch('/api/properties')
+            if (!response.ok) {
+                throw new Error('Falha ao carregar imóveis')
+            }
             const data = await response.json()
             setProperties(data.properties || [])
         } catch (error) {
             console.error('Erro ao buscar imóveis:', error)
+            setError('Não foi possível carregar a lista de imóveis. Tente recarregar a página.')
         } finally {
             setIsLoading(false)
         }
     }
 
     const handleDelete = async (id: string) => {
-        if (!confirm('Tem certeza que deseja excluir este imóvel?')) return
+        if (!confirm('Tem certeza que deseja excluir este imóvel? Esta ação não pode ser desfeita.')) return
 
         try {
-            await fetch(`/api/properties/${id}`, { method: 'DELETE' })
-            fetchProperties()
+            const response = await fetch(`/api/properties/${id}`, { method: 'DELETE' })
+            if (!response.ok) throw new Error('Erro ao excluir')
+
+            // Optimistic update or refetch
+            setProperties(prev => prev.filter(p => p.id !== id))
+            alert('Imóvel excluído com sucesso!')
         } catch (error) {
             console.error('Erro ao excluir imóvel:', error)
+            alert('Erro ao excluir o imóvel. Tente novamente.')
         }
     }
 

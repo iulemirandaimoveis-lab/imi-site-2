@@ -45,8 +45,8 @@ export default function BackofficeSidebar({ isOpen, onClose }: SidebarProps) {
             {/* Sidebar Container */}
             <div className={`
                 fixed inset-y-0 left-0 z-[100] w-[85vw] max-w-xs bg-neutral-900/95 backdrop-blur-xl border-r border-neutral-800 transform transition-transform duration-300 cubic-bezier(0.4, 0, 0.2, 1)
-                h-[100dvh] lg:h-screen lg:w-64 lg:translate-x-0 lg:static
-                ${isOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'}
+                h-[100dvh] lg:h-screen lg:w-64 lg:translate-x-0 lg:static lg:pointer-events-auto
+                ${isOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full pointer-events-none'}
             `}>
                 {/* Logo & Header */}
                 <div className="flex h-20 items-center justify-between px-6 border-b border-neutral-800/50">
