@@ -45,7 +45,10 @@ const createMockClient = () => {
                 return {
                     from: () => ({
                         getPublicUrl: () => ({ data: { publicUrl: '' } }),
-                        upload: () => Promise.resolve({ data: null, error: null })
+                        upload: () => {
+                            console.error('❌ MOCK SUPABASE CLIENT: Cannot upload because env vars are missing.')
+                            return Promise.resolve({ data: null, error: { message: 'Ambiente não configurado (Env Vars). Upload simulado falhou.' } })
+                        }
                     })
                 }
             }
