@@ -1,131 +1,84 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
-import { cn } from '@/lib/utils'
-import Button from '@/components/ui/Button'
+import { useState } from 'react';
+import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const navigation = [
-    { name: 'Home', href: '/' },
-    { name: 'Avaliações', href: '/avaliacoes' },
-    { name: 'Inteligência', href: '/inteligencia' },
-    { name: 'Consultoria', href: '/consultoria' },
-    { name: 'Imóveis', href: '/imoveis' },
-    { name: 'Sobre', href: '/sobre' },
-    { name: 'Conteúdo', href: '/conteudo' },
-    { name: 'Contato', href: '/contato' },
-]
+    { label: 'IMI - Apresentação', href: '/' },
+    { label: 'Avaliações', href: '/avaliacoes' },
+    { label: 'Imóveis', href: '/imoveis' },
+    { label: 'Consultoria', href: '/consultoria' },
+    { label: 'Inteligência', href: '/inteligencia' },
+    { label: 'Projetos', href: '/projetos' },
+    { label: 'Sobre', href: '/sobre' },
+    { label: 'Contato', href: '/contato' },
+];
 
 export default function Header() {
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-    const pathname = usePathname()
-
-    // Lock body scroll when menu is open
-    if (typeof window !== 'undefined') {
-        if (mobileMenuOpen) {
-            document.body.style.overflow = 'hidden'
-        } else {
-            document.body.style.overflow = 'unset'
-        }
-    }
+    const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-neutral-100">
-            <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="flex h-20 items-center justify-between">
+        <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm">
+            <div className="max-w-7xl mx-auto px-6 lg:px-8">
+                <div className="flex items-center justify-between h-20">
                     {/* Logo */}
-                    <Link href="/" className="z-50 relative flex items-center gap-3" onClick={() => setMobileMenuOpen(false)}>
-                        <div className="text-2xl font-display font-bold text-primary-900 tracking-tight">
-                            IMI
-                        </div>
-                        <div className="hidden sm:block text-sm text-neutral-500 border-l border-neutral-300 pl-3 leading-none">
-                            Inteligência<br />Imobiliária
-                        </div>
+                    <Link href="/" className="flex items-center space-x-3">
+                        <span className="text-2xl font-bold text-primary-900">IMI</span>
+                        <span className="text-sm font-medium text-gray-500">Inteligência Imobiliária</span>
                     </Link>
 
-                    {/* Desktop Navigation (Minimal) */}
-                    <div className="hidden lg:flex lg:items-center lg:space-x-8">
+                    {/* Desktop Navigation */}
+                    <nav className="hidden md:flex items-center space-x-8">
                         {navigation.map((item) => (
                             <Link
-                                key={item.name}
+                                key={item.href}
                                 href={item.href}
-                                className={cn(
-                                    'text-sm font-medium transition-colors duration-200',
-                                    pathname === item.href
-                                        ? 'text-primary-900'
-                                        : 'text-neutral-500 hover:text-primary-900'
-                                )}
+                                className="text-gray-700 hover:text-primary-700 font-medium transition-colors duration-200"
                             >
-                                {item.name}
+                                {item.label}
                             </Link>
                         ))}
-                        <Button asChild size="sm" className="ml-4">
-                            <Link href="/avaliacoes#form">Avaliação</Link>
-                        </Button>
-                    </div>
+                    </nav>
 
-                    {/* Mobile Menu Toggle */}
+                    {/* Mobile Toggle */}
                     <button
-                        type="button"
-                        className="lg:hidden z-50 relative p-2 -mr-2 text-primary-900"
-                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        onClick={() => setIsOpen(!isOpen)}
+                        className="md:hidden p-3 rounded-full hover:bg-gray-100 transition"
+                        aria-label="Toggle menu"
                     >
-                        <span className="sr-only">Menu</span>
-                        {mobileMenuOpen ? (
-                            <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        ) : (
-                            <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
-                            </svg>
-                        )}
+                        {isOpen ? <X size={28} /> : <Menu size={28} />}
                     </button>
                 </div>
-            </nav>
+            </div>
 
-            {/* Mobile Full Screen Overlay */}
+            {/* Mobile Menu */}
             <AnimatePresence>
-                {mobileMenuOpen && (
+                {isOpen && (
                     <motion.div
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.2 }}
-                        className="fixed inset-0 z-50 bg-white flex flex-col pt-24 px-6 lg:hidden min-h-[100dvh]"
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3, ease: 'easeInOut' }}
+                        className="md:hidden overflow-hidden bg-white shadow-lg"
                     >
-                        <div className="flex flex-col gap-6 text-center">
+                        <nav className="px-6 py-8 space-y-6">
                             {navigation.map((item) => (
                                 <Link
-                                    key={item.name}
+                                    key={item.href}
                                     href={item.href}
-                                    className="text-2xl font-display font-medium text-neutral-900 hover:text-primary-700 transition-colors"
-                                    onClick={() => setMobileMenuOpen(false)}
+                                    onClick={() => setIsOpen(false)}
+                                    className="block text-lg text-gray-800 hover:text-primary-700 font-medium transition-colors duration-200 py-2"
                                 >
-                                    {item.name}
+                                    {item.label}
                                 </Link>
                             ))}
-                            <Link
-                                href="/inteligencia"
-                                className="text-2xl font-display font-bold text-primary-700 hover:text-primary-900 transition-colors"
-                                onClick={() => setMobileMenuOpen(false)}
-                            >
-                                Inteligência
-                            </Link>
-
-                            <div className="mt-8">
-                                <Button asChild size="lg" fullWidth>
-                                    <Link href="/avaliacoes#form" onClick={() => setMobileMenuOpen(false)}>
-                                        Solicitar Avaliação
-                                    </Link>
-                                </Button>
-                            </div>
-                        </div>
+                        </nav>
                     </motion.div>
                 )}
             </AnimatePresence>
         </header>
-    )
+    );
 }
