@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import {
     LineChart,
@@ -34,6 +34,12 @@ const neighborhoodData = [
 ]
 
 export default function MarketIntelligencePage() {
+    const [mounted, setMounted] = useState(false)
+
+    React.useEffect(() => {
+        setMounted(true)
+    }, [])
+
     return (
         <div className="bg-neutral-50 min-h-screen pb-20">
             {/* Hero Section */}
@@ -98,39 +104,47 @@ export default function MarketIntelligencePage() {
                     <Card className="p-8">
                         <h3 className="text-xl font-bold text-neutral-900 mb-6 font-display">Tendência de Preço (m²)</h3>
                         <div className="h-[300px] w-full">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <LineChart data={marketData}>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
-                                    <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#666' }} />
-                                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#666' }} />
-                                    <Tooltip
-                                        contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                                    />
-                                    <Line
-                                        type="monotone"
-                                        dataKey="value"
-                                        stroke="#0f3352"
-                                        strokeWidth={3}
-                                        dot={{ r: 4, fill: '#0f3352' }}
-                                        activeDot={{ r: 6 }}
-                                    />
-                                </LineChart>
-                            </ResponsiveContainer>
+                            {mounted ? (
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <LineChart data={marketData}>
+                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
+                                        <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#666' }} />
+                                        <YAxis axisLine={false} tickLine={false} tick={{ fill: '#666' }} />
+                                        <Tooltip
+                                            contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                                        />
+                                        <Line
+                                            type="monotone"
+                                            dataKey="value"
+                                            stroke="#0f3352"
+                                            strokeWidth={3}
+                                            dot={{ r: 4, fill: '#0f3352' }}
+                                            activeDot={{ r: 6 }}
+                                        />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            ) : (
+                                <div className="h-full w-full bg-neutral-100 animate-pulse rounded-lg" />
+                            )}
                         </div>
                     </Card>
 
                     <Card className="p-8">
                         <h3 className="text-xl font-bold text-neutral-900 mb-6 font-display">Valor por Região (R$/m²)</h3>
                         <div className="h-[300px] w-full">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={neighborhoodData} layout="vertical">
-                                    <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#eee" />
-                                    <XAxis type="number" hide />
-                                    <YAxis dataKey="name" type="category" width={80} axisLine={false} tickLine={false} />
-                                    <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ borderRadius: '8px' }} />
-                                    <Bar dataKey="value" fill="#a88a5a" radius={[0, 4, 4, 0]} barSize={30} />
-                                </BarChart>
-                            </ResponsiveContainer>
+                            {mounted ? (
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart data={neighborhoodData} layout="vertical">
+                                        <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#eee" />
+                                        <XAxis type="number" hide />
+                                        <YAxis dataKey="name" type="category" width={80} axisLine={false} tickLine={false} />
+                                        <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ borderRadius: '8px' }} />
+                                        <Bar dataKey="value" fill="#a88a5a" radius={[0, 4, 4, 0]} barSize={30} />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            ) : (
+                                <div className="h-full w-full bg-neutral-100 animate-pulse rounded-lg" />
+                            )}
                         </div>
                     </Card>
                 </div>

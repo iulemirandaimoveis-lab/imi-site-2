@@ -68,19 +68,11 @@ export default function RootLayout({
 }: {
     children: React.ReactNode
 }) {
-    const organizationSchema = generateOrganizationSchema()
-
     return (
         <html lang="pt-BR" className={`${inter.variable} ${playfair.variable}`}>
-            <head>
-                <script
-                    type="application/ld+json"
-                    dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
-                />
-            </head>
-            <body className="flex flex-col min-h-screen">
+            <body className="antialiased bg-offwhite font-sans flex flex-col min-h-screen">
                 <Header />
-                <main className="flex-grow">{children}</main>
+                <main className="flex-grow pt-24 lg:pt-28">{children}</main>
                 <Footer />
             </body>
         </html>

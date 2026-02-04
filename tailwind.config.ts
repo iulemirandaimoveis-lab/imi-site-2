@@ -15,8 +15,10 @@ const config: Config = {
                     800: '#172554',
                 },
                 gold: {
-                    600: '#D4AF37',
+                    500: '#D4AF37',
+                    600: '#B8972D',
                 },
+                offwhite: '#FAFAFA',
                 // Sober, professional color palette
                 primary: {
                     50: '#f5f7fa',
@@ -56,10 +58,11 @@ const config: Config = {
                     800: '#343a40',
                     900: '#212529',
                     950: '#0d0f12',
+                    60: '#FAFAFA' // Fallback for offwhite if needed
                 },
             },
             fontFamily: {
-                sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+                sans: ['Inter', 'system-ui', 'sans-serif', 'var(--font-inter)'],
                 display: ['var(--font-playfair)', 'Georgia', 'serif'],
             },
             fontSize: {
