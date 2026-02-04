@@ -34,12 +34,6 @@ export default function Sidebar() {
     const pathname = usePathname();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-    // Filter out login page from showing sidebar logic if handled by layout, 
-    // but usually Sidebar is only included in the authenticated layout.
-
-    // Hide sidebar on login page
-    if (pathname === '/backoffice') return null;
-
     return (
         <>
             {/* Mobile menu button */}
