@@ -2,13 +2,15 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { motion } from 'framer-motion'
 import { Loader2, Lock, Mail } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import React from 'react'
 
-// Simple Error Boundary component since we cannot install new packages
+// Error Boundary definition
 class ErrorBoundary extends React.Component<
     { children: React.ReactNode; fallback: React.ReactNode },
     { hasError: boolean }
@@ -30,11 +32,9 @@ class ErrorBoundary extends React.Component<
     }
 }
 
-import React from 'react'
-
 const loginSchema = z.object({
     email: z.string().email('E-mail inválido'),
-    password: z.string().min(1, 'Senha é obrigatória'),
+    password: z.string().min(6, 'Senha deve ter no mínimo 6 caracteres'),
 })
 
 type LoginFormData = z.infer<typeof loginSchema>
@@ -43,6 +43,7 @@ function LoginForm() {
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
     const [apiError, setApiError] = useState('')
+    const supabase = createClientComponentClient()
 
     const {
         register,
@@ -57,21 +58,19 @@ function LoginForm() {
         setApiError('')
 
         try {
-            const response = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
+            const { error } = await supabase.auth.signInWithPassword({
+                email: data.email,
+                password: data.password,
             })
 
-            const result = await response.json()
-
-            if (response.ok) {
-                router.push('/backoffice/dashboard')
+            if (error) {
+                setApiError(error.message || 'Credenciais inválidas')
             } else {
-                setApiError(result.error || 'Credenciais inválidas')
+                router.refresh()
+                router.push('/backoffice/dashboard')
             }
         } catch (err) {
-            setApiError('Erro ao conectar com o servidor.')
+            setApiError('Erro ao conectar com o serviço de autenticação.')
         } finally {
             setIsLoading(false)
         }
@@ -117,11 +116,6 @@ function LoginForm() {
                 {errors.password && (
                     <p className="text-xs text-red-500 font-medium ml-1">{errors.password.message}</p>
                 )}
-                <div className="flex justify-end pt-1">
-                    <button type="button" className="text-xs text-navy-600 hover:text-navy-700 font-medium hover:underline">
-                        Esqueceu a senha?
-                    </button>
-                </div>
             </div>
 
             {apiError && (

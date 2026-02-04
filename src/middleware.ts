@@ -1,15 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 
-export function middleware(req: NextRequest) {
-    const authToken = req.cookies.get('auth-token');
-
-    if (req.nextUrl.pathname.startsWith('/backoffice/') && !authToken) {
-        return NextResponse.redirect(new URL('/backoffice', req.url));
-    }
-
-    return NextResponse.next();
+export async function middleware(req: NextRequest) {
+    const res = NextResponse.next()
+    const supabase = createMiddlewareClient({ req, res })
+    await supabase.auth.getSession()
+    return res
 }
 
 export const config = {
-    matcher: ['/backoffice/:path*']
-};
+    matcher: ['/backoffice/:path*', '/backoffice'],
+}
