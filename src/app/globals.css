@@ -8,19 +8,25 @@
     --font-playfair: 'Playfair Display', Georgia, serif;
   }
 
-  * {
+  /* * {
     @apply border-neutral-200;
-  }
+  } */
+  /* Removing this global border color as it might conflict if neutral-200 is missing or not defined in time */
 
   html {
     @apply scroll-smooth;
   }
 
   body {
-    @apply bg-white text-neutral-900 antialiased;
+    @apply bg-white text-gray-900 antialiased;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-display;
   }
 }
@@ -33,34 +39,16 @@
   .section-padding {
     @apply py-16 lg:py-24;
   }
-
-  .prose-custom {
-    @apply prose prose-neutral max-w-none;
-    @apply prose-headings:font-display prose-headings:text-neutral-900;
-    @apply prose-p:text-neutral-700 prose-p:leading-relaxed;
-    @apply prose-a:text-primary-700 prose-a:no-underline hover:prose-a:underline;
-    @apply prose-strong:text-neutral-900 prose-strong:font-semibold;
-  }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
-}
 
-/* Focus visible styles for accessibility */
-@layer base {
-  *:focus-visible {
-    @apply outline-none ring-2 ring-primary-500 ring-offset-2;
-  }
-}
-
-/* Custom scrollbar */
-@layer utilities {
   .scrollbar-custom {
     scrollbar-width: thin;
-    scrollbar-color: theme('colors.neutral.400') theme('colors.neutral.100');
+    scrollbar-color: #9CA3AF #F3F4F6;
   }
 
   .scrollbar-custom::-webkit-scrollbar {
@@ -69,14 +57,15 @@
   }
 
   .scrollbar-custom::-webkit-scrollbar-track {
-    @apply bg-neutral-100;
+    background-color: #F3F4F6;
   }
 
   .scrollbar-custom::-webkit-scrollbar-thumb {
-    @apply bg-neutral-400 rounded-full;
+    background-color: #9CA3AF;
+    border-radius: 9999px;
   }
 
   .scrollbar-custom::-webkit-scrollbar-thumb:hover {
-    @apply bg-neutral-500;
+    background-color: #6B7280;
   }
 }

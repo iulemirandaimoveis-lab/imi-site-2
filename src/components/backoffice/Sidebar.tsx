@@ -3,147 +3,156 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-    LayoutDashboard,
-    Users,
-    Calendar,
-    Building2,
-    Ticket,
-    MessageSquare,
-    FileText,
-    Settings,
-    Menu,
-    X,
-    LogOut
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import { LayoutDashboard, Users, Building2, Calendar, Ticket, MessageSquare, FileText, Settings, Menu, X, LogOut } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
-const navigation = [
-    { name: 'Dashboard', href: '/backoffice/dashboard', icon: LayoutDashboard },
-    { name: 'Leads', href: '/backoffice/leads', icon: Users },
-    { name: 'Consultorias', href: '/backoffice/consultations', icon: Calendar },
-    { name: 'Imóveis', href: '/backoffice/properties', icon: Building2 },
-    { name: 'Cupons', href: '/backoffice/coupons', icon: Ticket },
-    { name: 'WhatsApp', href: '/backoffice/whatsapp', icon: MessageSquare },
-    { name: 'Relatórios', href: '/backoffice/reports', icon: FileText },
-    { name: 'Configurações', href: '/backoffice/settings', icon: Settings }
+const sidebarItems = [
+    { label: 'Dashboard', href: '/backoffice/dashboard', icon: LayoutDashboard },
+    { label: 'Leads', href: '/backoffice/leads', icon: Users },
+    { label: 'Imóveis', href: '/backoffice/properties', icon: Building2 },
+    { label: 'Consultorias', href: '/backoffice/consultorias', icon: Calendar },
+    { label: 'Relatórios', href: '/backoffice/reports', icon: FileText },
+    { label: 'Configurações', href: '/backoffice/settings', icon: Settings },
 ];
 
 export default function Sidebar() {
+    const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname();
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const supabase = createClientComponentClient();
+    const router = useRouter();
+
+    const handleSignOut = async () => {
+        await supabase.auth.signOut();
+        toast.success('Sessão encerrada');
+        router.push('/backoffice');
+        router.refresh(); // Ensure RSC updates
+    };
 
     return (
         <>
-            {/* Mobile menu button */}
-            <div className="lg:hidden fixed top-4 left-4 z-50">
-                <button
-                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                    className="p-2.5 bg-white border border-gray-200 rounded-xl shadow-sm hover:bg-gray-50 transition-colors text-navy-700"
-                >
-                    {mobileMenuOpen ? (
-                        <X className="w-6 h-6" />
-                    ) : (
-                        <Menu className="w-6 h-6" />
-                    )}
-                </button>
-            </div>
-
-            {/* Overlay (mobile) */}
-            <AnimatePresence>
-                {mobileMenuOpen && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="lg:hidden fixed inset-0 bg-black/30 backdrop-blur-md z-40"
-                        onClick={() => setMobileMenuOpen(false)}
-                    />
-                )}
-            </AnimatePresence>
-
-            {/* Sidebar */}
-            <aside
-                className={cn(
-                    "fixed lg:static inset-y-0 left-0 z-40",
-                    "w-72 bg-white border-r border-gray-100 shadow-xl lg:shadow-none",
-                    "transform transition-transform duration-300 ease-in-out",
-                    "lg:translate-x-0",
-                    mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
-                )}
-            >
-                <div className="h-full flex flex-col bg-white">
-
-                    {/* Logo Area */}
-                    <div className="h-20 flex items-center px-8 border-b border-gray-100">
-                        <div className="flex flex-col">
-                            <span className="text-2xl font-black text-navy-700 tracking-tight leading-none">IMI</span>
-                            <span className="text-xs font-semibold text-gray-400 tracking-widest uppercase mt-1">Backoffice</span>
+            {/* Desktop Sidebar */}
+            <aside className="hidden lg:flex lg:flex-col lg:w-72 lg:border-r lg:border-gray-200 lg:bg-white/80 lg:backdrop-blur-xl lg:shadow-soft fixed inset-y-0 left-0 z-30">
+                <div className="flex-1 flex flex-col pt-8 pb-4">
+                    <div className="px-6 mb-10 flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-navy-600 flex items-center justify-center">
+                            <span className="text-white font-bold text-lg">I</span>
                         </div>
+                        <span className="text-xl font-bold text-gray-900 tracking-tight">IMI Admin</span>
                     </div>
 
-                    {/* Navigation */}
-                    <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto custom-scrollbar">
-                        <div className="px-4 py-2">
-                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Menu Principal</p>
-                        </div>
-                        {navigation.map((item) => {
-                            // Adjust logic to correctly highlight dashboard vs sub-routes
-                            const isActive = item.href === '/backoffice/dashboard'
-                                ? pathname === item.href
-                                : pathname.startsWith(item.href);
-
+                    <nav className="flex-1 px-4 space-y-1">
+                        {sidebarItems.map((item) => {
+                            const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
                             return (
                                 <Link
-                                    key={item.name}
+                                    key={item.href}
                                     href={item.href}
-                                    onClick={() => setMobileMenuOpen(false)}
                                     className={cn(
-                                        "flex items-center gap-3.5 px-4 py-3.5 rounded-xl group relative overflow-hidden",
-                                        "text-sm font-medium transition-all duration-200",
+                                        "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative",
                                         isActive
-                                            ? "bg-navy-50 text-navy-700 shadow-sm"
-                                            : "text-gray-600 hover:bg-gray-50 hover:text-navy-700"
+                                            ? "bg-navy-50 text-navy-700 font-medium"
+                                            : "text-gray-600 hover:bg-gray-50 hover:text-navy-900"
                                     )}
                                 >
                                     {isActive && (
-                                        <div className="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-1 bg-navy-600 rounded-r-full" />
+                                        <motion.div
+                                            layoutId="sidebar-active"
+                                            className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-navy-600 rounded-r-full"
+                                        />
                                     )}
-                                    <item.icon
-                                        className={cn(
-                                            "w-5 h-5 transition-colors",
-                                            isActive ? "text-navy-600" : "text-gray-400 group-hover:text-navy-600"
-                                        )}
-                                    />
-                                    {item.name}
+                                    <item.icon size={20} strokeWidth={isActive ? 2 : 1.5} className={isActive ? "text-navy-600" : "text-gray-400 group-hover:text-navy-600"} />
+                                    <span className={isActive ? "font-semibold" : "font-medium"}>{item.label}</span>
                                 </Link>
                             );
                         })}
                     </nav>
 
-                    {/* User section */}
-                    <div className="p-4 border-t border-gray-100 bg-gray-50/50">
-                        <div className="flex items-center gap-3 px-2">
-                            <div className="w-10 h-10 bg-navy-100 rounded-full flex items-center justify-center text-navy-700 font-bold border-2 border-white shadow-sm">
-                                AD
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <p className="text-sm font-bold text-gray-900 truncate">
-                                    Admin
-                                </p>
-                                <p className="text-xs text-gray-500 truncate">
-                                    admin@imoveis.com
-                                </p>
-                            </div>
-                            <button className="p-2 text-gray-400 hover:text-red-600 transition-colors" title="Sair">
-                                <LogOut className="w-5 h-5" />
-                            </button>
-                        </div>
+                    <div className="p-4 border-t border-gray-100">
+                        <button
+                            onClick={handleSignOut}
+                            className="flex items-center gap-3 px-3 py-2.5 w-full text-left rounded-lg text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors group"
+                        >
+                            <LogOut size={20} className="text-gray-400 group-hover:text-red-500" />
+                            <span className="font-medium">Sair</span>
+                        </button>
                     </div>
-
                 </div>
             </aside>
+
+            {/* Mobile Drawer */}
+            <button
+                onClick={() => setIsOpen(true)}
+                className="lg:hidden fixed top-4 left-4 z-50 p-2.5 bg-white/90 backdrop-blur-md rounded-xl shadow-soft border border-gray-100 text-gray-700 active:scale-95 transition-transform"
+            >
+                <Menu size={24} />
+            </button>
+
+            <AnimatePresence>
+                {isOpen && (
+                    <>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="lg:hidden fixed inset-0 z-40 bg-black/20 backdrop-blur-sm"
+                            onClick={() => setIsOpen(false)}
+                        />
+
+                        <motion.aside
+                            initial={{ x: '-100%' }}
+                            animate={{ x: 0 }}
+                            exit={{ x: '-100%' }}
+                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                            className="lg:hidden fixed inset-y-0 left-0 z-50 w-72 bg-white/95 backdrop-blur-2xl shadow-2xl border-r border-gray-100 flex flex-col"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="p-6 flex justify-between items-center border-b border-gray-100">
+                                <span className="text-xl font-bold text-gray-900">Menu</span>
+                                <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-gray-100 rounded-full text-gray-500 transition-colors">
+                                    <X size={20} />
+                                </button>
+                            </div>
+
+                            <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+                                {sidebarItems.map((item) => {
+                                    const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+                                    return (
+                                        <Link
+                                            key={item.href}
+                                            href={item.href}
+                                            onClick={() => setIsOpen(false)}
+                                            className={cn(
+                                                "flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all",
+                                                isActive
+                                                    ? "bg-navy-50 text-navy-700 font-semibold"
+                                                    : "text-gray-600 hover:bg-gray-50 hover:text-navy-900 font-medium"
+                                            )}
+                                        >
+                                            <item.icon size={22} className={isActive ? "text-navy-600" : "text-gray-400"} />
+                                            <span>{item.label}</span>
+                                        </Link>
+                                    )
+                                })}
+                            </nav>
+
+                            <div className="p-4 border-t border-gray-100 bg-gray-50/50">
+                                <button
+                                    onClick={handleSignOut}
+                                    className="flex items-center gap-3 w-full px-4 py-3 text-red-600 font-medium hover:bg-red-50 rounded-xl transition-colors"
+                                >
+                                    <LogOut size={20} />
+                                    Sair da conta
+                                </button>
+                            </div>
+                        </motion.aside>
+                    </>
+                )}
+            </AnimatePresence>
         </>
     );
 }
