@@ -31,7 +31,7 @@ export default function HomePage() {
                             variants={slideUp}
                             className="text-white font-display font-bold text-4xl sm:text-5xl lg:text-7xl leading-[1.1] mb-6 drop-shadow-lg"
                         >
-                            Inteligência,<br />
+                            Inteligência Imobiliária Premium,<br />
                             método e segurança<br />
                             <span className="text-primary-200">em decisões imobiliárias</span>
                         </motion.h1>
