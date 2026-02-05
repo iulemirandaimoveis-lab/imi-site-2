@@ -16,6 +16,9 @@ export async function middleware(req: NextRequest) {
             if (session) {
                 return NextResponse.redirect(new URL('/backoffice/dashboard', req.url));
             }
+            if (req.nextUrl.pathname === '/backoffice') {
+                return NextResponse.redirect(new URL('/backoffice/login', req.url));
+            }
             return res;
         }
 
