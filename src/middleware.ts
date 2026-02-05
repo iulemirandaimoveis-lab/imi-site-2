@@ -11,19 +11,15 @@ export async function middleware(req: NextRequest) {
     } = await supabase.auth.getSession();
 
     if (req.nextUrl.pathname.startsWith('/backoffice')) {
-        // Treat root backoffice as potential login redirect
-        if (req.nextUrl.pathname === '/backoffice' || req.nextUrl.pathname === '/backoffice/login') {
+        if (req.nextUrl.pathname === '/backoffice') {
             if (session) {
                 return NextResponse.redirect(new URL('/backoffice/dashboard', req.url));
-            }
-            if (req.nextUrl.pathname === '/backoffice') {
-                return NextResponse.redirect(new URL('/backoffice/login', req.url));
             }
             return res;
         }
 
         if (!session) {
-            return NextResponse.redirect(new URL('/backoffice/login', req.url));
+            return NextResponse.redirect(new URL('/backoffice', req.url));
         }
     }
 

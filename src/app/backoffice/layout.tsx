@@ -10,7 +10,7 @@ export default function BackofficeLayout({
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
-    const isLoginPage = pathname === '/backoffice' || pathname === '/backoffice/login';
+    const isLoginPage = pathname === '/backoffice';
 
     // Login page: render sem sidebar
     if (isLoginPage) {

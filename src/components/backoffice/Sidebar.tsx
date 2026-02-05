@@ -39,7 +39,7 @@ export default function Sidebar() {
 
     const handleLogout = async () => {
         await supabase.auth.signOut();
-        router.push('/backoffice/login');
+        router.push('/backoffice');
         router.refresh();
     };
 
