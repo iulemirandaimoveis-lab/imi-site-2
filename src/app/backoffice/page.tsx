@@ -2,12 +2,10 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 
 export default function BackofficeLoginPage() {
     const router = useRouter();
-    const supabase = createClientComponentClient();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -20,45 +18,30 @@ export default function BackofficeLoginPage() {
         setLoading(true);
         setError('');
 
-        // Verificação extra para depuração (opcional, ajuda a identificar se as env vars chegaram no client)
-        if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-            console.error('VARIÁVEIS SUPABASE AUSENTES NO CLIENTE');
-        }
-
         try {
-            console.log('Iniciando login para:', email);
+            console.log('Iniciando login via API para:', email);
 
-            const { data, error: signInError } = await supabase.auth.signInWithPassword({
-                email,
-                password,
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
             });
 
-            if (signInError) {
-                console.error('Erro Supabase:', signInError.message, signInError.status);
+            const data = await res.json();
 
-                // Mensagens de erro mais específicas
-                if (signInError.message.includes('Invalid login credentials')) {
-                    setError('Email ou senha incorretos. Verifique suas credenciais.');
-                } else if (signInError.message.includes('Email not confirmed')) {
-                    setError('Email não confirmado. Verifique sua caixa de entrada.');
-                } else if (signInError.message.includes('Too many requests')) {
-                    setError('Muitas tentativas. Aguarde alguns minutos.');
-                } else if (signInError.message.includes('Invalid API key') || signInError.status === 401) {
-                    setError('Erro crítico: Chave de API do Supabase inválida nas configurações do servidor. Por favor, contate o administrador.');
-                } else {
-                    setError(`Erro: ${signInError.message}`);
-                }
+            if (!res.ok) {
+                setError(data.error || 'Falha na autenticação. Verifique suas credenciais.');
                 return;
             }
 
-            if (data.session) {
-                console.log('Login bem-sucedido! Redirecionando...');
-                router.push('/backoffice/dashboard');
-                router.refresh();
-            }
+            console.log('Login bem-sucedido! Redirecionando...');
+            router.push('/backoffice/dashboard');
+            router.refresh();
         } catch (err: any) {
             console.error('Exceção no login:', err);
-            setError('Erro de conexão ou erro interno. Tente recarregar a página.');
+            setError('Erro de conexão com o servidor. Tente recarregar a página.');
         } finally {
             setLoading(false);
         }
