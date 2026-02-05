@@ -22,3 +22,15 @@ export async function getSession() {
     const { data: { session } } = await supabase.auth.getSession();
     return session;
 }
+
+// Admin client for bypass - Required for internal API routes
+export const supabaseAdmin = createClient(
+    supabaseUrl,
+    process.env.SUPABASE_SERVICE_ROLE_KEY || '',
+    {
+        auth: {
+            autoRefreshToken: false,
+            persistSession: false
+        }
+    }
+);
