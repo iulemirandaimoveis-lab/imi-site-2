@@ -20,6 +20,11 @@ export default function BackofficeLoginPage() {
         setLoading(true);
         setError('');
 
+        // Verificação extra para depuração (opcional, ajuda a identificar se as env vars chegaram no client)
+        if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+            console.error('VARIÁVEIS SUPABASE AUSENTES NO CLIENTE');
+        }
+
         try {
             console.log('Iniciando login para:', email);
 
@@ -38,6 +43,8 @@ export default function BackofficeLoginPage() {
                     setError('Email não confirmado. Verifique sua caixa de entrada.');
                 } else if (signInError.message.includes('Too many requests')) {
                     setError('Muitas tentativas. Aguarde alguns minutos.');
+                } else if (signInError.message.includes('Invalid API key') || signInError.status === 401) {
+                    setError('Erro crítico: Chave de API do Supabase inválida nas configurações do servidor. Por favor, contate o administrador.');
                 } else {
                     setError(`Erro: ${signInError.message}`);
                 }
@@ -51,7 +58,7 @@ export default function BackofficeLoginPage() {
             }
         } catch (err: any) {
             console.error('Exceção no login:', err);
-            setError('Erro de conexão. Verifique sua internet e tente novamente.');
+            setError('Erro de conexão ou erro interno. Tente recarregar a página.');
         } finally {
             setLoading(false);
         }
@@ -151,12 +158,6 @@ export default function BackofficeLoginPage() {
                         </button>
                     </form>
 
-                    {/* Credenciais de teste */}
-                    <div className="mt-6 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
-                        <p className="text-xs text-yellow-200 text-center">
-                            <strong>Teste:</strong> admin@imi.com.br / senha123
-                        </p>
-                    </div>
                 </div>
 
                 {/* Link voltar */}
