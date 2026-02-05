@@ -27,7 +27,7 @@ export function ForWhom() {
                                     <CheckCircle className="w-6 h-6 text-green-600" />
                                 </div>
                                 <h3 className="text-2xl font-bold text-gray-900">
-                                    ✅ Para Quem É
+                                    Para Quem É
                                 </h3>
                             </div>
 
@@ -81,7 +81,7 @@ export function ForWhom() {
                                     <XCircle className="w-6 h-6 text-red-600" />
                                 </div>
                                 <h3 className="text-2xl font-bold text-gray-900">
-                                    ❌ Não é Para Quem
+                                    Não é Para Quem
                                 </h3>
                             </div>
 

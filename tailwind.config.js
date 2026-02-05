@@ -13,6 +13,7 @@ const config: Config = {
                     600: '#1E40AF',
                     700: '#1E3A8A',
                     800: '#172554',
+                    900: '#1e3a8a', // Using a dark blue for navy-900
                 },
                 gold: {
                     600: '#D4AF37',

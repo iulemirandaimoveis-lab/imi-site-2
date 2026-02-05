@@ -3,9 +3,12 @@ import Image from 'next/image'
 
 const footerNavigation = {
     services: [
-        { name: 'Avaliações Imobiliárias', href: '/avaliacoes' },
-        { name: 'Consultoria Estratégica', href: '/consultoria' },
+        { name: 'Avaliações', href: '/avaliacoes' },
         { name: 'Imóveis', href: '/imoveis' },
+        { name: 'Crédito', href: '/credito' },
+        { name: 'Consultoria', href: '/consultoria' },
+        { name: 'Inteligência', href: '/inteligencia' },
+        { name: 'Projetos', href: '/projetos' },
     ],
     company: [
         { name: 'Sobre', href: '/sobre' },
