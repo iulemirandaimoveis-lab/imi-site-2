@@ -138,7 +138,7 @@ export default function ContatoPage() {
                             whileInView="visible"
                             viewport={{ once: true }}
                             variants={staggerContainer}
-                            className="bg-white/80 backdrop-blur-md shadow-soft rounded-2xl shadow-lg p-8"
+                            className="bg-white rounded-2xl shadow-lg p-8"
                         >
                             <motion.h2 variants={slideUp} className="text-2xl font-bold text-neutral-900 mb-6">
                                 Envie uma Mensagem

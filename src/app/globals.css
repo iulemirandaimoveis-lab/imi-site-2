@@ -8,20 +8,19 @@
     --font-playfair: 'Playfair Display', Georgia, serif;
   }
 
+  * {
+    @apply border-neutral-200;
+  }
+
   html {
     @apply scroll-smooth;
   }
 
   body {
-    @apply bg-white text-gray-900 antialiased;
+    @apply bg-white text-neutral-900 antialiased;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
+  h1, h2, h3, h4, h5, h6 {
     @apply font-display;
   }
 }
@@ -34,16 +33,34 @@
   .section-padding {
     @apply py-16 lg:py-24;
   }
+
+  .prose-custom {
+    @apply prose prose-neutral max-w-none;
+    @apply prose-headings:font-display prose-headings:text-neutral-900;
+    @apply prose-p:text-neutral-700 prose-p:leading-relaxed;
+    @apply prose-a:text-primary-700 prose-a:no-underline hover:prose-a:underline;
+    @apply prose-strong:text-neutral-900 prose-strong:font-semibold;
+  }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
 
+/* Focus visible styles for accessibility */
+@layer base {
+  *:focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+  }
+}
+
+/* Custom scrollbar */
+@layer utilities {
   .scrollbar-custom {
     scrollbar-width: thin;
-    scrollbar-color: #9CA3AF #F3F4F6;
+    scrollbar-color: theme('colors.neutral.400') theme('colors.neutral.100');
   }
 
   .scrollbar-custom::-webkit-scrollbar {
@@ -52,15 +69,14 @@
   }
 
   .scrollbar-custom::-webkit-scrollbar-track {
-    background-color: #F3F4F6;
+    @apply bg-neutral-100;
   }
 
   .scrollbar-custom::-webkit-scrollbar-thumb {
-    background-color: #9CA3AF;
-    border-radius: 9999px;
+    @apply bg-neutral-400 rounded-full;
   }
 
   .scrollbar-custom::-webkit-scrollbar-thumb:hover {
-    background-color: #6B7280;
+    @apply bg-neutral-500;
   }
-}/* Force redeploy: Wed Feb  4 17:54:22 -03 2026 */
+}

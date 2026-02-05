@@ -15,10 +15,10 @@ export default function BackofficeLayout({
     // Login page: render sem sidebar
     if (isLoginPage) {
         return (
-            <>
+            <div className="min-h-screen bg-offwhite antialiased">
                 {children}
                 <Toaster position="top-right" richColors theme="light" />
-            </>
+            </div>
         );
     }
 

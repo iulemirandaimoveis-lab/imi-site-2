@@ -4,7 +4,6 @@ import '../globals.css'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import { generateOrganizationSchema } from '@/lib/seo'
-import { SpeedInsights } from '@vercel/speed-insights/next'
 
 const inter = Inter({
     subsets: ['latin'],
@@ -64,19 +63,22 @@ export const metadata: Metadata = {
     },
 }
 
-export default function RootLayout({
+export default function WebsiteLayout({
     children,
 }: {
     children: React.ReactNode
 }) {
+    const organizationSchema = generateOrganizationSchema()
+
     return (
-        <html lang="pt-BR" className={`${inter.variable} ${playfair.variable}`}>
-            <body className="antialiased bg-offwhite font-sans flex flex-col min-h-screen">
-                <Header />
-                <main className="flex-grow pt-24 lg:pt-28">{children}</main>
-                <Footer />
-                <SpeedInsights />
-            </body>
-        </html>
+        <div className="flex flex-col min-h-screen">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+            />
+            <Header />
+            <main className="flex-grow pt-24 lg:pt-28">{children}</main>
+            <Footer />
+        </div>
     )
 }
