@@ -6,8 +6,10 @@ import { motion } from 'framer-motion'
 import { slideUp, staggerContainer } from '@/lib/animations'
 import PropertyCard from '@/components/ui/PropertyCard'
 import Select from '@/components/ui/Select'
+import Button from '@/components/ui/Button'
 import { mockProperties } from '@/lib/mock-data'
 import { PropertyType, PropertyStatus, PropertyPurpose } from '@/types/property'
+import { Search } from 'lucide-react'
 
 export default function ImoveisPage() {
     const [filters, setFilters] = useState({
@@ -29,28 +31,29 @@ export default function ImoveisPage() {
 
     return (
         <div className="bg-white">
-            {/* Hero */}
-            <section className="bg-gradient-to-br from-primary-900 to-primary-800 text-white">
-                <div className="container-custom hero-padding">
+            {/* Hero - Premium Style */}
+            <section className="bg-navy-900 text-white relative overflow-hidden">
+                <div className="absolute inset-0 bg-[url('/hero-bg.jpg')] bg-cover bg-center opacity-10" />
+                <div className="container-custom py-16 md:py-24 relative z-10">
                     <motion.div
                         initial="hidden"
                         animate="visible"
                         variants={staggerContainer}
                         className="max-w-3xl"
                     >
-                        <motion.h1 variants={slideUp} className="text-display-md md:text-display-lg font-bold mb-6">
+                        <motion.h1 variants={slideUp} className="text-4xl md:text-6xl font-display font-bold mb-6">
                             Imóveis
                         </motion.h1>
-                        <motion.p variants={slideUp} className="text-xl text-primary-100">
+                        <motion.p variants={slideUp} className="text-xl text-slate-300 font-light leading-relaxed">
                             Corretagem com curadoria técnica. Lançamentos e usados selecionados
-                            com análise de mercado e viabilidade.
+                            com análise de mercado e viabilidade jurídica total.
                         </motion.p>
                     </motion.div>
                 </div>
             </section>
 
-            {/* Filters */}
-            <section className="bg-neutral-50 border-b border-neutral-200">
+            {/* Filters - Standardized with Audit UI */}
+            <section className="bg-slate-50 border-b border-slate-200 sticky top-16 lg:top-20 z-40 shadow-sm">
                 <div className="container-custom py-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <Select
@@ -101,8 +104,8 @@ export default function ImoveisPage() {
                 </div>
             </section>
 
-            {/* Properties Grid */}
-            <section className="py-12 md:py-20 lg:py-24">
+            {/* Properties Grid - Apple-like Spacing */}
+            <section className="section-padding">
                 <div className="container-custom">
                     <motion.div
                         initial="hidden"
@@ -112,9 +115,9 @@ export default function ImoveisPage() {
                     >
                         {filteredProperties.length > 0 ? (
                             <>
-                                <motion.div variants={slideUp} className="mb-6">
-                                    <p className="text-neutral-600">
-                                        {filteredProperties.length} {filteredProperties.length === 1 ? 'imóvel encontrado' : 'imóveis encontrados'}
+                                <motion.div variants={slideUp} className="mb-8 flex items-center justify-between">
+                                    <p className="text-slate-500 text-sm font-medium uppercase tracking-widest">
+                                        {filteredProperties.length} {filteredProperties.length === 1 ? 'imóvel disponível' : 'imóveis disponíveis'}
                                     </p>
                                 </motion.div>
 
@@ -127,15 +130,13 @@ export default function ImoveisPage() {
                                 </div>
                             </>
                         ) : (
-                            <motion.div variants={slideUp} className="text-center py-16">
-                                <svg className="w-16 h-16 mx-auto mb-4 text-neutral-400" fill="none" viewBox="0 0 24 24" strokeWidth="1" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                                </svg>
-                                <h3 className="text-xl font-semibold text-neutral-900 mb-2">
+                            <motion.div variants={slideUp} className="text-center py-24 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                                <Search className="w-12 h-12 mx-auto mb-4 text-slate-300" strokeWidth={1.5} />
+                                <h3 className="text-xl font-display font-semibold text-navy-900 mb-2">
                                     Nenhum imóvel encontrado
                                 </h3>
-                                <p className="text-neutral-600">
-                                    Tente ajustar os filtros para ver mais resultados.
+                                <p className="text-slate-500 max-w-xs mx-auto">
+                                    Tente ajustar seus critérios de busca para encontrar o que procura.
                                 </p>
                             </motion.div>
                         )}
@@ -143,35 +144,31 @@ export default function ImoveisPage() {
                 </div>
             </section >
 
-            {/* CTA Section */}
-            < section className="section-padding bg-primary-50" >
+            {/* CTA Section - Specialized */}
+            < section className="section-padding bg-navy-900 text-white" >
                 <div className="container-custom">
                     <motion.div
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true }}
                         variants={staggerContainer}
-                        className="max-w-3xl mx-auto text-center"
+                        className="max-w-4xl mx-auto text-center"
                     >
-                        <motion.h2 variants={slideUp} className="text-display-sm font-bold text-neutral-900 mb-6">
-                            Não encontrou o que procura?
+                        <motion.h2 variants={slideUp} className="text-3xl md:text-5xl font-display font-bold mb-6">
+                            Inteligência na busca do seu próximo ativo
                         </motion.h2>
-                        <motion.p variants={slideUp} className="text-lg text-neutral-700 mb-8">
-                            Entre em contato conosco. Podemos ajudar a encontrar o imóvel ideal
-                            ou avaliar oportunidades específicas para seu perfil.
+                        <motion.p variants={slideUp} className="text-lg text-slate-300 mb-10 font-light">
+                            Nossa corretagem não é sobre "mostrar casas", é sobre curadoria técnica e segurança jurídica.
+                            Fale com um especialista para uma busca personalizada.
                         </motion.p>
                         <motion.div variants={slideUp}>
-                            <a
-                                href="/contato"
-                                className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white bg-primary-700 rounded-lg hover:bg-primary-800 transition-colors"
-                            >
-                                Falar com Especialista
-                            </a>
+                            <Button asChild size="lg" className="bg-white text-navy-900 hover:bg-slate-100 h-16 px-12">
+                                <Link href="/contato">Falar com Especialista</Link>
+                            </Button>
                         </motion.div>
                     </motion.div>
                 </div>
             </section >
-
         </div >
     )
 }
