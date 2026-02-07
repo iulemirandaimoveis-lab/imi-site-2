@@ -50,7 +50,10 @@ export const developments: Development[] = [
         },
         images: {
             main: '/images/developments/setai-beach-resort.jpg',
-            gallery: []
+            gallery: [
+                'https://setaigrupogp.com.br/wp-content/uploads/2025/06/06-area-scaled.jpg',
+                'https://setaigrupogp.com.br/wp-content/uploads/2025/06/22-Nigth-Spa-scaled.jpg'
+            ]
         },
         videoUrl: undefined, // Estrutura pronta para embed
         externalLinks: {
