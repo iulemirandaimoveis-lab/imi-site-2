@@ -1,174 +1,154 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { slideUp, staggerContainer } from '@/lib/animations'
-import PropertyCard from '@/components/ui/PropertyCard'
-import Select from '@/components/ui/Select'
-import Button from '@/components/ui/Button'
-import { mockProperties } from '@/lib/mock-data'
-import { PropertyType, PropertyStatus, PropertyPurpose } from '@/types/property'
-import { Search } from 'lucide-react'
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { staggerContainer, slideUp } from '@/lib/animations';
+import { developments } from './data/developments';
+import DevelopmentCard from './components/DevelopmentCard';
+import DevelopmentFilters from './components/DevelopmentFilters';
+import Button from '@/components/ui/Button';
+import Badge from '@/components/ui/Badge';
+import { MessageCircle, Search } from 'lucide-react';
 
-export default function ImoveisPage() {
-    const [filters, setFilters] = useState({
-        type: '' as PropertyType | '',
-        status: '' as PropertyStatus | '',
-        city: '',
-        purpose: '' as PropertyPurpose | '',
-    })
+export default function ImoveisPage({ params: { lang } }: { params: { lang: string } }) {
+    const [activeFilter, setActiveFilter] = useState('all');
 
-    const filteredProperties = mockProperties.filter((property) => {
-        if (filters.type && property.type !== filters.type) return false
-        if (filters.status && property.status !== filters.status) return false
-        if (filters.city && property.city !== filters.city) return false
-        if (filters.purpose && property.purpose !== filters.purpose) return false
-        return true
-    })
+    const filteredDevelopments = developments.filter((dev) => {
+        if (activeFilter === 'all') return true;
+        if (activeFilter === 'launch') return dev.status === 'launch';
+        if (activeFilter === 'ready') return dev.status === 'ready';
+        if (activeFilter === 'frente-mar') return dev.tags.includes('frente-mar');
+        if (activeFilter === 'casas') return dev.tags.includes('casas');
+        if (activeFilter === 'luxo') return dev.tags.includes('luxo');
+        return true;
+    }).sort((a, b) => a.order - b.order);
 
-    const cities = Array.from(new Set(mockProperties.map(p => p.city)))
+    // Separar Pronta Entrega para seção especial (quando filtro é 'all')
+    const readyDevelopments = developments.filter(dev => dev.status === 'ready');
+    const otherDevelopments = filteredDevelopments.filter(dev => dev.status !== 'ready' || activeFilter !== 'all');
 
     return (
-        <div className="bg-white">
-            {/* Hero - Premium Style */}
-            <section className="bg-navy-900 text-white relative overflow-hidden">
-                <div className="absolute inset-0 bg-[url('/hero-bg.jpg')] bg-cover bg-center opacity-10" />
-                <div className="container-custom py-16 md:py-24 relative z-10">
+        <main className="bg-white">
+            {/* Hero Minimalista */}
+            <section className="bg-navy-900 text-white pt-24 pb-16 md:pt-32 md:pb-24 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-1/2 h-full bg-gold-600/5 -skew-x-12 translate-x-1/2" />
+                <div className="container-custom relative z-10">
                     <motion.div
                         initial="hidden"
                         animate="visible"
                         variants={staggerContainer}
                         className="max-w-3xl"
                     >
-                        <motion.h1 variants={slideUp} className="text-4xl md:text-6xl font-display font-bold mb-6">
-                            Imóveis
+                        <motion.div variants={slideUp} className="flex items-center gap-3 mb-6">
+                            <div className="w-12 h-px bg-gold-500" />
+                            <span className="text-gold-500 font-bold uppercase tracking-[0.3em] text-xs">Portfólio 2026</span>
+                        </motion.div>
+                        <motion.h1 variants={slideUp} className="font-display text-4xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight leading-tight">
+                            Curadoria de <br /><span className="text-gold-500 italic">Empreendimentos</span>
                         </motion.h1>
-                        <motion.p variants={slideUp} className="text-xl text-slate-300 font-light leading-relaxed">
-                            Corretagem com curadoria técnica. Lançamentos e usados selecionados
-                            com análise de mercado e viabilidade jurídica total.
+                        <motion.p variants={slideUp} className="text-slate-400 text-lg md:text-xl font-light leading-relaxed max-w-2xl">
+                            Seleção técnica dos melhores ativos imobiliários da Paraíba. Do luxo absoluto à alta rentabilidade em compactos.
                         </motion.p>
                     </motion.div>
                 </div>
             </section>
 
-            {/* Filters - Standardized with Audit UI */}
-            <section className="bg-slate-50 border-b border-slate-200 sticky top-16 lg:top-20 z-40 shadow-sm">
-                <div className="container-custom py-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <Select
-                            label="Tipo"
-                            value={filters.type}
-                            onChange={(e) => setFilters({ ...filters, type: e.target.value as PropertyType | '' })}
-                            options={[
-                                { value: '', label: 'Todos os tipos' },
-                                { value: 'apartment', label: 'Apartamento' },
-                                { value: 'house', label: 'Casa' },
-                                { value: 'commercial', label: 'Comercial' },
-                                { value: 'land', label: 'Terreno' },
-                            ]}
-                        />
+            {/* Filtros Sticky Chips */}
+            <DevelopmentFilters activeFilter={activeFilter} onFilterChange={setActiveFilter} />
 
-                        <Select
-                            label="Status"
-                            value={filters.status}
-                            onChange={(e) => setFilters({ ...filters, status: e.target.value as PropertyStatus | '' })}
-                            options={[
-                                { value: '', label: 'Todos' },
-                                { value: 'lancamento', label: 'Lançamento' },
-                                { value: 'usado', label: 'Usado' },
-                            ]}
-                        />
+            {/* Seção Especial Pronta Entrega (Apenas no 'all') */}
+            {activeFilter === 'all' && readyDevelopments.length > 0 && (
+                <section className="py-16 bg-slate-50 overflow-hidden">
+                    <div className="container-custom">
+                        <motion.div
+                            initial={{ opacity: 0, x: -20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            className="flex items-center gap-4 mb-10"
+                        >
+                            <Badge className="bg-gold-500 text-navy-900 px-4 py-1.5 font-bold uppercase tracking-widest text-[10px]">
+                                Pronta Entrega
+                            </Badge>
+                            <h2 className="font-display text-2xl md:text-3xl text-navy-900 font-bold">Oportunidades Imediatas</h2>
+                        </motion.div>
 
-                        <Select
-                            label="Cidade"
-                            value={filters.city}
-                            onChange={(e) => setFilters({ ...filters, city: e.target.value })}
-                            options={[
-                                { value: '', label: 'Todas as cidades' },
-                                ...cities.map(city => ({ value: city, label: city })),
-                            ]}
-                        />
-
-                        <Select
-                            label="Finalidade"
-                            value={filters.purpose}
-                            onChange={(e) => setFilters({ ...filters, purpose: e.target.value as PropertyPurpose | '' })}
-                            options={[
-                                { value: '', label: 'Todas' },
-                                { value: 'moradia', label: 'Moradia' },
-                                { value: 'investimento', label: 'Investimento' },
-                            ]}
-                        />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            {readyDevelopments.map((dev, idx) => (
+                                <DevelopmentCard key={dev.id} development={dev} index={idx} lang={lang} />
+                            ))}
+                        </div>
                     </div>
+                </section>
+            )}
+
+            {/* Grid Principal */}
+            <section className="py-16 md:py-24">
+                <div className="container-custom">
+                    {activeFilter !== 'all' && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="mb-10 flex items-center gap-3"
+                        >
+                            <div className="w-2 h-2 rounded-full bg-navy-900" />
+                            <span className="text-slate-500 font-bold uppercase tracking-widest text-xs">
+                                Exibindo {filteredDevelopments.length} resultados para "{activeFilter}"
+                            </span>
+                        </motion.div>
+                    )}
+
+                    {otherDevelopments.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
+                            {otherDevelopments.map((dev, index) => (
+                                <DevelopmentCard key={dev.id} development={dev} index={index} lang={lang} />
+                            ))}
+                        </div>
+                    ) : activeFilter !== 'all' && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="text-center py-20 bg-slate-50 rounded-3xl border border-dashed border-slate-200"
+                        >
+                            <Search className="w-16 h-16 mx-auto mb-6 text-slate-200" strokeWidth={1} />
+                            <h3 className="font-display text-2xl font-bold text-navy-900 mb-2">Nenhum ativo encontrado</h3>
+                            <p className="text-slate-500 max-w-xs mx-auto">Tente ajustar seus critérios ou fale com um consultor para uma busca personalizada.</p>
+                            <Button onClick={() => setActiveFilter('all')} variant="outline" className="mt-8">Ver todos os ativos</Button>
+                        </motion.div>
+                    )}
                 </div>
             </section>
 
-            {/* Properties Grid - Apple-like Spacing */}
-            <section className="section-padding">
-                <div className="container-custom">
+            {/* CTA Final */}
+            <section className="bg-navy-900 text-white py-20 md:py-32 text-center relative overflow-hidden">
+                <div className="absolute inset-0 bg-[url('/hero-bg.jpg')] bg-cover bg-center opacity-5" />
+                <div className="container-custom relative z-10">
                     <motion.div
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true }}
                         variants={staggerContainer}
                     >
-                        {filteredProperties.length > 0 ? (
-                            <>
-                                <motion.div variants={slideUp} className="mb-8 flex items-center justify-between">
-                                    <p className="text-slate-500 text-sm font-medium uppercase tracking-widest">
-                                        {filteredProperties.length} {filteredProperties.length === 1 ? 'imóvel disponível' : 'imóveis disponíveis'}
-                                    </p>
-                                </motion.div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                    {filteredProperties.map((property) => (
-                                        <motion.div key={property.id} variants={slideUp}>
-                                            <PropertyCard property={property} />
-                                        </motion.div>
-                                    ))}
-                                </div>
-                            </>
-                        ) : (
-                            <motion.div variants={slideUp} className="text-center py-24 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                                <Search className="w-12 h-12 mx-auto mb-4 text-slate-300" strokeWidth={1.5} />
-                                <h3 className="text-xl font-display font-semibold text-navy-900 mb-2">
-                                    Nenhum imóvel encontrado
-                                </h3>
-                                <p className="text-slate-500 max-w-xs mx-auto">
-                                    Tente ajustar seus critérios de busca para encontrar o que procura.
-                                </p>
-                            </motion.div>
-                        )}
-                    </motion.div>
-                </div>
-            </section >
-
-            {/* CTA Section - Specialized */}
-            < section className="section-padding bg-navy-900 text-white" >
-                <div className="container-custom">
-                    <motion.div
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true }}
-                        variants={staggerContainer}
-                        className="max-w-4xl mx-auto text-center"
-                    >
-                        <motion.h2 variants={slideUp} className="text-3xl md:text-5xl font-display font-bold mb-6">
-                            Inteligência na busca do seu próximo ativo
-                        </motion.h2>
-                        <motion.p variants={slideUp} className="text-lg text-slate-300 mb-10 font-light">
-                            Nossa corretagem não é sobre "mostrar casas", é sobre curadoria técnica e segurança jurídica.
-                            Fale com um especialista para uma busca personalizada.
+                        <motion.h3 variants={slideUp} className="font-display text-3xl md:text-5xl font-bold mb-6 tracking-tight">
+                            Não encontrou o <span className="text-gold-500 italic">imóvel ideal?</span>
+                        </motion.h3>
+                        <motion.p variants={slideUp} className="text-slate-400 text-lg md:text-xl mb-12 max-w-2xl mx-auto font-light leading-relaxed">
+                            Nossa curadoria vai além do catálogo. Fale com nossos especialistas para uma prospecção off-market personalizada.
                         </motion.p>
                         <motion.div variants={slideUp}>
-                            <Button asChild size="lg" className="bg-white text-navy-900 hover:bg-slate-100 h-16 px-12">
-                                <Link href="/contato">Falar com Especialista</Link>
+                            <Button
+                                asChild
+                                size="lg"
+                                className="bg-white text-navy-900 hover:bg-slate-100 h-16 px-12 font-bold uppercase tracking-[0.2em] text-sm shadow-2xl"
+                            >
+                                <a href="https://wa.me/5581997230455" target="_blank" rel="noopener noreferrer">
+                                    <MessageCircle className="w-5 h-5 mr-3 text-navy-700" />
+                                    Iniciar Consultoria
+                                </a>
                             </Button>
                         </motion.div>
                     </motion.div>
                 </div>
-            </section >
-        </div >
-    )
+            </section>
+        </main>
+    );
 }
