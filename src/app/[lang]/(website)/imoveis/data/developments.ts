@@ -136,10 +136,8 @@ export const developments: Development[] = [
             max: 6540344
         },
         images: {
-            main: '',
-            gallery: []
-        },
-        externalLinks: {
+            main: "/images/developments/setai-pininfarina.jpg",            gallery: []
+            gallery: ["https://setaigrupogp.com.br/wp-content/uploads/2025/10/PIN_48_CONDO_A_LOBBY_04-scaled.jpg", "https://setaigrupogp.com.br/wp-content/uploads/2025/05/29-Piscina-Rooftop-Torre-A-1-scaled.jpg"],        externalLinks: {
             officialSite: 'https://setaigrupogp.com.br/setai-residences-design-by-pininfarina/'
         },
         units: [
@@ -207,10 +205,8 @@ export const developments: Development[] = [
         images: {
             main: '',
             gallery: []
-        },
-        units: [
-            { id: 'ho-401', unit: '401', type: 'APTO', area: 98.67, position: 'NASC/NORTE', bedrooms: 3, bathrooms: 2, parkingSpots: 2, totalPrice: 1163847.11, status: 'available' },
-            { id: 'ho-402', unit: '402', type: 'APTO', area: 91.81, position: 'NASC/SUL', bedrooms: 2, bathrooms: 2, parkingSpots: 2, totalPrice: 1082931.01, status: 'available' },
+            main: "https://setaigrupogp.com.br/wp-content/uploads/2025/05/02-Fachada-4-scaled.jpg",        units: [
+            gallery: ["https://setaigrupogp.com.br/wp-content/uploads/2024/10/Rectangle-9-1.jpg", "https://setaigrupogp.com.br/wp-content/uploads/2024/10/Rectangle-9-3.jpg"],            { id: 'ho-402', unit: '402', type: 'APTO', area: 91.81, position: 'NASC/SUL', bedrooms: 2, bathrooms: 2, parkingSpots: 2, totalPrice: 1082931.01, status: 'available' },
             { id: 'ho-501', unit: '501', type: 'APTO', area: 98.67, position: 'NASC/NORTE', bedrooms: 3, bathrooms: 2, parkingSpots: 2, totalPrice: 1176778.74, status: 'available' },
             { id: 'ho-602', unit: '602', type: 'APTO', area: 91.81, position: 'NASC/SUL', bedrooms: 2, bathrooms: 2, parkingSpots: 2, totalPrice: 1106996.15, status: 'available' },
             { id: 'ho-1101', unit: '1101', type: 'APTO', area: 98.67, position: 'NASC/NORTE', bedrooms: 3, bathrooms: 2, parkingSpots: 2, totalPrice: 1370753.26, status: 'available' },
@@ -270,10 +266,8 @@ export const developments: Development[] = [
             gallery: []
         },
         externalLinks: {
-            officialSite: 'https://setaigrupogp.com.br/setai-aurus/'
-        },
-        units: [
-            { id: 'sa-g02', unit: 'GARDEN 02', type: 'GARDEN', area: 230.14, position: 'NASC/SUL', bedrooms: 3, bathrooms: 3, parkingSpots: 2, totalPrice: 7564704.72, status: 'available' },
+            main: "https://setaigrupogp.com.br/wp-content/uploads/2025/05/setai_aurus_empreendimento-scaled.jpg",        },
+            gallery: ["https://setaigrupogp.com.br/wp-content/uploads/2025/05/09-Gourmet-scaled.jpg", "https://setaigrupogp.com.br/wp-content/uploads/2025/05/21-Piscina-scaled.jpg", "https://setaigrupogp.com.br/wp-content/uploads/2025/05/10-Apartamento-scaled.jpg"],            { id: 'sa-g02', unit: 'GARDEN 02', type: 'GARDEN', area: 230.14, position: 'NASC/SUL', bedrooms: 3, bathrooms: 3, parkingSpots: 2, totalPrice: 7564704.72, status: 'available' },
             { id: 'sa-102', unit: '102', type: 'APTO', area: 69.18, position: 'SUL', bedrooms: 2, bathrooms: 2, parkingSpots: 1, totalPrice: 1665507.57, status: 'available' },
             { id: 'sa-401', unit: '401', type: 'APTO', area: 124.93, position: 'SUL', bedrooms: 3, bathrooms: 3, parkingSpots: 2, totalPrice: 2900270.64, status: 'available' },
             { id: 'sa-402', unit: '402', type: 'APTO', area: 107.927, position: 'SUL', bedrooms: 2, bathrooms: 2, parkingSpots: 1, totalPrice: 2505543.18, status: 'available' }
@@ -328,10 +322,8 @@ export const developments: Development[] = [
         externalLinks: {
             officialSite: 'https://setaigrupogp.com.br/setai-houses-resort'
         },
-        units: [
-            // Amostra representativa das tipologias principais
-            { id: 'sh-006', unit: 'CASA 6', type: 'CASA', area: 314, bedrooms: 4, bathrooms: 3, parkingSpots: 2, totalPrice: 2509164.81, status: 'available' },
-            { id: 'sh-057', unit: 'CASA 57', type: 'CASA', area: 304.42, bedrooms: 3, bathrooms: 3, parkingSpots: 2, totalPrice: 2396613.93, status: 'available' },
+            main: "/images/developments/setai-houses.jpg",            // Amostra representativa das tipologias principais
+            gallery: ["https://setaigrupogp.com.br/wp-content/uploads/2025/06/07-Piscina-scaled.jpg", "https://setaigrupogp.com.br/wp-content/uploads/2025/06/08-Living-scaled.jpg"],            { id: 'sh-057', unit: 'CASA 57', type: 'CASA', area: 304.42, bedrooms: 3, bathrooms: 3, parkingSpots: 2, totalPrice: 2396613.93, status: 'available' },
             { id: 'sh-085', unit: 'CASA 85', type: 'CASA', area: 324.4, bedrooms: 4, bathrooms: 3, parkingSpots: 2, totalPrice: 2509164.81, status: 'available' },
             { id: 'sh-302', unit: 'CASA 302', type: 'CASA', area: 365.53, bedrooms: 4, bathrooms: 4, parkingSpots: 2, totalPrice: 3318908.30, status: 'available' }
         ],
@@ -387,10 +379,8 @@ export const developments: Development[] = [
         },
         units: [
             { id: 'sm-301', unit: '301', type: 'APTO', area: 124.42, position: 'NASC/SUL', bedrooms: 3, bathrooms: 2, parkingSpots: 2, totalPrice: 2117186.84, status: 'available' },
-            { id: 'sm-303', unit: '303', type: 'APTO', area: 76.64, position: 'NASCENTE', bedrooms: 2, bathrooms: 2, parkingSpots: 2, totalPrice: 1340333.36, status: 'available' },
-            { id: 'sm-401', unit: '401', type: 'APTO', area: 124.42, position: 'NASC/SUL', bedrooms: 3, bathrooms: 2, parkingSpots: 2, totalPrice: 2122479.81, status: 'available' },
-            { id: 'sm-403', unit: '403', type: 'APTO', area: 76.64, position: 'NASCENTE', bedrooms: 2, bathrooms: 2, parkingSpots: 2, totalPrice: 1347035.03, status: 'available' },
-            { id: 'sm-503', unit: '503', type: 'APTO', area: 76.64, position: 'NASCENTE', bedrooms: 2, bathrooms: 2, parkingSpots: 2, totalPrice: 1353770.20, status: 'available' },
+            main: "https://setaigrupogp.com.br/wp-content/uploads/2025/06/01-Fachada.png",            { id: 'sm-401', unit: '401', type: 'APTO', area: 124.42, position: 'NASC/SUL', bedrooms: 3, bathrooms: 2, parkingSpots: 2, totalPrice: 2122479.81, status: 'available' },
+            gallery: ["https://setaigrupogp.com.br/wp-content/uploads/2025/06/22-Lazer-privativo.png", "https://setaigrupogp.com.br/wp-content/uploads/2025/06/07-Piscina-Terreo.png", "https://setaigrupogp.com.br/wp-content/uploads/2025/06/05-Lobby.png"],            { id: 'sm-503', unit: '503', type: 'APTO', area: 76.64, position: 'NASCENTE', bedrooms: 2, bathrooms: 2, parkingSpots: 2, totalPrice: 1353770.20, status: 'available' },
             { id: 'sm-901', unit: '901', type: 'APTO', area: 124.42, position: 'NASC/SUL', bedrooms: 3, bathrooms: 2, parkingSpots: 2, totalPrice: 2149143.79, status: 'available' }
         ],
         tags: ['design-diferenciado', 'mirage', 'bessa'],
@@ -446,10 +436,8 @@ export const developments: Development[] = [
             { id: 'ss-g01', unit: '01 GARDEN', type: 'GARDEN', area: 40.09, position: 'SUL', bedrooms: 1, bathrooms: 1, parkingSpots: 1, totalPrice: 822684.68, status: 'available' },
             { id: 'ss-g02', unit: '02 GARDEN', type: 'GARDEN', area: 48.51, position: 'SUL', bedrooms: 1, bathrooms: 1, parkingSpots: 1, totalPrice: 995471.04, status: 'available' },
             { id: 'ss-408', unit: '408', type: 'FLAT', area: 36.69, position: 'NASCENTE', bedrooms: 1, bathrooms: 1, parkingSpots: 1, totalPrice: 1120084.27, status: 'available' },
-            { id: 'ss-214', unit: '214', type: 'FLAT', area: 26.6, position: 'NORTE', bedrooms: 1, bathrooms: 1, parkingSpots: 1, totalPrice: 582247.61, status: 'available' }
-        ],
-        tags: ['náutico', 'compacto', 'investimento'],
-        order: 7,
+            main: "https://setaigrupogp.com.br/wp-content/uploads/2025/06/01-Fachada-3-scaled.jpg",        ],
+            gallery: ["https://setaigrupogp.com.br/wp-content/uploads/2025/06/10-Spa-scaled.jpg", "https://setaigrupogp.com.br/wp-content/uploads/2025/06/09-Pub-scaled.jpg", "https://setaigrupogp.com.br/wp-content/uploads/2025/06/16-Cobertura-scaled.jpg"],        order: 7,
         isHighlighted: false,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
@@ -500,10 +488,8 @@ export const developments: Development[] = [
             { id: 'ready-yacht-302', unit: '302', type: 'FLAT', area: 31.34, position: 'NORTE', bedrooms: 1, bathrooms: 1, parkingSpots: 1, totalPrice: 783500, status: 'available', tower: 'Setai Yacht' },
 
             // Setai Edition
-            { id: 'ready-ed-3', unit: '3', type: 'FLAT', area: 30.9, position: 'NORTE', bedrooms: 1, bathrooms: 1, parkingSpots: 1, totalPrice: 782500, status: 'available', tower: 'Setai Edition' },
-
-            // Setai Sandro Barros (amostra)
-            { id: 'ready-sb-35', unit: '35', type: 'APTO', area: 92.41, position: 'SUL/OESTE', bedrooms: 2, bathrooms: 2, parkingSpots: 2, totalPrice: 2310250, status: 'available', tower: 'Setai Sandro Barros' },
+            main: "https://setaigrupogp.com.br/wp-content/uploads/2024/09/Fachada-Yacht.jpg",
+            gallery: ["https://setaigrupogp.com.br/wp-content/uploads/2024/09/Piscina-Yacht.jpg", "https://setaigrupogp.com.br/wp-content/uploads/2024/09/Lobby-Yacht.jpg"],            { id: 'ready-sb-35', unit: '35', type: 'APTO', area: 92.41, position: 'SUL/OESTE', bedrooms: 2, bathrooms: 2, parkingSpots: 2, totalPrice: 2310250, status: 'available', tower: 'Setai Sandro Barros' },
             { id: 'ready-sb-601', unit: '601', type: 'APTO', area: 24.45, position: 'NORTE', bedrooms: 1, bathrooms: 1, parkingSpots: 1, totalPrice: 599000, status: 'available', tower: 'Setai Sandro Barros' }
         ],
         tags: ['pronta-entrega', 'oportunidade'],
