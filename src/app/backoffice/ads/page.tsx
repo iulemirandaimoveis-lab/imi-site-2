@@ -21,15 +21,17 @@ import {
 import Button from '@/components/ui/Button';
 import { motion } from 'framer-motion';
 import { formatCurrency } from '@/lib/utils';
+import UploadAdsDataModal from './components/UploadAdsDataModal';
 
 const supabase = createClient();
 
 export default function AdsPage() {
     const [selectedPeriod, setSelectedPeriod] = useState('30d');
     const [syncing, setSyncing] = useState(false);
+    const [showUploadModal, setShowUploadModal] = useState(false);
 
     // Busca contas conectadas
-    const { data: accounts, isLoading } = useSWR(['ads-accounts'], async () => {
+    const { data: accounts, isLoading, mutate } = useSWR(['ads-accounts'], async () => {
         const { data, error } = await supabase
             .from('ads_accounts')
             .select('*')
@@ -306,9 +308,9 @@ export default function AdsPage() {
                     <h2 className="text-xl font-bold text-imi-900">
                         Insights & Oportunidades
                     </h2>
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" onClick={() => setShowUploadModal(true)}>
                         <Sparkles size={14} className="mr-2" />
-                        Gerar Análise com IA
+                        Analisar Dados CSV com IA
                     </Button>
                 </div>
 
@@ -443,10 +445,10 @@ export default function AdsPage() {
                                     <td className="p-4 text-right">
                                         <span
                                             className={`px-3 py-1 rounded-full text-sm font-bold ${campaign.roas >= 3
-                                                    ? 'bg-green-100 text-green-700'
-                                                    : campaign.roas >= 2
-                                                        ? 'bg-yellow-100 text-yellow-700'
-                                                        : 'bg-red-100 text-red-700'
+                                                ? 'bg-green-100 text-green-700'
+                                                : campaign.roas >= 2
+                                                    ? 'bg-yellow-100 text-yellow-700'
+                                                    : 'bg-red-100 text-red-700'
                                                 }`}
                                         >
                                             {campaign.roas.toFixed(1)}x
@@ -469,6 +471,13 @@ export default function AdsPage() {
                     </p>
                 </div>
             )}
+
+            <UploadAdsDataModal
+                isOpen={showUploadModal}
+                onClose={() => setShowUploadModal(false)}
+                tenantId="default-tenant-id"
+                onAnalysisComplete={() => mutate()}
+            />
         </div>
     );
 }
