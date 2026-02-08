@@ -51,6 +51,7 @@ export default function PostEditorPage({
     const { id: calendarId, postId } = use(params);
     const [saving, setSaving] = useState(false);
     const [generating, setGenerating] = useState(false);
+    const [publishing, setPublishing] = useState<string | null>(null);
     const [showScheduleModal, setShowScheduleModal] = useState(false);
 
     // Busca post
@@ -133,6 +134,42 @@ export default function PostEditorPage({
         toast.success(`${label} copiado!`);
     };
 
+    const handlePublish = async (platform: string) => {
+        if (!post) return;
+
+        setPublishing(platform);
+
+        try {
+            const response = await fetch('/api/publish', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    content_item_id: post.id,
+                    platform,
+                }),
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Erro ao publicar');
+            }
+
+            const result = await response.json();
+
+            toast.success(`Publicado no ${platform}!`, {
+                description: `Link: ${result.external_post_url}`,
+            });
+
+            await mutate();
+        } catch (error: any) {
+            toast.error('Erro ao publicar', {
+                description: error.message,
+            });
+        } finally {
+            setPublishing(null);
+        }
+    };
+
     if (!post) {
         return (
             <div className="flex items-center justify-center h-96">
@@ -186,6 +223,25 @@ export default function PostEditorPage({
                         <CheckCircle2 size={16} className="mr-2" />
                         {post.status === 'approved' ? 'Aprovado' : 'Aprovar'}
                     </Button>
+                    {post.status === 'approved' && (
+                        <Button
+                            className="bg-blue-600 hover:bg-blue-700"
+                            onClick={() => handlePublish('instagram')}
+                            disabled={publishing !== null}
+                        >
+                            {publishing === 'instagram' ? (
+                                <>
+                                    <Loader2 className="mr-2 animate-spin" size={16} />
+                                    Publicando...
+                                </>
+                            ) : (
+                                <>
+                                    <Send size={16} className="mr-2" />
+                                    Publicar Agora (Instagram)
+                                </>
+                            )}
+                        </Button>
+                    )}
                 </div>
             </div>
 

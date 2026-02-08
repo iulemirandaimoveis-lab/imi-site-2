@@ -549,4 +549,127 @@ export interface GenerateFollowUpResponse {
     cost_usd: number;
 }
 
+// Types for Social Media Publishing
+export type SocialMediaPlatform = 'facebook' | 'instagram' | 'linkedin' | 'twitter' | 'tiktok';
+export type SocialAccountStatus = 'active' | 'inactive' | 'expired' | 'error';
+export type PublicationStatus =
+    | 'pending'
+    | 'scheduled'
+    | 'publishing'
+    | 'published'
+    | 'failed'
+    | 'cancelled';
+export type QueueStatus = 'queued' | 'processing' | 'completed' | 'failed' | 'cancelled';
+
+export interface SocialAccount {
+    id: string;
+    tenant_id: string;
+    platform: SocialMediaPlatform;
+    account_id: string;
+    account_name: string;
+    username: string | null;
+    profile_url: string | null;
+    profile_image_url: string | null;
+    access_token: string;
+    refresh_token: string | null;
+    token_expires_at: string | null;
+    granted_permissions: string[];
+    status: SocialAccountStatus;
+    last_used_at: string | null;
+    error_message: string | null;
+    account_metadata: any;
+    connected_by: string | null;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface ContentPublication {
+    id: string;
+    content_item_id: string;
+    content_variant_id: string | null;
+    social_account_id: string;
+    tenant_id: string;
+    platform: SocialMediaPlatform;
+    scheduled_for: string | null;
+    published_at: string | null;
+    status: PublicationStatus;
+    external_post_id: string | null;
+    external_post_url: string | null;
+    error_code: string | null;
+    error_message: string | null;
+    published_content: string | null;
+    published_image_urls: string[];
+    published_video_url: string | null;
+    impressions: number;
+    reach: number;
+    engagement: number;
+    clicks: number;
+    shares: number;
+    comments: number;
+    likes: number;
+    publication_metadata: any;
+    published_by: string | null;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface PublishingQueueItem {
+    id: string;
+    content_publication_id: string;
+    scheduled_for: string;
+    retry_count: number;
+    max_retries: number;
+    next_retry_at: string | null;
+    status: QueueStatus;
+    processing_started_at: string | null;
+    processing_completed_at: string | null;
+    error_logs: any[];
+    created_at: string;
+    updated_at: string;
+}
+
+export interface ContentAnalytics {
+    content_item_id: string;
+    title: string;
+    content_created_at: string;
+    total_publications: number;
+    published_count: number;
+    total_impressions: number;
+    total_reach: number;
+    total_engagement: number;
+    total_clicks: number;
+    total_likes: number;
+    total_comments: number;
+    total_shares: number;
+    engagement_rate: number;
+}
+
+// API Request/Response Types for Publishing
+export interface PublishNowRequest {
+    content_item_id: string;
+    platform: SocialMediaPlatform;
+    variant_id?: string;
+}
+
+export interface PublishNowResponse {
+    publication_id: string;
+    external_post_id: string;
+    external_post_url: string;
+    platform: SocialMediaPlatform;
+    published_at: string;
+}
+
+export interface SchedulePublicationRequest {
+    content_item_id: string;
+    platform: SocialMediaPlatform;
+    scheduled_for: string;
+    variant_id?: string;
+}
+
+export interface SchedulePublicationResponse {
+    publication_id: string;
+    scheduled_for: string;
+    queue_id: string;
+}
+
 
