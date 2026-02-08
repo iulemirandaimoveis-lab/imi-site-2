@@ -57,8 +57,14 @@ export default function DevelopmentCard({ development, index, lang }: Developmen
                 ) : (
                     <div className="w-full h-full bg-gradient-to-br from-imi-50 via-white to-imi-100 flex flex-col items-center justify-center p-8">
                         {development.developerLogo ? (
-                            <div className="relative w-40 h-20 mb-4 opacity-80 group-hover:opacity-100 transition-all">
-                                <Image src={development.developerLogo} alt={development.developer} fill className="object-contain" />
+                            <div className="relative w-[120px] h-[60px] md:w-[160px] md:h-[80px] mb-4 opacity-80 group-hover:opacity-100 transition-all">
+                                <Image
+                                    src={development.developerLogo}
+                                    alt={development.developer}
+                                    fill
+                                    className="object-contain"
+                                    sizes="(max-width: 768px) 120px, 160px"
+                                />
                             </div>
                         ) : (
                             <Building2 className="w-16 h-16 text-imi-300 mb-3" strokeWidth={1} />
@@ -93,13 +99,16 @@ export default function DevelopmentCard({ development, index, lang }: Developmen
                         </h3>
                     </Link>
                     {development.developerLogo && (
-                        <div className="relative w-12 h-8 flex-shrink-0 bg-white rounded-lg p-1 shadow-sm border border-imi-100">
-                            <Image
-                                src={development.developerLogo}
-                                alt={development.developer}
-                                fill
-                                className="object-contain"
-                            />
+                        <div className="relative w-14 h-9 md:w-16 md:h-10 flex-shrink-0 bg-white rounded-lg p-1.5 shadow-sm border border-imi-100 flex items-center justify-center">
+                            <div className="relative w-full h-full">
+                                <Image
+                                    src={development.developerLogo}
+                                    alt={development.developer}
+                                    fill
+                                    className="object-contain"
+                                    sizes="64px"
+                                />
+                            </div>
                         </div>
                     )}
                 </div>

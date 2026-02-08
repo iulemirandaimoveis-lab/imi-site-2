@@ -119,7 +119,7 @@ export default function AboutPage() {
                                 src="/about-profile.jpg"
                                 alt="Iule Miranda"
                                 fill
-                                className="object-cover"
+                                className="object-cover object-top"
                             />
                         </motion.div>
 

@@ -157,15 +157,17 @@ export default function ConstrutoresPage({ params: { lang } }: { params: { lang:
                                 className="group bg-white rounded-3xl overflow-hidden border border-imi-100 hover:border-accent-500/30 hover:shadow-card-hover transition-all duration-500"
                             >
                                 {/* Logo Area - Fundo claro para logos em cores originais */}
-                                <div className="relative aspect-[16/9] bg-gradient-to-br from-imi-50 via-white to-imi-50 flex items-center justify-center p-8 border-b border-imi-100">
+                                <div className="relative aspect-[3/2] bg-gradient-to-br from-imi-50 via-white to-imi-50 flex items-center justify-center p-6 border-b border-imi-100">
                                     {dev.logo_url ? (
-                                        <Image
-                                            src={dev.logo_url}
-                                            alt={dev.name}
-                                            width={180}
-                                            height={80}
-                                            className="object-contain max-h-20 opacity-80 group-hover:opacity-100 transition-opacity"
-                                        />
+                                        <div className="relative w-full h-full max-w-[70%] max-h-[60%]">
+                                            <Image
+                                                src={dev.logo_url}
+                                                alt={dev.name}
+                                                fill
+                                                className="object-contain"
+                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                            />
+                                        </div>
                                     ) : (
                                         <div className="flex flex-col items-center gap-3">
                                             <Building2 className="w-16 h-16 text-imi-400" strokeWidth={1} />
