@@ -19,7 +19,8 @@ export interface DevelopmentLocation {
     neighborhood: string;                // Ex: "Ponta de Campina"
     city: string;                        // Ex: "Cabedelo"
     state: string;                       // Ex: "PB"
-    region: 'paraiba' | 'pernambuco' | 'sao-paulo'; // Região para filtros
+    region: 'paraiba' | 'pernambuco' | 'sao-paulo' | 'internacional'; // Região para filtros
+    country?: string;                    // Ex: "Brasil", "Emirados Árabes Unidos", "Estados Unidos"
     coordinates: { lat: number; lng: number };
     address?: string;                    // Endereço completo
 }
@@ -58,7 +59,7 @@ export interface Development {
     developer: string;                   // "Setai Grupo GP"
     developerLogo?: string;              // URL da logo da construtora
     status: DevelopmentStatus;
-    region: 'paraiba' | 'pernambuco' | 'sao-paulo'; // Região para filtros
+    region: 'paraiba' | 'pernambuco' | 'sao-paulo' | 'internacional'; // Região para filtros
     location: DevelopmentLocation;
     deliveryDate?: string;               // Ex: "Dezembro 2026"
     registrationNumber?: string;         // Ex: "R-02-30.697"

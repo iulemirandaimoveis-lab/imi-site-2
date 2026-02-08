@@ -288,7 +288,7 @@ export const developments: Development[] = [
         slug: 'moura-dubeux-cais-avenida',
         name: 'Cais Avenida',
         developer: 'Moura Dubeux',
-        developerLogo: '/images/logos/mouradubeux.png',
+        developerLogo: '/images/logos/mouradubeux.svg',
         status: 'launch',
         region: 'pernambuco',
         location: {
@@ -322,7 +322,7 @@ export const developments: Development[] = [
         slug: 'infinity-recife',
         name: 'Infinity Recife',
         developer: 'Moura Dubeux',
-        developerLogo: '/images/logos/mouradubeux.png',
+        developerLogo: '/images/logos/mouradubeux.svg',
         status: 'launch',
         region: 'pernambuco',
         location: {
@@ -358,7 +358,7 @@ export const developments: Development[] = [
         slug: 'capri-dolce-gabbana',
         name: 'Capri Lifestyle by Dolce & Gabbana',
         developer: 'Cyrela',
-        developerLogo: '/images/logos/cyrela.png',
+        developerLogo: '/images/logos/cyrela.svg',
         status: 'launch',
         region: 'sao-paulo',
         location: {
@@ -392,7 +392,7 @@ export const developments: Development[] = [
         slug: 'zen-cyrela-by-yoo',
         name: 'Zen Cyrela by Yoo',
         developer: 'Cyrela',
-        developerLogo: '/images/logos/cyrela.png',
+        developerLogo: '/images/logos/cyrela.svg',
         status: 'launch',
         region: 'sao-paulo',
         location: {
@@ -426,7 +426,7 @@ export const developments: Development[] = [
         slug: 'escape-eden-brooklin',
         name: 'Escape Eden Brooklin',
         developer: 'Cyrela',
-        developerLogo: '/images/logos/cyrela.png',
+        developerLogo: '/images/logos/cyrela.svg',
         status: 'launch',
         region: 'sao-paulo',
         location: {
@@ -450,6 +450,154 @@ export const developments: Development[] = [
         units: [],
         tags: ['investimento', 'familia', 'parque'],
         order: 13,
+        isHighlighted: false,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+    },
+
+    // --- DUBAI (UAE) ---
+    // 14. DAMAC LAGOONS
+    {
+        id: 'dev-dubai-001',
+        slug: 'damac-lagoons-dubai',
+        name: 'DAMAC Lagoons',
+        developer: 'DAMAC Properties',
+        developerLogo: '/images/logos/damac.png',
+        status: 'launch',
+        region: 'internacional',
+        location: {
+            neighborhood: 'Dubai Land',
+            city: 'Dubai',
+            state: 'Dubai',
+            region: 'internacional',
+            country: 'Emirados Árabes Unidos',
+            coordinates: { lat: 25.0420, lng: 55.2090 }
+        },
+        deliveryDate: 'Q4 2025',
+        description: 'Comunidade residencial inspirada em destinos mediterrâneos, com lagoas cristalinas, praias artificiais e estilo de vida resort. Localizado estrategicamente em Dubai Land, próximo a Al Qudra Road. Projeto com villas e townhouses de 3 a 6 quartos, design contemporâneo e acabamentos de luxo.',
+        shortDescription: 'Lagoas cristalinas e lifestyle resort no coração de Dubai.',
+        features: ['Lagoas cristalinas', 'Praias artificiais', 'Clubhouse exclusivo', 'Segurança 24h', 'Smart home'],
+        specs: { bedroomsRange: '3-6', areaRange: '185-465m²' },
+        priceRange: { min: 3500000, max: 12000000 },
+        images: {
+            main: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=2670&auto=format&fit=crop',
+            gallery: [],
+            videos: [],
+            floorPlans: []
+        },
+        units: [],
+        tags: ['internacional', 'dubai', 'resort', 'villas'],
+        order: 14,
+        isHighlighted: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+    },
+    // 15. DAMAC HILLS 2
+    {
+        id: 'dev-dubai-002',
+        slug: 'damac-hills-2-dubai',
+        name: 'DAMAC Hills 2',
+        developer: 'DAMAC Properties',
+        developerLogo: '/images/logos/damac.png',
+        status: 'ready',
+        region: 'internacional',
+        location: {
+            neighborhood: 'Dubai Land',
+            city: 'Dubai',
+            state: 'Dubai',
+            region: 'internacional',
+            country: 'Emirados Árabes Unidos',
+            coordinates: { lat: 25.0580, lng: 55.2150 }
+        },
+        deliveryDate: 'Pronto para morar',
+        description: 'Comunidade master-planned com mais de 18 milhões de m², oferecendo townhouses e apartamentos em ambiente verde e sustentável. Infraestrutura completa com escolas, clínicas, retail e áreas de lazer. Ideal para famílias que buscam qualidade de vida com ROI atrativo.',
+        shortDescription: 'Comunidade sustentável pronta para morar. ROI de 6-8% ao ano.',
+        features: ['Pronto para morar', 'Comunidade fechada', 'Parques e trilhas', 'Retail integrado', 'Pet-friendly'],
+        specs: { bedroomsRange: '1-4', areaRange: '55-280m²' },
+        priceRange: { min: 1800000, max: 8500000 },
+        images: {
+            main: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?q=80&w=2574&auto=format&fit=crop',
+            gallery: [],
+            videos: [],
+            floorPlans: []
+        },
+        units: [],
+        tags: ['internacional', 'dubai', 'pronto', 'investimento'],
+        order: 15,
+        isHighlighted: false,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+    },
+
+    // --- ESTADOS UNIDOS (USA) ---
+    // 16. KEMPINSKI RESIDENCES PALM JUMEIRAH (Dubai, mas marca internacional)
+    {
+        id: 'dev-usa-001',
+        slug: 'kempinski-residences-miami',
+        name: 'Kempinski Hotel \u0026 Residences',
+        developer: 'Kempinski Hotels',
+        developerLogo: '/images/logos/kempinski.jpg',
+        status: 'launch',
+        region: 'internacional',
+        location: {
+            neighborhood: 'Brickell',
+            city: 'Miami',
+            state: 'Florida',
+            region: 'internacional',
+            country: 'Estados Unidos',
+            coordinates: { lat: 25.7617, lng: -80.1918 }
+        },
+        deliveryDate: 'Q2 2027',
+        description: 'Primeiro projeto Kempinski nas Américas, trazendo a excelência europeia de hospitalidade para Miami. Residências com serviços de hotel 5 estrelas, localização premium em Brickell com vista para Biscayne Bay. Unidades de 1 a 4 quartos com acabamentos Fendi Casa e tecnologia smart home.',
+        shortDescription: 'Excelência europeia em Miami. Residências com serviços de hotel.',
+        features: ['Serviços Kempinski', 'Acabamento Fendi Casa', 'Rooftop infinity pool', 'Spa \u0026 Wellness', 'Concierge 24h'],
+        specs: { bedroomsRange: '1-4', areaRange: '75-350m²' },
+        priceRange: { min: 4200000, max: 18000000 },
+        images: {
+            main: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2670&auto=format&fit=crop',
+            gallery: [],
+            videos: [],
+            floorPlans: []
+        },
+        units: [],
+        tags: ['internacional', 'miami', 'hotel-residences', 'ultra-luxo'],
+        order: 16,
+        isHighlighted: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+    },
+    // 17. KEMPINSKI RESIDENCES ORLANDO
+    {
+        id: 'dev-usa-002',
+        slug: 'kempinski-residences-orlando',
+        name: 'Kempinski Residences Orlando',
+        developer: 'Kempinski Hotels',
+        developerLogo: '/images/logos/kempinski.jpg',
+        status: 'launch',
+        region: 'internacional',
+        location: {
+            neighborhood: 'Lake Buena Vista',
+            city: 'Orlando',
+            state: 'Florida',
+            region: 'internacional',
+            country: 'Estados Unidos',
+            coordinates: { lat: 28.3852, lng: -81.5639 }
+        },
+        deliveryDate: 'Q4 2026',
+        description: 'Residências de luxo próximas aos parques temáticos, ideal para investimento em aluguel de temporada. Gestão hoteleira Kempinski garante ocupação e rentabilidade. Unidades totalmente mobiliadas e decoradas, prontas para gerar renda imediata.',
+        shortDescription: 'Investimento em Orlando. ROI de 8-12% com gestão hoteleira.',
+        features: ['Gestão hoteleira', 'Mobiliado e decorado', 'Próximo aos parques', 'Pool deck', 'Rental program'],
+        specs: { bedroomsRange: '2-3', areaRange: '95-180m²' },
+        priceRange: { min: 2800000, max: 6500000 },
+        images: {
+            main: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?q=80&w=2671&auto=format&fit=crop',
+            gallery: [],
+            videos: [],
+            floorPlans: []
+        },
+        units: [],
+        tags: ['internacional', 'orlando', 'investimento', 'rental'],
+        order: 17,
         isHighlighted: false,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()

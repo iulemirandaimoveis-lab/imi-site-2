@@ -236,20 +236,36 @@ export default function PropertyFormPage() {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             <div className="space-y-2">
-                                <label className="text-xs font-bold text-imi-900 uppercase tracking-widest">Estado</label>
-                                <select {...register('state')} className="w-full rounded-xl border-imi-100">
-                                    <option value="PB">Paraíba</option>
-                                    <option value="PE">Pernambuco</option>
-                                    <option value="SP">São Paulo</option>
+                                <label className="text-xs font-bold text-imi-900 uppercase tracking-widest">País</label>
+                                <select {...register('country')} className="w-full rounded-xl border-imi-100">
+                                    <option value="Brasil">Brasil</option>
+                                    <option value="Emirados Árabes Unidos">Emirados Árabes Unidos</option>
+                                    <option value="Estados Unidos">Estados Unidos</option>
+                                    <option value="Portugal">Portugal</option>
+                                    <option value="Espanha">Espanha</option>
+                                    <option value="Outro">Outro</option>
                                 </select>
                             </div>
                             <div className="space-y-2">
+                                <label className="text-xs font-bold text-imi-900 uppercase tracking-widest">Região</label>
+                                <select {...register('region')} className="w-full rounded-xl border-imi-100">
+                                    <option value="paraiba">Paraíba</option>
+                                    <option value="pernambuco">Pernambuco</option>
+                                    <option value="sao-paulo">São Paulo</option>
+                                    <option value="internacional">Internacional</option>
+                                </select>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-imi-900 uppercase tracking-widest">Estado</label>
+                                <input {...register('state')} className="w-full rounded-xl border-imi-100" placeholder="PB, PE, SP, FL, etc" />
+                            </div>
+                            <div className="space-y-2">
                                 <label className="text-xs font-bold text-imi-900 uppercase tracking-widest">Cidade</label>
-                                <input {...register('city')} className="w-full rounded-xl border-imi-100" placeholder="João Pessoa" />
+                                <input {...register('city')} className="w-full rounded-xl border-imi-100" placeholder="João Pessoa, Miami, Dubai..." />
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs font-bold text-imi-900 uppercase tracking-widest">Bairro</label>
-                                <input {...register('neighborhood')} className="w-full rounded-xl border-imi-100" placeholder="Cabo Branco" />
+                                <input {...register('neighborhood')} className="w-full rounded-xl border-imi-100" placeholder="Cabo Branco, Brickell..." />
                             </div>
                         </div>
                     </section>
@@ -362,6 +378,21 @@ export default function PropertyFormPage() {
                                         </button>
                                     </div>
                                 ))}
+                            </div>
+                        </div>
+
+                        {/* Tour Virtual 360° */}
+                        <div className="space-y-4">
+                            <label className="text-xs font-bold text-imi-900 uppercase tracking-widest">Tour Virtual 360°</label>
+                            <div className="space-y-2">
+                                <input
+                                    {...register('virtual_tour_url')}
+                                    className="w-full rounded-xl border-imi-100"
+                                    placeholder="URL do tour virtual (Matterport, Kuula, etc)"
+                                />
+                                <p className="text-xs text-imi-400">
+                                    Cole o link do tour virtual 360° (Matterport, Kuula, ou similar)
+                                </p>
                             </div>
                         </div>
                     </section>

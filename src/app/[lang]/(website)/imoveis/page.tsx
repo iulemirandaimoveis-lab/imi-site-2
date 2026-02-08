@@ -24,8 +24,13 @@ export default function ImoveisPage({ params: { lang } }: { params: { lang: stri
     const availableLocations = useMemo(() => {
         const locs = new Set<string>();
         developments.forEach(dev => {
-            locs.add(dev.location.city);
-            // locs.add(dev.location.neighborhood); // Optional: Add neighborhoods too if list isn't too long
+            if (dev.region === 'internacional') {
+                // Para internacionais, mostrar o país
+                locs.add(dev.location.country || dev.location.city);
+            } else {
+                // Para nacionais, mostrar a cidade
+                locs.add(dev.location.city);
+            }
         });
         return Array.from(locs).sort();
     }, []);
@@ -35,8 +40,9 @@ export default function ImoveisPage({ params: { lang } }: { params: { lang: stri
             // Location
             if (filters.location) {
                 const matchCity = dev.location.city === filters.location;
+                const matchCountry = dev.location.country === filters.location;
                 const matchRegion = dev.region === filters.location.toLowerCase().replace(' ', '-'); // Fallback for region matching
-                if (!matchCity && !matchRegion) return false;
+                if (!matchCity && !matchCountry && !matchRegion) return false;
             }
 
             // Price - Check if development starts within budget
