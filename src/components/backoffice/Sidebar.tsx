@@ -16,7 +16,8 @@ import {
     LogOut,
     Banknote,
     FileText,
-    FileEdit
+    FileEdit,
+    Sparkles
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
@@ -26,6 +27,7 @@ const sidebarItems = [
     { label: 'Imóveis', href: '/backoffice/imoveis', icon: Building2 },
     { label: 'Construtoras', href: '/backoffice/construtoras', icon: Building },
     { label: 'Leads', href: '/backoffice/leads', icon: Users },
+    { label: 'Conteúdos', href: '/backoffice/conteudos', icon: Sparkles, badge: 'IA' },
     { label: 'Consultorias', href: '/backoffice/consultations', icon: Calendar },
     { label: 'Crédito', href: '/backoffice/credito', icon: Banknote },
     { label: 'Avaliações', href: '/backoffice/avaliacoes', icon: FileText },
@@ -70,6 +72,11 @@ export default function Sidebar() {
                                 >
                                     <item.icon size={20} className={isActive ? 'text-accent-500' : ''} />
                                     <span className="font-medium">{item.label}</span>
+                                    {item.badge && (
+                                        <span className="ml-auto px-2 py-0.5 text-[9px] font-black bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-full uppercase tracking-wider">
+                                            {item.badge}
+                                        </span>
+                                    )}
                                 </Link>
                             );
                         })}
@@ -147,6 +154,11 @@ export default function Sidebar() {
                                             >
                                                 <item.icon size={24} className={isActive ? 'text-accent-500' : ''} />
                                                 <span className="font-semibold text-lg">{item.label}</span>
+                                                {item.badge && (
+                                                    <span className="ml-auto px-2 py-1 text-[10px] font-black bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-full uppercase tracking-wider">
+                                                        {item.badge}
+                                                    </span>
+                                                )}
                                             </Link>
                                         );
                                     })}
