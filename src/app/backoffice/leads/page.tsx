@@ -5,376 +5,384 @@ import useSWR from 'swr';
 import { createClient } from '@/lib/supabase/client';
 import {
     Search,
-    Filter,
-    Users,
-    MessageSquare,
-    Calendar,
-    Clock,
-    MoreHorizontal,
-    X,
-    MessageCircle,
+    Sparkles,
     Phone,
     Mail,
-    ArrowUpRight,
+    MessageCircle,
     TrendingUp,
+    AlertTriangle,
+    Clock,
+    Target,
+    Flame,
+    Loader2,
     CheckCircle2,
-    Loader2
 } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 const supabase = createClient();
 
-const statusLabels: Record<string, string> = {
-    new: 'Novo',
-    contacted: 'Contatado',
-    qualified: 'Qualificado',
-    converted: 'Convertido',
-    lost: 'Perdido'
-};
-
-const statusColors: Record<string, string> = {
-    new: 'bg-blue-100 text-blue-700',
-    contacted: 'bg-yellow-100 text-yellow-700',
-    qualified: 'bg-purple-100 text-purple-700',
-    converted: 'bg-green-100 text-green-700',
-    lost: 'bg-gray-100 text-gray-700'
-};
-
 export default function LeadsPage() {
     const [searchTerm, setSearchTerm] = useState('');
-    const [statusFilter, setStatusFilter] = useState('all');
-    const [selectedLead, setSelectedLead] = useState<any>(null);
-    const [updatingStatus, setUpdatingStatus] = useState(false);
+    const [priorityFilter, setPriorityFilter] = useState('all');
+    const [qualifyingLead, setQualifyingLead] = useState<string | null>(null);
 
-    const { data: leads, mutate, isLoading } = useSWR('leads', async () => {
-        const { data, error } = await supabase
+    // Busca leads
+    const { data: leads, isLoading, mutate } = useSWR(['leads'], async () => {
+        let query = supabase
             .from('leads')
             .select('*')
-            .order('created_at', { ascending: false });
+            .order('ai_score', { ascending: false });
+
+        const { data, error } = await query;
         if (error) throw error;
-        return data;
+        return data || [];
     });
+
+    const handleQualifyLead = async (leadId: string) => {
+        setQualifyingLead(leadId);
+
+        try {
+            const response = await fetch('/api/ai/qualify-lead', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    lead_id: leadId,
+                    include_interactions: true,
+                }),
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Erro ao qualificar lead');
+            }
+
+            const result = await response.json();
+
+            toast.success('Lead qualificado com sucesso!', {
+                description: `Score: ${result.qualification.score}/100 | Prioridade: ${result.qualification.priority}`,
+            });
+
+            await mutate();
+        } catch (error: any) {
+            toast.error('Erro ao qualificar lead', {
+                description: error.message,
+            });
+        } finally {
+            setQualifyingLead(null);
+        }
+    };
+
+    const filteredLeads = leads?.filter((lead) => {
+        const matchesSearch =
+            !searchTerm ||
+            lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            lead.email?.toLowerCase().includes(searchTerm.toLowerCase());
+
+        const matchesPriority =
+            priorityFilter === 'all' || lead.ai_priority === priorityFilter;
+
+        return matchesSearch && matchesPriority;
+    });
+
+    const priorityConfig = {
+        critical: {
+            color: 'bg-red-100 text-red-700 border-red-200',
+            icon: Flame,
+            label: 'Crítico',
+        },
+        high: {
+            color: 'bg-orange-100 text-orange-700 border-orange-200',
+            icon: AlertTriangle,
+            label: 'Alto',
+        },
+        medium: {
+            color: 'bg-yellow-100 text-yellow-700 border-yellow-200',
+            icon: Target,
+            label: 'Médio',
+        },
+        low: {
+            color: 'bg-blue-100 text-blue-700 border-blue-200',
+            icon: Clock,
+            label: 'Baixo',
+        },
+    };
 
     const stats = {
         total: leads?.length || 0,
-        new: leads?.filter(l => l.status === 'new').length || 0,
-        converted: leads?.filter(l => l.status === 'converted').length || 0,
-        recent: leads?.filter(l => {
-            const date = new Date(l.created_at);
-            const now = new Date();
-            return (now.getTime() - date.getTime()) < 7 * 24 * 60 * 60 * 1000;
-        }).length || 0
+        critical: leads?.filter((l) => l.ai_priority === 'critical').length || 0,
+        high: leads?.filter((l) => l.ai_priority === 'high').length || 0,
+        avgScore: leads?.length
+            ? Math.round(leads.reduce((sum, l) => sum + (l.ai_score || 0), 0) / leads.length)
+            : 0,
     };
-
-    const handleUpdateStatus = async (id: string, status: string) => {
-        setUpdatingStatus(true);
-        const { error } = await supabase
-            .from('leads')
-            .update({ status, updated_at: new Date().toISOString() })
-            .eq('id', id);
-
-        if (error) {
-            toast.error('Erro ao atualizar status: ' + error.message);
-        } else {
-            toast.success('Status atualizado');
-            mutate();
-            if (selectedLead?.id === id) {
-                setSelectedLead({ ...selectedLead, status });
-            }
-        }
-        setUpdatingStatus(false);
-    };
-
-    const handleUpdateNotes = async () => {
-        const { error } = await supabase
-            .from('leads')
-            .update({ notes: selectedLead.notes, updated_at: new Date().toISOString() })
-            .eq('id', selectedLead.id);
-
-        if (error) {
-            toast.error('Erro ao salvar notas');
-        } else {
-            toast.success('Notas salvas');
-            mutate();
-        }
-    };
-
-    const filteredLeads = leads?.filter(lead => {
-        const matchesSearch =
-            lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            lead.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            lead.phone?.includes(searchTerm);
-
-        const matchesStatus = statusFilter === 'all' || lead.status === statusFilter;
-
-        return matchesSearch && matchesStatus;
-    });
 
     return (
-        <div className="space-y-8">
-            {/* Header & Stats */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="space-y-6">
+            {/* Header */}
+            <div className="flex items-start justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold text-imi-900 font-display">CRM Leads</h1>
-                    <p className="text-imi-500 mt-1">Gestão de contatos e conversão comercial.</p>
-                </div>
-
-                <div className="grid grid-cols-2 md:flex gap-4">
-                    <div className="bg-white px-6 py-4 rounded-2xl shadow-soft border border-imi-50 flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
-                            <TrendingUp size={20} />
-                        </div>
-                        <div>
-                            <div className="text-2xl font-bold text-imi-900 leading-tight">{stats.total}</div>
-                            <div className="text-[10px] font-bold text-imi-400 uppercase tracking-widest">Total Leads</div>
-                        </div>
-                    </div>
-                    <div className="bg-white px-6 py-4 rounded-2xl shadow-soft border border-imi-50 flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center text-green-600">
-                            <CheckCircle2 size={20} />
-                        </div>
-                        <div>
-                            <div className="text-2xl font-bold text-imi-900 leading-tight">{stats.converted}</div>
-                            <div className="text-[10px] font-bold text-imi-400 uppercase tracking-widest">Convertidos</div>
-                        </div>
-                    </div>
+                    <h1 className="text-3xl font-bold text-imi-900 font-display">CRM Prescritivo</h1>
+                    <p className="text-imi-500 mt-1">
+                        Qualificação automática e sugestões de follow-up com IA
+                    </p>
                 </div>
             </div>
 
-            {/* Toolbar */}
-            <div className="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-2xl shadow-soft border border-imi-50">
-                <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-imi-300" size={20} />
-                    <input
-                        type="text"
-                        placeholder="Buscar por nome, email ou telefone..."
-                        className="w-full pl-10 pr-4 py-3 rounded-xl border-imi-100 focus:ring-accent-500 focus:border-accent-500 !text-sm"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="bg-white rounded-2xl p-6 shadow-soft border border-imi-50">
+                    <div className="flex items-center justify-between mb-3">
+                        <div className="text-xs font-bold text-imi-400 uppercase tracking-widest">
+                            Total Leads
+                        </div>
+                        <Target className="text-imi-300" size={20} />
+                    </div>
+                    <div className="text-3xl font-black text-imi-900">{stats.total}</div>
                 </div>
-                <div className="flex gap-2">
+
+                <div className="bg-white rounded-2xl p-6 shadow-soft border border-red-100">
+                    <div className="flex items-center justify-between mb-3">
+                        <div className="text-xs font-bold text-red-400 uppercase tracking-widest">
+                            Críticos
+                        </div>
+                        <Flame className="text-red-500" size={20} />
+                    </div>
+                    <div className="text-3xl font-black text-red-600">{stats.critical}</div>
+                </div>
+
+                <div className="bg-white rounded-2xl p-6 shadow-soft border border-orange-100">
+                    <div className="flex items-center justify-between mb-3">
+                        <div className="text-xs font-bold text-orange-400 uppercase tracking-widest">
+                            Alta Prioridade
+                        </div>
+                        <AlertTriangle className="text-orange-500" size={20} />
+                    </div>
+                    <div className="text-3xl font-black text-orange-600">{stats.high}</div>
+                </div>
+
+                <div className="bg-white rounded-2xl p-6 shadow-soft border border-imi-50">
+                    <div className="flex items-center justify-between mb-3">
+                        <div className="text-xs font-bold text-imi-400 uppercase tracking-widest">
+                            Score Médio
+                        </div>
+                        <TrendingUp className="text-imi-300" size={20} />
+                    </div>
+                    <div className="text-3xl font-black text-imi-900">{stats.avgScore}</div>
+                    <div className="text-xs text-imi-500 mt-1">de 100</div>
+                </div>
+            </div>
+
+            {/* Filters */}
+            <div className="bg-white rounded-2xl p-4 shadow-soft border border-imi-100">
+                <div className="flex gap-4 flex-wrap">
+                    <div className="flex-1 min-w-[200px]">
+                        <div className="relative">
+                            <Search
+                                className="absolute left-3 top-1/2 -translate-y-1/2 text-imi-400"
+                                size={18}
+                            />
+                            <input
+                                type="text"
+                                placeholder="Buscar por nome ou email..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="w-full pl-10 pr-4 py-2 rounded-xl border-imi-200 focus:ring-accent-500 focus:border-accent-500"
+                            />
+                        </div>
+                    </div>
+
                     <select
-                        className="rounded-xl border-imi-100 text-sm focus:ring-accent-500"
-                        value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
+                        value={priorityFilter}
+                        onChange={(e) => setPriorityFilter(e.target.value)}
+                        className="px-4 py-2 rounded-xl border-imi-200 focus:ring-accent-500 focus:border-accent-500"
                     >
-                        <option value="all">Todos Status</option>
-                        <option value="new">Novos</option>
-                        <option value="contacted">Contatados</option>
-                        <option value="qualified">Qualificados</option>
-                        <option value="converted">Convertidos</option>
-                        <option value="lost">Perdidos</option>
+                        <option value="all">Todas Prioridades</option>
+                        <option value="critical">Crítico</option>
+                        <option value="high">Alto</option>
+                        <option value="medium">Médio</option>
+                        <option value="low">Baixo</option>
                     </select>
                 </div>
             </div>
 
-            {/* List */}
-            <div className="bg-white rounded-2xl shadow-soft border border-imi-50 overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left">
-                        <thead>
-                            <tr className="bg-imi-50/50 border-b border-imi-100">
-                                <th className="px-6 py-4 text-xs font-bold text-imi-400 uppercase tracking-widest">Lead</th>
-                                <th className="px-6 py-4 text-xs font-bold text-imi-400 uppercase tracking-widest text-center">Status</th>
-                                <th className="px-6 py-4 text-xs font-bold text-imi-400 uppercase tracking-widest">Origem</th>
-                                <th className="px-6 py-4 text-xs font-bold text-imi-400 uppercase tracking-widest">Data</th>
-                                <th className="px-6 py-4 text-xs font-bold text-imi-400 uppercase tracking-widest text-right">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-imi-50">
-                            {isLoading ? (
-                                Array(5).fill(0).map((_, i) => (
-                                    <tr key={i} className="animate-pulse">
-                                        <td colSpan={5} className="px-6 py-8 h-20 bg-imi-50/10" />
-                                    </tr>
-                                ))
-                            ) : filteredLeads?.length === 0 ? (
-                                <tr>
-                                    <td colSpan={5} className="px-6 py-20 text-center text-imi-400">
-                                        Nenhum lead encontrado com estes filtros.
-                                    </td>
-                                </tr>
-                            ) : filteredLeads?.map((lead) => (
-                                <tr
-                                    key={lead.id}
-                                    className="hover:bg-imi-50/30 transition-all cursor-pointer group"
-                                    onClick={() => setSelectedLead(lead)}
-                                >
-                                    <td className="px-6 py-4">
-                                        <div className="flex flex-col">
-                                            <span className="font-bold text-imi-900 group-hover:text-accent-600 transition-colors uppercase tracking-tight">{lead.name}</span>
-                                            <span className="text-xs text-imi-400">{lead.email}</span>
-                                            <span className="text-[10px] font-bold text-imi-300">{lead.phone}</span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex justify-center">
-                                            <span className={cn(
-                                                "text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full",
-                                                statusColors[lead.status] || 'bg-gray-100'
-                                            )}>
-                                                {statusLabels[lead.status]}
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-2 text-xs font-medium text-imi-600">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-accent-500" />
-                                            {lead.source}
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex flex-col">
-                                            <span className="text-xs font-bold text-imi-900">
-                                                {formatDistanceToNow(new Date(lead.created_at), { addSuffix: true, locale: ptBR })}
-                                            </span>
-                                            <span className="text-[10px] text-imi-400">
-                                                {new Date(lead.created_at).toLocaleDateString('pt-BR')}
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <div className="flex justify-end gap-2">
-                                            <a
-                                                href={`https://wa.me/55${lead.phone?.replace(/\D/g, '')}`}
-                                                target="_blank"
-                                                onClick={(e) => e.stopPropagation()}
-                                                className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                                            >
-                                                <MessageCircle size={20} />
-                                            </a>
-                                            <button className="p-2 text-imi-300 hover:text-imi-900 hover:bg-imi-50 rounded-lg transition-colors">
-                                                <MoreHorizontal size={20} />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            {/* Leads List */}
+            <div className="space-y-3">
+                {isLoading ? (
+                    <div className="text-center py-12">
+                        <Loader2 className="animate-spin mx-auto text-imi-400 mb-4" size={40} />
+                        <p className="text-imi-500">Carregando leads...</p>
+                    </div>
+                ) : filteredLeads && filteredLeads.length > 0 ? (
+                    filteredLeads.map((lead, i) => {
+                        const priority = lead.ai_priority || 'medium';
+                        const PriorityIcon = priorityConfig[priority]?.icon || Target;
 
-            {/* Detail Drawer */}
-            <AnimatePresence>
-                {selectedLead && (
-                    <>
-                        <motion.div
-                            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                            className="fixed inset-0 bg-imi-900/40 backdrop-blur-sm z-[200]"
-                            onClick={() => setSelectedLead(null)}
-                        />
-                        <motion.aside
-                            initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
-                            transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-                            className="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl z-[210] flex flex-col"
-                        >
-                            <div className="p-6 border-b border-imi-100 flex items-center justify-between bg-imi-50/50">
-                                <div>
-                                    <h2 className="text-xl font-bold text-imi-900 font-display">Detalhes do Lead</h2>
-                                    <p className="text-[10px] font-bold text-imi-400 uppercase tracking-widest">ID: {selectedLead.id.split('-')[0]}</p>
-                                </div>
-                                <button onClick={() => setSelectedLead(null)} className="p-2 hover:bg-white rounded-full transition-colors shadow-sm">
-                                    <X size={24} className="text-imi-900" />
-                                </button>
-                            </div>
-
-                            <div className="flex-1 overflow-y-auto p-8 space-y-8">
-                                {/* Informações */}
-                                <div className="space-y-6">
-                                    <div className="flex flex-col items-center text-center p-6 bg-imi-50 rounded-3xl border border-imi-100">
-                                        <div className="w-20 h-20 rounded-full bg-accent-500 flex items-center justify-center text-white text-3xl font-bold mb-4 shadow-xl shadow-accent-500/20">
-                                            {selectedLead.name.charAt(0)}
-                                        </div>
-                                        <h3 className="text-2xl font-bold text-imi-900 font-display">{selectedLead.name}</h3>
-                                        <div className={cn("mt-3 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest", statusColors[selectedLead.status])}>
-                                            {statusLabels[selectedLead.status]}
-                                        </div>
+                        return (
+                            <motion.div
+                                key={lead.id}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: i * 0.05 }}
+                                className={`bg-white rounded-2xl p-6 shadow-soft border ${priorityConfig[priority]?.color || 'border-imi-100'
+                                    }`}
+                            >
+                                <div className="flex items-start gap-4">
+                                    {/* Priority Icon */}
+                                    <div
+                                        className={`w-12 h-12 rounded-xl flex items-center justify-center ${priorityConfig[priority]?.color
+                                            }`}
+                                    >
+                                        <PriorityIcon size={24} />
                                     </div>
 
-                                    <div className="grid grid-cols-1 gap-4">
-                                        <div className="flex items-center gap-4 p-4 bg-white border border-imi-50 rounded-2xl">
-                                            <div className="w-10 h-10 rounded-xl bg-imi-50 flex items-center justify-center text-imi-400">
-                                                <Mail size={18} />
+                                    {/* Lead Info */}
+                                    <div className="flex-1">
+                                        <div className="flex items-start justify-between mb-3">
+                                            <div>
+                                                <h3 className="font-bold text-imi-900 text-lg">
+                                                    {lead.name}
+                                                </h3>
+                                                <div className="flex items-center gap-4 mt-1 text-sm text-imi-600">
+                                                    {lead.email && (
+                                                        <span className="flex items-center gap-1">
+                                                            <Mail size={14} />
+                                                            {lead.email}
+                                                        </span>
+                                                    )}
+                                                    {lead.phone && (
+                                                        <span className="flex items-center gap-1">
+                                                            <Phone size={14} />
+                                                            {lead.phone}
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </div>
-                                            <div className="flex flex-col">
-                                                <span className="text-[10px] font-bold text-imi-400 uppercase tracking-widest">Email</span>
-                                                <span className="text-sm font-bold text-imi-900">{selectedLead.email || 'Não informado'}</span>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center gap-4 p-4 bg-white border border-imi-50 rounded-2xl">
-                                            <div className="w-10 h-10 rounded-xl bg-imi-50 flex items-center justify-center text-imi-400">
-                                                <Phone size={18} />
-                                            </div>
-                                            <div className="flex flex-col">
-                                                <span className="text-[10px] font-bold text-imi-400 uppercase tracking-widest">Telefone</span>
-                                                <span className="text-sm font-bold text-imi-900">{selectedLead.phone || 'Não informado'}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
 
-                                {/* Ações de Status */}
-                                <div className="space-y-4">
-                                    <h4 className="text-xs font-bold text-imi-900 uppercase tracking-[0.2em] px-2 text-center">Atualizar Status</h4>
-                                    <div className="grid grid-cols-2 gap-2">
-                                        {Object.entries(statusLabels).map(([key, label]) => (
-                                            <button
-                                                key={key}
-                                                disabled={updatingStatus}
-                                                onClick={() => handleUpdateStatus(selectedLead.id, key)}
-                                                className={cn(
-                                                    "py-3 rounded-xl text-xs font-bold transition-all border",
-                                                    selectedLead.status === key
-                                                        ? cn(statusColors[key], "border-transparent ring-2 ring-accent-500 ring-offset-2")
-                                                        : "bg-white border-imi-100 text-imi-400 hover:border-imi-300"
+                                            <div className="text-right">
+                                                <div className="text-xs font-bold text-imi-400 uppercase mb-1">
+                                                    Score IA
+                                                </div>
+                                                <div
+                                                    className={`text-3xl font-black ${(lead.ai_score || 0) >= 80
+                                                            ? 'text-green-600'
+                                                            : (lead.ai_score || 0) >= 60
+                                                                ? 'text-yellow-600'
+                                                                : 'text-imi-600'
+                                                        }`}
+                                                >
+                                                    {lead.ai_score || '—'}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* AI Analysis */}
+                                        {lead.ai_qualification ? (
+                                            <div className="bg-white/50 rounded-xl p-4 mb-4">
+                                                <div className="text-xs font-bold text-imi-700 uppercase mb-2">
+                                                    Análise Claude
+                                                </div>
+                                                <p className="text-sm text-imi-700 mb-3">
+                                                    {lead.ai_qualification.summary}
+                                                </p>
+
+                                                {lead.ai_next_action && (
+                                                    <div className="flex items-start gap-2 text-sm">
+                                                        <Target className="text-accent-600 mt-0.5" size={16} />
+                                                        <div>
+                                                            <div className="font-bold text-imi-900">
+                                                                Próxima Ação:
+                                                            </div>
+                                                            <div className="text-imi-700">
+                                                                {lead.ai_next_action}
+                                                            </div>
+                                                            {lead.ai_next_action_deadline && (
+                                                                <div className="text-xs text-imi-500 mt-1">
+                                                                    Prazo:{' '}
+                                                                    {formatDistanceToNow(
+                                                                        new Date(lead.ai_next_action_deadline),
+                                                                        {
+                                                                            addSuffix: true,
+                                                                            locale: ptBR,
+                                                                        }
+                                                                    )}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
                                                 )}
+                                            </div>
+                                        ) : (
+                                            <div className="bg-blue-50 rounded-xl p-4 mb-4 border border-blue-100">
+                                                <p className="text-sm text-blue-800">
+                                                    <Sparkles size={14} className="inline mr-1" />
+                                                    Lead ainda não foi qualificado com IA. Clique em "Qualificar com IA" para análise automática.
+                                                </p>
+                                            </div>
+                                        )}
+
+                                        {/* Actions */}
+                                        <div className="flex gap-2">
+                                            <Button
+                                                size="sm"
+                                                className="bg-accent-600 hover:bg-accent-700"
+                                                onClick={() => handleQualifyLead(lead.id)}
+                                                disabled={qualifyingLead === lead.id}
                                             >
-                                                {label}
-                                            </button>
-                                        ))}
+                                                {qualifyingLead === lead.id ? (
+                                                    <>
+                                                        <Loader2 className="mr-2 animate-spin" size={14} />
+                                                        Qualificando...
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <Sparkles size={14} className="mr-2" />
+                                                        {lead.ai_qualification ? 'Requalificar' : 'Qualificar com IA'}
+                                                    </>
+                                                )}
+                                            </Button>
+
+                                            {lead.phone && (
+                                                <Button variant="outline" size="sm">
+                                                    <Phone size={14} className="mr-2" />
+                                                    Ligar
+                                                </Button>
+                                            )}
+
+                                            <Button variant="outline" size="sm">
+                                                <MessageCircle size={14} className="mr-2" />
+                                                WhatsApp
+                                            </Button>
+
+                                            {lead.email && (
+                                                <Button variant="outline" size="sm">
+                                                    <Mail size={14} className="mr-2" />
+                                                    Email
+                                                </Button>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
-
-                                {/* Notas */}
-                                <div className="space-y-4">
-                                    <div className="flex items-center justify-between px-2">
-                                        <h4 className="text-xs font-bold text-imi-900 uppercase tracking-[0.2em]">Notas Técnicas</h4>
-                                        <button onClick={handleUpdateNotes} className="text-[10px] font-bold text-accent-600 uppercase hover:underline">
-                                            Salvar Notas
-                                        </button>
-                                    </div>
-                                    <textarea
-                                        className="w-full rounded-2xl border-imi-100 bg-imi-50/50 p-4 text-sm focus:ring-accent-500 h-32"
-                                        placeholder="Digite aqui observações sobre o atendimento, perfil do cliente..."
-                                        value={selectedLead.notes || ''}
-                                        onChange={(e) => setSelectedLead({ ...selectedLead, notes: e.target.value })}
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Footer do Drawer */}
-                            <div className="p-8 border-t border-imi-100 bg-white">
-                                <Button asChild fullWidth className="h-14 bg-green-600 hover:bg-green-700 shadow-xl shadow-green-600/20">
-                                    <a href={`https://wa.me/55${selectedLead.phone?.replace(/\D/g, '')}`} target="_blank">
-                                        <MessageCircle size={20} className="mr-2" />
-                                        Falar agora no WhatsApp
-                                    </a>
-                                </Button>
-                            </div>
-                        </motion.aside>
-                    </>
+                            </motion.div>
+                        );
+                    })
+                ) : (
+                    <div className="bg-white rounded-2xl p-12 text-center shadow-soft border border-imi-100">
+                        <Target className="mx-auto text-imi-300 mb-4" size={64} />
+                        <h3 className="text-xl font-bold text-imi-900 mb-2">
+                            Nenhum lead encontrado
+                        </h3>
+                        <p className="text-imi-600">
+                            {searchTerm || priorityFilter !== 'all'
+                                ? 'Tente ajustar os filtros de busca'
+                                : 'Quando você receber leads, eles aparecerão aqui'}
+                        </p>
+                    </div>
                 )}
-            </AnimatePresence>
+            </div>
         </div>
     );
-}
-
-function cn(...classes: any[]) {
-    return classes.filter(Boolean).join(' ');
 }

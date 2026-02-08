@@ -422,3 +422,131 @@ export interface SyncAdsAccountResponse {
     last_sync_at: string;
 }
 
+// Types for CRM Prescriptive
+export type LeadPriority = 'critical' | 'high' | 'medium' | 'low';
+export type InteractionType =
+    | 'call'
+    | 'email'
+    | 'whatsapp'
+    | 'meeting'
+    | 'site_visit'
+    | 'proposal_sent'
+    | 'contract_signed'
+    | 'objection'
+    | 'follow_up'
+    | 'other';
+export type InteractionDirection = 'inbound' | 'outbound';
+export type SentimentType = 'positive' | 'neutral' | 'negative' | 'mixed';
+export type FollowUpChannel = 'call' | 'email' | 'whatsapp' | 'meeting';
+export type FollowUpStatus = 'pending' | 'completed' | 'skipped' | 'cancelled';
+
+export interface LeadQualification {
+    score: number; // 0-100
+    priority: LeadPriority;
+    summary: string;
+    strengths: string[];
+    concerns: string[];
+    recommendations: string[];
+    next_action: string;
+    next_action_deadline: string;
+    confidence: number; // 0.0-1.0
+}
+
+export interface LeadInteraction {
+    id: string;
+    lead_id: string;
+    interaction_type: InteractionType;
+    direction: InteractionDirection;
+    subject: string | null;
+    notes: string | null;
+    outcome: string | null;
+    duration_seconds: number | null;
+    attachments: any[];
+    metadata: any;
+    ai_sentiment: SentimentType | null;
+    ai_summary: string | null;
+    ai_extracted_intent: string | null;
+    created_by: string | null;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface LeadFollowUp {
+    id: string;
+    lead_id: string;
+    suggested_action: string;
+    suggested_message: string | null;
+    suggested_channel: FollowUpChannel | null;
+    scheduled_for: string;
+    status: FollowUpStatus;
+    completed_at: string | null;
+    completed_by: string | null;
+    completion_notes: string | null;
+    ai_rationale: string | null;
+    ai_confidence: number | null;
+    ai_request_id: string | null;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface LeadScoringHistory {
+    id: string;
+    lead_id: string;
+    previous_score: number | null;
+    new_score: number;
+    score_change: number | null;
+    change_reason: string | null;
+    change_factors: any;
+    ai_analysis: string | null;
+    ai_request_id: string | null;
+    created_at: string;
+}
+
+export interface EnrichedLead {
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+    ai_qualification: LeadQualification | null;
+    ai_score: number;
+    ai_priority: LeadPriority;
+    ai_recommendations: string[];
+    ai_next_action: string | null;
+    ai_next_action_deadline: string | null;
+    last_ai_analysis_at: string | null;
+    ai_request_id: string | null;
+    interaction_count: number;
+    last_interaction_at: string | null;
+    pending_follow_ups: number;
+    next_follow_up_at: string | null;
+    created_at: string;
+    updated_at: string;
+}
+
+// API Request/Response Types for CRM
+export interface QualifyLeadRequest {
+    lead_id: string;
+    include_interactions?: boolean;
+}
+
+export interface QualifyLeadResponse {
+    lead_id: string;
+    qualification: LeadQualification;
+    follow_ups: LeadFollowUp[];
+    ai_request_id: string;
+    cost_usd: number;
+}
+
+export interface GenerateFollowUpRequest {
+    lead_id: string;
+    interaction_history?: LeadInteraction[];
+}
+
+export interface GenerateFollowUpResponse {
+    lead_id: string;
+    follow_ups: LeadFollowUp[];
+    ai_request_id: string;
+    cost_usd: number;
+}
+
+
