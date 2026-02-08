@@ -386,3 +386,32 @@ export default function AdvancedFilter({ filters, onFilterChange, locations, max
         </div>
     );
 }
+
+// FilterButton Component
+interface FilterButtonProps {
+    label: string;
+    icon: React.ElementType;
+    active: boolean;
+    hasValue?: boolean;
+    onClick: () => void;
+}
+
+function FilterButton({ label, icon: Icon, active, hasValue, onClick }: FilterButtonProps) {
+    return (
+        <button
+            onClick={onClick}
+            className={cn(
+                "flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-all",
+                active
+                    ? "bg-imi-900 border-imi-900 text-white"
+                    : hasValue
+                        ? "bg-accent-50 border-accent-200 text-accent-700"
+                        : "bg-white border-imi-200 text-imi-600 hover:border-imi-300"
+            )}
+        >
+            <Icon className="w-4 h-4" />
+            <span className="truncate max-w-[120px]">{label}</span>
+            <ChevronDown className={cn("w-4 h-4 transition-transform", active && "rotate-180")} />
+        </button>
+    );
+}
