@@ -47,11 +47,11 @@ export default async function DevelopmentPage({ params }: PageProps) {
         <main className="bg-white">
             <DevelopmentHero development={development} />
             <div className="relative z-10 bg-white shadow-[0_-20px_50px_-20px_rgba(2,6,23,0.3)] rounded-t-[40px] -mt-10 overflow-hidden">
-                <DevelopmentDetails development={development} />
                 <DevelopmentGallery development={development} />
-                <DevelopmentUnits development={development} />
-                <DevelopmentLocation development={development} />
+                <DevelopmentDetails development={development} />
                 <DevelopmentCTA development={development} />
+                <DevelopmentLocation development={development} />
+                <DevelopmentUnits development={development} />
             </div>
         </main>
     );

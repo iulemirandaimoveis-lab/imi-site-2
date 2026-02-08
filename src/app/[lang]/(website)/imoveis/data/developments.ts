@@ -29,9 +29,9 @@ export const developments: Development[] = [
         priceRange: { min: 815000, max: 6068412 },
         images: {
             main: '/images/developments/setai-beach-resort.jpg',
-            gallery: [],
+            gallery: ["/images/developments/generic-lobby.png","/images/developments/generic-amenities.png"],
             videos: [],
-            floorPlans: []
+            floorPlans: ["/images/floorplans/plan-1bed.svg","/images/floorplans/plan-2bed.svg","/images/floorplans/plan-3bed.svg"]
         },
         units: [],
         tags: ['frente-mar', 'resort', 'luxo'],
@@ -65,9 +65,9 @@ export const developments: Development[] = [
         priceRange: { min: 635283, max: 6540344 },
         images: {
             main: '/images/developments/setai-pininfarina.jpg',
-            gallery: [],
+            gallery: ["/images/developments/generic-lobby.png","/images/developments/generic-amenities.png"],
             videos: [],
-            floorPlans: []
+            floorPlans: ["/images/floorplans/plan-1bed.svg","/images/floorplans/plan-2bed.svg","/images/floorplans/plan-3bed.svg"]
         },
         units: [],
         tags: ['luxo', 'pininfarina', 'design'],
@@ -99,9 +99,9 @@ export const developments: Development[] = [
         priceRange: { min: 900000, max: 2500000 },
         images: {
             main: '/images/developments/setai-casas-verticais.png',
-            gallery: [],
+            gallery: ["/images/developments/generic-lobby.png","/images/developments/generic-amenities.png"],
             videos: [],
-            floorPlans: []
+            floorPlans: ["/images/floorplans/plan-1bed.svg","/images/floorplans/plan-2bed.svg","/images/floorplans/plan-3bed.svg"]
         },
         units: [],
         tags: ['luxo', 'inovação'],
@@ -133,9 +133,9 @@ export const developments: Development[] = [
         priceRange: { min: 350000, max: 950000 },
         images: {
             main: '/images/developments/setai-aquamaris.png',
-            gallery: [],
+            gallery: ["/images/developments/generic-lobby.png","/images/developments/generic-amenities.png"],
             videos: [],
-            floorPlans: []
+            floorPlans: ["/images/floorplans/plan-1bed.svg","/images/floorplans/plan-2bed.svg","/images/floorplans/plan-3bed.svg"]
         },
         units: [],
         tags: ['investimento', 'compacto'],
@@ -167,9 +167,9 @@ export const developments: Development[] = [
         priceRange: { min: 1665507, max: 7564704 },
         images: {
             main: '/images/developments/setai-aurus.png',
-            gallery: [],
+            gallery: ["/images/developments/generic-lobby.png","/images/developments/generic-amenities.png"],
             videos: [],
-            floorPlans: []
+            floorPlans: ["/images/floorplans/plan-1bed.svg","/images/floorplans/plan-2bed.svg","/images/floorplans/plan-3bed.svg"]
         },
         units: [],
         tags: ['frente-mar', 'luxo'],
@@ -201,9 +201,9 @@ export const developments: Development[] = [
         priceRange: { min: 1200000, max: 3500000 },
         images: {
             main: '/images/developments/alliance-aura.png',
-            gallery: [],
+            gallery: ["/images/developments/generic-lobby.png","/images/developments/generic-amenities.png"],
             videos: [],
-            floorPlans: []
+            floorPlans: ["/images/floorplans/plan-1bed.svg","/images/floorplans/plan-2bed.svg","/images/floorplans/plan-3bed.svg"]
         },
         units: [],
         tags: ['alto-padrao', 'familia'],
@@ -237,9 +237,9 @@ export const developments: Development[] = [
         priceRange: { min: 650000, max: 2200000 },
         images: {
             main: '/images/developments/rio-ave-raizes.png',
-            gallery: [],
+            gallery: ["/images/developments/generic-lobby.png","/images/developments/generic-amenities.png"],
             videos: [],
-            floorPlans: []
+            floorPlans: ["/images/floorplans/plan-1bed.svg","/images/floorplans/plan-2bed.svg","/images/floorplans/plan-3bed.svg"]
         },
         units: [],
         tags: ['inovação', 'urbano'],
@@ -271,9 +271,9 @@ export const developments: Development[] = [
         priceRange: { min: 450000, max: 950000 },
         images: {
             main: '/images/developments/rio-ave-vivant.png',
-            gallery: [],
+            gallery: ["/images/developments/generic-lobby.png","/images/developments/generic-amenities.png"],
             videos: [],
-            floorPlans: []
+            floorPlans: ["/images/floorplans/plan-1bed.svg","/images/floorplans/plan-2bed.svg","/images/floorplans/plan-3bed.svg"]
         },
         units: [],
         tags: ['investimento', 'retrofit'],
@@ -305,9 +305,9 @@ export const developments: Development[] = [
         priceRange: { min: 1500000, max: 5500000 },
         images: {
             main: '/images/developments/moura-dubeux-cais-avenida.png',
-            gallery: [],
+            gallery: ["/images/developments/generic-lobby.png","/images/developments/generic-amenities.png"],
             videos: [],
-            floorPlans: []
+            floorPlans: ["/images/floorplans/plan-1bed.svg","/images/floorplans/plan-2bed.svg","/images/floorplans/plan-3bed.svg"]
         },
         units: [],
         tags: ['luxo', 'vista-mar'],
@@ -339,9 +339,9 @@ export const developments: Development[] = [
         priceRange: { min: 380000, max: 1200000 },
         images: {
             main: '/images/developments/infinity-recife.png',
-            gallery: [],
+            gallery: ["/images/developments/generic-lobby.png","/images/developments/generic-amenities.png"],
             videos: [],
-            floorPlans: []
+            floorPlans: ["/images/floorplans/plan-1bed.svg","/images/floorplans/plan-2bed.svg","/images/floorplans/plan-3bed.svg"]
         },
         units: [],
         tags: ['investimento', 'compacto'],
@@ -375,9 +375,9 @@ export const developments: Development[] = [
         priceRange: { min: 15000000, max: 45000000 },
         images: {
             main: '/images/developments/capri-dolce-gabbana.png',
-            gallery: [],
+            gallery: ["/images/developments/generic-lobby.png","/images/developments/generic-amenities.png"],
             videos: [],
-            floorPlans: []
+            floorPlans: ["/images/floorplans/plan-1bed.svg","/images/floorplans/plan-2bed.svg","/images/floorplans/plan-3bed.svg"]
         },
         units: [],
         tags: ['ultra-luxo', 'design-internacional'],
@@ -409,9 +409,9 @@ export const developments: Development[] = [
         priceRange: { min: 4500000, max: 9000000 },
         images: {
             main: '/images/developments/zen-cyrela-yoo.png',
-            gallery: [],
+            gallery: ["/images/developments/generic-lobby.png","/images/developments/generic-amenities.png"],
             videos: [],
-            floorPlans: []
+            floorPlans: ["/images/floorplans/plan-1bed.svg","/images/floorplans/plan-2bed.svg","/images/floorplans/plan-3bed.svg"]
         },
         units: [],
         tags: ['luxo', 'ibirapuera'],
@@ -443,9 +443,9 @@ export const developments: Development[] = [
         priceRange: { min: 450000, max: 2200000 },
         images: {
             main: '/images/developments/escape-eden-brooklin.png',
-            gallery: [],
+            gallery: ["/images/developments/generic-lobby.png","/images/developments/generic-amenities.png"],
             videos: [],
-            floorPlans: []
+            floorPlans: ["/images/floorplans/plan-1bed.svg","/images/floorplans/plan-2bed.svg","/images/floorplans/plan-3bed.svg"]
         },
         units: [],
         tags: ['investimento', 'familia', 'parque'],
@@ -481,9 +481,9 @@ export const developments: Development[] = [
         priceRange: { min: 3500000, max: 12000000 },
         images: {
             main: '/images/developments/damac-lagoons-dubai.png',
-            gallery: [],
+            gallery: ["/images/developments/generic-lobby.png","/images/developments/generic-amenities.png"],
             videos: [],
-            floorPlans: []
+            floorPlans: ["/images/floorplans/plan-1bed.svg","/images/floorplans/plan-2bed.svg","/images/floorplans/plan-3bed.svg"]
         },
         units: [],
         tags: ['internacional', 'dubai', 'resort', 'villas'],
@@ -517,9 +517,9 @@ export const developments: Development[] = [
         priceRange: { min: 1800000, max: 8500000 },
         images: {
             main: '/images/developments/damac-hills-2.png',
-            gallery: [],
+            gallery: ["/images/developments/generic-lobby.png","/images/developments/generic-amenities.png"],
             videos: [],
-            floorPlans: []
+            floorPlans: ["/images/floorplans/plan-1bed.svg","/images/floorplans/plan-2bed.svg","/images/floorplans/plan-3bed.svg"]
         },
         units: [],
         tags: ['internacional', 'dubai', 'pronto', 'investimento'],
@@ -555,9 +555,9 @@ export const developments: Development[] = [
         priceRange: { min: 4200000, max: 18000000 },
         images: {
             main: '/images/developments/kempinski-miami.png',
-            gallery: [],
+            gallery: ["/images/developments/generic-lobby.png","/images/developments/generic-amenities.png"],
             videos: [],
-            floorPlans: []
+            floorPlans: ["/images/floorplans/plan-1bed.svg","/images/floorplans/plan-2bed.svg","/images/floorplans/plan-3bed.svg"]
         },
         units: [],
         tags: ['internacional', 'miami', 'hotel-residences', 'ultra-luxo'],
@@ -591,9 +591,9 @@ export const developments: Development[] = [
         priceRange: { min: 2800000, max: 6500000 },
         images: {
             main: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?q=80&w=2671&auto=format&fit=crop',
-            gallery: [],
+            gallery: ["/images/developments/generic-lobby.png","/images/developments/generic-amenities.png"],
             videos: [],
-            floorPlans: []
+            floorPlans: ["/images/floorplans/plan-1bed.svg","/images/floorplans/plan-2bed.svg","/images/floorplans/plan-3bed.svg"]
         },
         units: [],
         tags: ['internacional', 'orlando', 'investimento', 'rental'],

@@ -52,12 +52,12 @@ export default function DevelopmentGallery({ development }: DevelopmentGalleryPr
                 </div>
 
                 {/* 2. Seção de Vídeos */}
-                {hasVideos && (
-                    <div>
-                        <div className="flex items-center gap-3 mb-8">
-                            <Play className="text-accent-500" size={20} />
-                            <h2 className="font-display text-2xl text-imi-900 font-bold uppercase tracking-tight">Apresentação em Vídeo</h2>
-                        </div>
+                <div>
+                    <div className="flex items-center gap-3 mb-8">
+                        <Play className="text-accent-500" size={20} />
+                        <h2 className="font-display text-2xl text-imi-900 font-bold uppercase tracking-tight">Apresentação em Vídeo</h2>
+                    </div>
+                    {hasVideos ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             {development.images.videos.map((video, idx) => (
                                 <div key={idx} className="aspect-video rounded-3xl overflow-hidden shadow-2xl bg-imi-900">
@@ -70,8 +70,8 @@ export default function DevelopmentGallery({ development }: DevelopmentGalleryPr
                                 </div>
                             ))}
                         </div>
-                    </div>
-                )}
+                    ) : renderPlaceholder('Vídeo institucional', <Play className="w-16 h-16 text-imi-200 mx-auto" strokeWidth={1} />)}
+                </div>
 
                 {/* 3. Plantas Baixas */}
                 <div>
@@ -101,7 +101,7 @@ export default function DevelopmentGallery({ development }: DevelopmentGalleryPr
                                 </div>
                             ))}
                         </div>
-                    ) : renderPlaceholder('Plantas baichas', <Layout className="w-16 h-16 text-imi-200 mx-auto" strokeWidth={1} />)}
+                    ) : renderPlaceholder('Plantas baixas', <Layout className="w-16 h-16 text-imi-200 mx-auto" strokeWidth={1} />)}
                 </div>
 
                 {/* 4. Tour Virtual (se existir) */}

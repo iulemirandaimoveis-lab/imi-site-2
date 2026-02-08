@@ -1,0 +1,45 @@
+<svg width="900" height="700" viewBox="0 0 900 700" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="900" height="700" fill="#ffffff"/>
+  
+  <!-- Main apartment outline -->
+  <rect x="100" y="100" width="700" height="500" fill="none" stroke="#1a1a1a" stroke-width="4"/>
+  
+  <!-- Living/Dining Room -->
+  <rect x="100" y="100" width="400" height="300" fill="#f8f9fa" stroke="#1a1a1a" stroke-width="2"/>
+  <text x="300" y="240" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#333">LIVING / DINING</text>
+  <text x="300" y="265" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#666">45m²</text>
+  
+  <!-- Kitchen -->
+  <rect x="500" y="100" width="300" height="150" fill="#e9ecef" stroke="#1a1a1a" stroke-width="2"/>
+  <text x="650" y="170" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#333">KITCHEN</text>
+  <text x="650" y="190" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#666">15m²</text>
+  
+  <!-- Master Bedroom -->
+  <rect x="500" y="250" width="300" height="200" fill="#f8f9fa" stroke="#1a1a1a" stroke-width="2"/>
+  <text x="650" y="340" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#333">MASTER BEDROOM</text>
+  <text x="650" y="360" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#666">22m²</text>
+  
+  <!-- Bedroom 2 -->
+  <rect x="500" y="450" width="300" height="150" fill="#f8f9fa" stroke="#1a1a1a" stroke-width="2"/>
+  <text x="650" y="520" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#333">BEDROOM 2</text>
+  <text x="650" y="540" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#666">16m²</text>
+  
+  <!-- Bathroom 1 -->
+  <rect x="100" y="400" width="200" height="200" fill="#dee2e6" stroke="#1a1a1a" stroke-width="2"/>
+  <text x="200" y="490" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#333">BATHROOM 1</text>
+  <text x="200" y="510" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#666">10m²</text>
+  
+  <!-- Bathroom 2 (Suite) -->
+  <rect x="300" y="450" width="200" height="150" fill="#dee2e6" stroke="#1a1a1a" stroke-width="2"/>
+  <text x="400" y="520" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#333">BATHROOM 2</text>
+  <text x="400" y="540" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#666">8m²</text>
+  
+  <!-- Balcony -->
+  <rect x="300" y="400" width="200" height="50" fill="#d4edda" stroke="#1a1a1a" stroke-width="2" stroke-dasharray="5,5"/>
+  <text x="400" y="430" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">BALCONY 12m²</text>
+  
+  <!-- Title -->
+  <text x="450" y="50" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#1a1a1a">PLANTA 2 DORMITÓRIOS</text>
+  <text x="450" y="75" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#666">Área Total: 128m²</text>
+</svg>
