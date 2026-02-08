@@ -1,4 +1,4 @@
-import { Development } from '../types/development';
+import { Development, DevelopmentStatus as DevStatusType } from '../types/development';
 
 export const developments: Development[] = [
     // 1. SETAI BEACH RESORT & RESIDENCE
@@ -9,10 +9,12 @@ export const developments: Development[] = [
         developer: 'Setai Grupo GP',
         developerLogo: '/images/logos/setai.png',
         status: 'launch',
+        region: 'paraiba',
         location: {
             neighborhood: 'Ponta de Campina',
             city: 'Cabedelo',
             state: 'PB',
+            region: 'paraiba',
             coordinates: { lat: -7.0531, lng: -34.8361 },
             address: 'Av. Oceano Atlântico, 288 - Ponta de Campina, Cabedelo/PB'
         },
@@ -53,15 +55,16 @@ export const developments: Development[] = [
             gallery: [
                 'https://setaigrupogp.com.br/wp-content/uploads/2025/06/06-area-scaled.jpg',
                 'https://setaigrupogp.com.br/wp-content/uploads/2025/06/22-Nigth-Spa-scaled.jpg'
-            ]
+            ],
+            videos: [],
+            floorPlans: []
         },
-        videoUrl: undefined, // Estrutura pronta para embed
+        videoUrl: undefined,
         externalLinks: {
             officialSite: 'https://setaigrupogp.com.br/setai-beach-resort-residence',
             galleryUrl: 'https://drive.google.com/drive/folders/1NN9CtZuSwv0dpjmjWcurUdRwptbddS-c'
         },
         units: [
-            // RESIDENCIAL
             { id: 'sbr-res-001', unit: '1', type: 'GARDEN', area: 173.71, position: 'NORTE/OESTE', tower: 'RES', bedrooms: 3, bathrooms: 3, parkingSpots: 2, totalPrice: 4012701, status: 'available' },
             { id: 'sbr-res-002', unit: '2', type: 'GARDEN', area: 173.45, position: 'NORTE', tower: 'RES', bedrooms: 3, bathrooms: 3, parkingSpots: 2, totalPrice: 4006695, status: 'available' },
             { id: 'sbr-res-003', unit: '3', type: 'GARDEN', area: 173.88, position: 'NORTE', tower: 'RES', bedrooms: 3, bathrooms: 3, parkingSpots: 2, totalPrice: 4016628, status: 'available' },
@@ -71,23 +74,17 @@ export const developments: Development[] = [
             { id: 'sbr-res-411', unit: '411', type: 'APTO/TERRAÇO', area: 196.58, position: 'SUL', tower: 'RES', bedrooms: 3, bathrooms: 3, parkingSpots: 2, totalPrice: 4644202.50, status: 'available' },
             { id: 'sbr-res-501', unit: '501', type: 'COBERTURA DUPLEX', area: 251.28, position: 'NORTE/OESTE', tower: 'RES', bedrooms: 4, bathrooms: 5, parkingSpots: 4, totalPrice: 6068412, status: 'available' },
             { id: 'sbr-res-502', unit: '502', type: 'COBERTURA DUPLEX', area: 240.97, position: 'NORTE', tower: 'RES', bedrooms: 4, bathrooms: 4, parkingSpots: 3, totalPrice: 5819425.50, status: 'available' },
-
-            // FLATS TORRE NORTE
             { id: 'sbr-tn-001', unit: '1', type: 'FLAT', area: 36.05, position: 'NORTE/OESTE', tower: 'N', bedrooms: 1, bathrooms: 1, parkingSpots: 1, totalPrice: 861000, status: 'available' },
             { id: 'sbr-tn-210', unit: '210', type: 'FLAT', area: 29.05, position: 'NORTE', tower: 'N', bedrooms: 1, bathrooms: 1, parkingSpots: 1, totalPrice: 830000, status: 'available' },
             { id: 'sbr-tn-512', unit: '512', type: 'FLAT', area: 29.05, position: 'NORTE', tower: 'N', bedrooms: 1, bathrooms: 1, parkingSpots: 1, totalPrice: 860000, status: 'available' },
             { id: 'sbr-tn-907', unit: '907', type: 'FLAT DUPLEX', area: 55.43, position: 'NORTE', tower: 'N', bedrooms: 1, bathrooms: 1, parkingSpots: 1, totalPrice: 1296665.40, status: 'available' },
             { id: 'sbr-tn-908', unit: '908', type: 'FLAT DUPLEX', area: 55.43, position: 'NORTE', tower: 'N', bedrooms: 1, bathrooms: 1, parkingSpots: 1, totalPrice: 1296665.40, status: 'available' },
             { id: 'sbr-tn-914', unit: '914', type: 'FLAT DUPLEX', area: 80.01, position: 'NORTE', tower: 'N', bedrooms: 2, bathrooms: 2, parkingSpots: 1, totalPrice: 1871661.53, status: 'available' },
-
-            // FLATS TORRE SUL (amostra representativa)
             { id: 'sbr-ts-001', unit: '1', type: 'FLAT GARDEN', area: 53.55, position: 'SUL', tower: 'S', bedrooms: 1, bathrooms: 1, parkingSpots: 1, totalPrice: 1274115.15, status: 'available' },
             { id: 'sbr-ts-127', unit: '127', type: 'FLAT', area: 29.05, position: 'SUL', tower: 'S', bedrooms: 1, bathrooms: 1, parkingSpots: 1, totalPrice: 815000, status: 'available' },
             { id: 'sbr-ts-224', unit: '224', type: 'FLAT', area: 29.05, position: 'SUL', tower: 'S', bedrooms: 1, bathrooms: 1, parkingSpots: 1, totalPrice: 830000, status: 'available' },
             { id: 'sbr-ts-427', unit: '427', type: 'FLAT', area: 29.05, position: 'SUL', tower: 'S', bedrooms: 1, bathrooms: 1, parkingSpots: 1, totalPrice: 849000, status: 'available' },
             { id: 'sbr-ts-905', unit: '905', type: 'COBERTURA DUPLEX', area: 58.93, position: 'NORTE', tower: 'S', bedrooms: 1, bathrooms: 1, parkingSpots: 1, totalPrice: 1402121.49, status: 'available' },
-
-            // FLATS TORRE PANORÂMICA
             { id: 'sbr-tp-701', unit: '701', type: 'COBERTURA DUPLEX', area: 104.46, position: 'NORTE', tower: 'P', bedrooms: 2, bathrooms: 2, parkingSpots: 1, totalPrice: 2443616.59, status: 'available' }
         ],
         tags: ['frente-mar', 'resort', 'flat', 'luxo', 'destaque'],
@@ -96,8 +93,7 @@ export const developments: Development[] = [
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
     },
-
-    // 2. SETAI BY PININFARINA (SETAI RESIDENCES)
+    // 2. SETAI BY PININFARINA
     {
         id: 'dev-002',
         slug: 'setai-pininfarina',
@@ -105,10 +101,12 @@ export const developments: Development[] = [
         developer: 'Setai Grupo GP',
         developerLogo: '/images/logos/setai.png',
         status: 'launch',
+        region: 'paraiba',
         location: {
             neighborhood: 'Altiplano Cabo Branco',
             city: 'João Pessoa',
             state: 'PB',
+            region: 'paraiba',
             coordinates: { lat: -7.1280, lng: -34.8050 }
         },
         deliveryDate: 'Junho 2029',
@@ -140,25 +138,22 @@ export const developments: Development[] = [
             gallery: [
                 'https://setaigrupogp.com.br/wp-content/uploads/2025/10/PIN_48_CONDO_A_LOBBY_04-scaled.jpg',
                 'https://setaigrupogp.com.br/wp-content/uploads/2025/05/29-Piscina-Rooftop-Torre-A-1-scaled.jpg'
-            ]
+            ],
+            videos: [],
+            floorPlans: []
         },
         externalLinks: {
             officialSite: 'https://setaigrupogp.com.br/setai-residences-design-by-pininfarina/'
         },
         units: [
-            // TORRE C (Flats)
             { id: 'sp-tc-101', unit: 'FLAT 101', type: 'FLAT', area: 41.31, tower: 'C', bedrooms: 1, bathrooms: 1, parkingSpots: 0, totalPrice: 1000983.19, status: 'available' },
             { id: 'sp-tc-104', unit: 'FLAT 104', type: 'FLAT', area: 31.01, tower: 'C', bedrooms: 1, bathrooms: 1, parkingSpots: 0, totalPrice: 730531.40, status: 'available' },
             { id: 'sp-tc-105', unit: 'FLAT 105', type: 'FLAT', area: 33.07, tower: 'C', bedrooms: 1, bathrooms: 1, parkingSpots: 0, totalPrice: 785031.01, status: 'available' },
             { id: 'sp-tc-106', unit: 'FLAT 106', type: 'FLAT', area: 34.13, tower: 'C', bedrooms: 1, bathrooms: 1, parkingSpots: 0, totalPrice: 827004.49, status: 'available' },
             { id: 'sp-tc-107', unit: 'FLAT 107', type: 'FLAT', area: 27.76, tower: 'C', bedrooms: 1, bathrooms: 1, parkingSpots: 0, totalPrice: 635283.33, status: 'available' },
-
-            // TORRE A (Luxo — amostra)
             { id: 'sp-ta-601', unit: '601', type: 'APTO', area: 302.64, tower: 'A', bedrooms: 4, bathrooms: 4, parkingSpots: 4, totalPrice: 5201855.12, status: 'available' },
             { id: 'sp-ta-2001', unit: '2001', type: 'APTO', area: 302.64, tower: 'A', bedrooms: 4, bathrooms: 4, parkingSpots: 4, totalPrice: 6327402.72, status: 'available' },
             { id: 'sp-ta-2701', unit: '2701', type: 'APTO', area: 302.64, tower: 'A', bedrooms: 4, bathrooms: 4, parkingSpots: 4, totalPrice: 6540344.16, status: 'available' },
-
-            // TORRE B (Alto padrão — amostra)
             { id: 'sp-tb-301', unit: '301', type: 'APTO', area: 145.34, tower: 'B', bedrooms: 3, bathrooms: 3, parkingSpots: 3, totalPrice: 2668994.72, status: 'available' },
             { id: 'sp-tb-303', unit: '303', type: 'APTO', area: 76.63, tower: 'B', bedrooms: 2, bathrooms: 2, parkingSpots: 2, totalPrice: 1407218.01, status: 'available' },
             { id: 'sp-tb-3001', unit: '3001', type: 'APTO', area: 145.34, tower: 'B', bedrooms: 3, bathrooms: 3, parkingSpots: 3, totalPrice: 3162178.53, status: 'available' }
@@ -169,7 +164,6 @@ export const developments: Development[] = [
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
     },
-
     // 3. HERITAGE ONE
     {
         id: 'dev-003',
@@ -178,10 +172,12 @@ export const developments: Development[] = [
         developer: 'Setai Grupo GP',
         developerLogo: '/images/logos/setai.png',
         status: 'launch',
+        region: 'paraiba',
         location: {
             neighborhood: 'Bessa (Aeroclube)',
             city: 'João Pessoa',
             state: 'PB',
+            region: 'paraiba',
             coordinates: { lat: -7.0982, lng: -34.8377 },
             address: 'Rua Emanoel Orlando de Figueiredo Lima, Bessa, João Pessoa/PB'
         },
@@ -212,7 +208,9 @@ export const developments: Development[] = [
             gallery: [
                 'https://setaigrupogp.com.br/wp-content/uploads/2024/10/Rectangle-9-1.jpg',
                 'https://setaigrupogp.com.br/wp-content/uploads/2024/10/Rectangle-9-3.jpg'
-            ]
+            ],
+            videos: [],
+            floorPlans: []
         },
         units: [
             { id: 'ho-401', unit: '401', type: 'APTO', area: 98.67, position: 'NASC/NORTE', bedrooms: 3, bathrooms: 2, parkingSpots: 2, totalPrice: 1163847.11, status: 'available' },
@@ -236,8 +234,7 @@ export const developments: Development[] = [
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
     },
-
-    // 4. SETAI AURUS (AREIA DOURADA)
+    // 4. SETAI AURUS
     {
         id: 'dev-004',
         slug: 'setai-aurus',
@@ -245,10 +242,12 @@ export const developments: Development[] = [
         developer: 'Setai Grupo GP',
         developerLogo: '/images/logos/setai.png',
         status: 'launch',
+        region: 'paraiba',
         location: {
             neighborhood: 'Areia Dourada',
             city: 'Cabedelo',
             state: 'PB',
+            region: 'paraiba',
             coordinates: { lat: -7.0560, lng: -34.8350 }
         },
         deliveryDate: 'Junho 2028',
@@ -277,7 +276,9 @@ export const developments: Development[] = [
                 'https://setaigrupogp.com.br/wp-content/uploads/2025/05/09-Gourmet-scaled.jpg',
                 'https://setaigrupogp.com.br/wp-content/uploads/2025/05/21-Piscina-scaled.jpg',
                 'https://setaigrupogp.com.br/wp-content/uploads/2025/05/10-Apartamento-scaled.jpg'
-            ]
+            ],
+            videos: [],
+            floorPlans: []
         },
         externalLinks: {
             officialSite: 'https://setaigrupogp.com.br/setai-aurus/'
@@ -294,7 +295,6 @@ export const developments: Development[] = [
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
     },
-
     // 5. SETAI HOUSES RESORT
     {
         id: 'dev-005',
@@ -303,10 +303,12 @@ export const developments: Development[] = [
         developer: 'Setai Grupo GP',
         developerLogo: '/images/logos/setai.png',
         status: 'launch',
+        region: 'paraiba',
         location: {
             neighborhood: 'Intermares',
             city: 'Cabedelo',
             state: 'PB',
+            region: 'paraiba',
             coordinates: { lat: -7.0615, lng: -34.8420 }
         },
         deliveryDate: 'Dezembro 2026',
@@ -336,13 +338,14 @@ export const developments: Development[] = [
             gallery: [
                 'https://setaigrupogp.com.br/wp-content/uploads/2025/06/07-Piscina-scaled.jpg',
                 'https://setaigrupogp.com.br/wp-content/uploads/2025/06/08-Living-scaled.jpg'
-            ]
+            ],
+            videos: [],
+            floorPlans: []
         },
         externalLinks: {
             officialSite: 'https://setaigrupogp.com.br/setai-houses-resort'
         },
         units: [
-            // Amostra representativa das tipologias principais
             { id: 'sh-006', unit: 'CASA 6', type: 'CASA', area: 314, bedrooms: 4, bathrooms: 3, parkingSpots: 2, totalPrice: 2509164.81, status: 'available' },
             { id: 'sh-057', unit: 'CASA 57', type: 'CASA', area: 304.42, bedrooms: 3, bathrooms: 3, parkingSpots: 2, totalPrice: 2396613.93, status: 'available' },
             { id: 'sh-085', unit: 'CASA 85', type: 'CASA', area: 324.4, bedrooms: 4, bathrooms: 3, parkingSpots: 2, totalPrice: 2509164.81, status: 'available' },
@@ -354,7 +357,6 @@ export const developments: Development[] = [
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
     },
-
     // 6. SETAI MIRAJ
     {
         id: 'dev-006',
@@ -363,10 +365,12 @@ export const developments: Development[] = [
         developer: 'Setai Grupo GP',
         developerLogo: '/images/logos/setai.png',
         status: 'launch',
+        region: 'paraiba',
         location: {
             neighborhood: 'Jardim Oceania (Bessa)',
             city: 'João Pessoa',
             state: 'PB',
+            region: 'paraiba',
             coordinates: { lat: -7.1015, lng: -34.8300 }
         },
         deliveryDate: 'Dezembro 2026',
@@ -397,7 +401,9 @@ export const developments: Development[] = [
                 'https://setaigrupogp.com.br/wp-content/uploads/2025/06/22-Lazer-privativo.png',
                 'https://setaigrupogp.com.br/wp-content/uploads/2025/06/07-Piscina-Terreo.png',
                 'https://setaigrupogp.com.br/wp-content/uploads/2025/06/05-Lobby.png'
-            ]
+            ],
+            videos: [],
+            floorPlans: []
         },
         externalLinks: {
             officialSite: 'https://setaigrupogp.com.br/setai-miraj'
@@ -416,7 +422,6 @@ export const developments: Development[] = [
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
     },
-
     // 7. SETAI SAILOR
     {
         id: 'dev-007',
@@ -425,10 +430,12 @@ export const developments: Development[] = [
         developer: 'Setai Grupo GP',
         developerLogo: '/images/logos/setai.png',
         status: 'launch',
+        region: 'paraiba',
         location: {
             neighborhood: 'Praia do Poço',
             city: 'Cabedelo',
             state: 'PB',
+            region: 'paraiba',
             coordinates: { lat: -7.0485, lng: -34.8375 }
         },
         deliveryDate: 'Junho 2028',
@@ -458,7 +465,9 @@ export const developments: Development[] = [
                 'https://setaigrupogp.com.br/wp-content/uploads/2025/06/10-Spa-scaled.jpg',
                 'https://setaigrupogp.com.br/wp-content/uploads/2025/06/09-Pub-scaled.jpg',
                 'https://setaigrupogp.com.br/wp-content/uploads/2025/06/16-Cobertura-scaled.jpg'
-            ]
+            ],
+            videos: [],
+            floorPlans: []
         },
         externalLinks: {
             officialSite: 'https://setaigrupogp.com.br/setai-sailor'
@@ -475,8 +484,7 @@ export const developments: Development[] = [
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
     },
-
-    // 8. IMÓVEIS PRONTOS — AGRUPADOS EM UM "EMPREENDIMENTO" ESPECIAL
+    // 8. IMÓVEIS PRONTOS
     {
         id: 'dev-008',
         slug: 'imoveis-prontos',
@@ -484,10 +492,12 @@ export const developments: Development[] = [
         developer: 'Setai Grupo GP',
         developerLogo: '/images/logos/setai.png',
         status: 'ready',
+        region: 'paraiba',
         location: {
             neighborhood: 'Diversos',
             city: 'João Pessoa / Cabedelo',
             state: 'PB',
+            region: 'paraiba',
             coordinates: { lat: -7.1195, lng: -34.8450 }
         },
         description: 'Seleção exclusiva de imóveis prontos para morar da Setai Grupo GP. Unidades disponíveis em empreendimentos consolidados como Setai Yacht, Setai Edition, Setai Aquamaris e Setai Sandro Barros. Oportunidade de entrada imediata sem espera de obra.',
@@ -513,20 +523,15 @@ export const developments: Development[] = [
             gallery: [
                 'https://setaigrupogp.com.br/wp-content/uploads/2024/09/Piscina-Yacht.jpg',
                 'https://setaigrupogp.com.br/wp-content/uploads/2024/09/Lobby-Yacht.jpg'
-            ]
+            ],
+            videos: [],
+            floorPlans: []
         },
         units: [
-            // Setai Aquamaris
             { id: 'ready-aq-g01', unit: 'GARDEN 01', type: 'GARDEN', area: 34.5, bedrooms: 1, bathrooms: 1, parkingSpots: 1, totalPrice: 931500, status: 'available', tower: 'Setai Aquamaris' },
             { id: 'ready-aq-g08', unit: 'GARDEN 08', type: 'GARDEN', area: 21, bedrooms: 1, bathrooms: 1, parkingSpots: 1, totalPrice: 567000, status: 'available', tower: 'Setai Aquamaris' },
-
-            // Setai Yacht
             { id: 'ready-yacht-302', unit: '302', type: 'FLAT', area: 31.34, position: 'NORTE', bedrooms: 1, bathrooms: 1, parkingSpots: 1, totalPrice: 783500, status: 'available', tower: 'Setai Yacht' },
-
-            // Setai Edition
             { id: 'ready-ed-3', unit: '3', type: 'FLAT', area: 30.9, position: 'NORTE', bedrooms: 1, bathrooms: 1, parkingSpots: 1, totalPrice: 782500, status: 'available', tower: 'Setai Edition' },
-
-            // Setai Sandro Barros (amostra)
             { id: 'ready-sb-35', unit: '35', type: 'APTO', area: 92.41, position: 'SUL/OESTE', bedrooms: 2, bathrooms: 2, parkingSpots: 2, totalPrice: 2310250, status: 'available', tower: 'Setai Sandro Barros' },
             { id: 'ready-sb-601', unit: '601', type: 'APTO', area: 24.45, position: 'NORTE', bedrooms: 1, bathrooms: 1, parkingSpots: 1, totalPrice: 599000, status: 'available', tower: 'Setai Sandro Barros' }
         ],
@@ -535,7 +540,66 @@ export const developments: Development[] = [
         isHighlighted: true,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
-    }
+    },
+
+    // PERNAMBUCO — Alliance
+    {
+        id: 'dev-pe-001',
+        slug: 'alliance-recife-premium',
+        name: 'Alliance Recife Premium',
+        developer: 'Alliance',
+        developerLogo: '/images/logos/alliance.png',
+        status: 'launch' as DevStatusType,
+        region: 'pernambuco',
+        location: {
+            neighborhood: 'Boa Viagem',
+            city: 'Recife',
+            state: 'PE',
+            region: 'pernambuco',
+            coordinates: { lat: -8.1189, lng: -34.8994 },
+        },
+        description: 'Empreendimento premium da Alliance em Boa Viagem, Recife. Detalhes em breve.',
+        shortDescription: 'Lançamento Alliance em Boa Viagem, Recife.',
+        features: ['Localização premium', 'Construtora de referência'],
+        specs: { bedroomsRange: '3-4', areaRange: '80-200m²' },
+        priceRange: { min: 800000, max: 3000000 },
+        images: { main: '', gallery: [], videos: [], floorPlans: [] },
+        units: [],
+        tags: ['pernambuco', 'luxo'],
+        order: 10,
+        isHighlighted: false,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+    },
+    // PERNAMBUCO — Rio Ave
+    {
+        id: 'dev-pe-002',
+        slug: 'rio-ave-recife',
+        name: 'Rio Ave Recife',
+        developer: 'Rio Ave',
+        developerLogo: '/images/logos/rioave.png',
+        status: 'launch' as DevStatusType,
+        region: 'pernambuco',
+        location: {
+            neighborhood: 'Recife',
+            city: 'Recife',
+            state: 'PE',
+            region: 'pernambuco',
+            coordinates: { lat: -8.0476, lng: -34.8770 },
+        },
+        description: 'Empreendimento da construtora portuguesa Rio Ave em Recife. Detalhes em breve.',
+        shortDescription: 'Lançamento Rio Ave em Recife.',
+        features: ['Construtora portuguesa', 'Qualidade europeia'],
+        specs: { bedroomsRange: '2-4', areaRange: '60-180m²' },
+        priceRange: { min: 600000, max: 2500000 },
+        images: { main: '', gallery: [], videos: [], floorPlans: [] },
+        units: [],
+        tags: ['pernambuco'],
+        order: 11,
+        isHighlighted: false,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+    },
 ];
 
 export function formatBRL(value: number): string {
@@ -550,12 +614,10 @@ export function formatArea(area: number): string {
     return `${area.toFixed(2)}m²`;
 }
 
-export function getDevelopmentsByStatus(status: DevelopmentStatus): Development[] {
+export function getDevelopmentsByStatus(status: DevStatusType): Development[] {
     return developments.filter(dev => dev.status === status);
 }
 
 export function getDevelopmentBySlug(slug: string): Development | undefined {
     return developments.find(dev => dev.slug === slug);
 }
-
-export type DevelopmentStatus = 'launch' | 'ready' | 'under_construction';

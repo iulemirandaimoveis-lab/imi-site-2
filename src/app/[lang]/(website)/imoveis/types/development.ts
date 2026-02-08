@@ -19,6 +19,7 @@ export interface DevelopmentLocation {
     neighborhood: string;                // Ex: "Ponta de Campina"
     city: string;                        // Ex: "Cabedelo"
     state: string;                       // Ex: "PB"
+    region: 'paraiba' | 'pernambuco' | 'sao-paulo'; // Região para filtros
     coordinates: { lat: number; lng: number };
     address?: string;                    // Endereço completo
 }
@@ -38,6 +39,9 @@ export interface DevelopmentPriceRange {
 export interface DevelopmentImages {
     main: string;                        // URL principal (placeholder se vazio)
     gallery: string[];                   // URLs da galeria
+    videos: string[];                    // URLs de vídeo (YouTube/Vimeo embed)
+    floorPlans: string[];                // Plantas baixas
+    virtualTour?: string;                // Link para tour virtual
 }
 
 export interface DevelopmentExternalLinks {
@@ -54,6 +58,7 @@ export interface Development {
     developer: string;                   // "Setai Grupo GP"
     developerLogo?: string;              // URL da logo da construtora
     status: DevelopmentStatus;
+    region: 'paraiba' | 'pernambuco' | 'sao-paulo'; // Região para filtros
     location: DevelopmentLocation;
     deliveryDate?: string;               // Ex: "Dezembro 2026"
     registrationNumber?: string;         // Ex: "R-02-30.697"
@@ -63,7 +68,7 @@ export interface Development {
     specs: DevelopmentSpecs;
     priceRange: DevelopmentPriceRange;
     images: DevelopmentImages;
-    videoUrl?: string;                   // YouTube/Vimeo embed URL
+    videoUrl?: string;                   // YouTube/Vimeo embed URL (deprecated, prefer images.videos)
     externalLinks?: DevelopmentExternalLinks;
     units: DevelopmentUnit[];
     tags: string[];                      // Ex: ["frente-mar", "flat", "luxo"]

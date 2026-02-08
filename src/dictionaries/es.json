@@ -1,0 +1,32 @@
+{
+    "Header": {
+        "presentation": "IMI - Presentación",
+        "services": "Valoraciones",
+        "properties": "Propiedades",
+        "credit": "Crédito",
+        "consulting": "Consultoría",
+        "intelligence": "Inteligencia",
+        "projects": "Proyectos",
+        "about": "Sobre nosotros",
+        "contact": "Contacto",
+        "whatsapp": "Hablar por WhatsApp"
+    },
+    "Home": {
+        "hero_title": "Inteligencia,\nmétodo y seguridad\nen decisiones inmobiliarias",
+        "hero_subtitle": "Consultoría estratégica y valoraciones técnicas.\nTransformamos incertidumbre en capital seguro.",
+        "cta_appraisal": "Solicitar Valoración",
+        "cta_whatsapp": "Hablar por WhatsApp",
+        "card_appraisals_title": "Valoraciones Técnicas",
+        "card_appraisals_desc": "Informes con rigor normativo (NBR 14653) para fines judiciales, garantía bancaria e inventarios. Precisión técnica ante todo.",
+        "card_consulting_title": "Consultoría Estratégica",
+        "card_consulting_desc": "Análisis de viabilidad e inteligencia de mercado para inversores. Decisiones basadas en datos, no en \"feeling\".",
+        "card_brokerage_title": "Corretaje Curado",
+        "card_brokerage_desc": "Venta y alquiler de propiedades seleccionadas. Foco en la calidad del activo y en la seguridad jurídica de la transacción.",
+        "method_pre": "Método IMI",
+        "method_title": "El mercado inmobiliario no acepta el amateurismo. Transformamos datos complejos en decisiones de capital seguras.",
+        "method_cta": "Conozca Nuestra Trayectoria",
+        "final_cta_title": "¿Necesita una valoración técnica?",
+        "final_cta_desc": "Póngase en contacto hoy mismo para programar una consulta inicial o solicitar un presupuesto de valoración.",
+        "final_cta_btn": "Hablar por WhatsApp"
+    }
+}

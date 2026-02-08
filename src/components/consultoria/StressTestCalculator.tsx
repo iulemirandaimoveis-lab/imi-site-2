@@ -16,17 +16,17 @@ export function StressTestCalculator() {
     const isSafe = netPosition > 0;
 
     return (
-        <div className="bg-white p-8 rounded-3xl shadow-soft border border-slate-100 h-full flex flex-col">
-            <h3 className="text-xl font-bold text-navy-900 mb-2 font-display">Teste de Estresse</h3>
-            <p className="text-sm text-slate-500 mb-8">Avalie a resiliência do seu investimento frente a períodos de baixa ocupação.</p>
+        <div className="bg-white p-8 rounded-3xl shadow-soft border border-imi-100 h-full flex flex-col">
+            <h3 className="text-xl font-bold text-imi-900 mb-2 font-display">Teste de Estresse</h3>
+            <p className="text-sm text-imi-500 mb-8">Avalie a resiliência do seu investimento frente a períodos de baixa ocupação.</p>
 
             <div className="space-y-8 flex-grow">
                 <div>
                     <div className="flex justify-between mb-4">
-                        <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">
+                        <label className="text-xs font-bold text-imi-500 uppercase tracking-widest">
                             Simular Taxa de Vacância
                         </label>
-                        <span className={`font-bold ${vacancyRate > 50 ? 'text-red-500' : 'text-navy-900'}`}>{vacancyRate}%</span>
+                        <span className={`font-bold ${vacancyRate > 50 ? 'text-red-500' : 'text-imi-900'}`}>{vacancyRate}%</span>
                     </div>
                     <input
                         type="range"
@@ -35,7 +35,7 @@ export function StressTestCalculator() {
                         step="5"
                         value={vacancyRate}
                         onChange={(e) => setVacancyRate(Number(e.target.value))}
-                        className={`w-full h-2 rounded-lg appearance-none cursor-pointer transition-colors duration-500 ${isSafe ? 'bg-slate-100 accent-navy-900' : 'bg-red-100 accent-red-500'}`}
+                        className={`w-full h-2 rounded-lg appearance-none cursor-pointer transition-colors duration-500 ${isSafe ? 'bg-imi-100 accent-imi-900' : 'bg-red-100 accent-red-500'}`}
                     />
                 </div>
 
@@ -58,12 +58,12 @@ export function StressTestCalculator() {
 
                 <div className="grid grid-cols-2 gap-4 mt-auto">
                     <div className="text-center">
-                        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Ponto de Equilíbrio</div>
-                        <div className="text-sm font-bold text-navy-900">12% de Vacância</div>
+                        <div className="text-[10px] font-bold text-imi-400 uppercase tracking-widest mb-1">Ponto de Equilíbrio</div>
+                        <div className="text-sm font-bold text-imi-900">12% de Vacância</div>
                     </div>
                     <div className="text-center">
-                        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Margem de Segurança</div>
-                        <div className="text-sm font-bold text-navy-900">Alta</div>
+                        <div className="text-[10px] font-bold text-imi-400 uppercase tracking-widest mb-1">Margem de Segurança</div>
+                        <div className="text-sm font-bold text-imi-900">Alta</div>
                     </div>
                 </div>
             </div>

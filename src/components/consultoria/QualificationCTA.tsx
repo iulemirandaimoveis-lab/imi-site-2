@@ -5,9 +5,9 @@ import { MessageCircle, ArrowRight } from 'lucide-react';
 
 export function QualificationCTA() {
     return (
-        <section className="relative py-24 bg-navy-900 overflow-hidden">
+        <section className="relative py-24 bg-imi-900 overflow-hidden">
             {/* Background Details */}
-            <div className="absolute top-0 right-0 w-1/3 h-full bg-gold-500/5 -skew-x-12 translate-x-1/4 pointer-events-none" />
+            <div className="absolute top-0 right-0 w-1/3 h-full bg-accent-500/5 -skew-x-12 translate-x-1/4 pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-1/4 h-full bg-white/5 skew-x-12 -translate-x-1/4 pointer-events-none" />
 
             <div className="container-custom relative z-10">
@@ -16,12 +16,12 @@ export function QualificationCTA() {
                         Vamos estruturar seu plano internacional?
                     </h2>
 
-                    <p className="mt-6 text-lg md:text-xl leading-relaxed text-slate-300 max-w-2xl mx-auto font-light">
+                    <p className="mt-6 text-lg md:text-xl leading-relaxed text-imi-300 max-w-2xl mx-auto font-light">
                         Agende uma sessão estratégica exclusiva com nossos especialistas para analisar seu perfil e apresentar as melhores teses de investimento disponíveis hoje.
                     </p>
 
                     <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6">
-                        <Button size="lg" className="bg-white text-navy-900 hover:bg-slate-100 min-w-[240px]" asChild>
+                        <Button size="lg" className="bg-white text-imi-900 hover:bg-imi-50 min-w-[240px]" asChild>
                             <a href="https://wa.me/5581997230455?text=Ol%C3%A1%2C%20queria%20agendar%20uma%20sess%C3%A3o%20estrat%C3%A9gica%20sobre%20im%C3%B3veis%20internacionais.">
                                 <MessageCircle className="w-5 h-5 mr-3" />
                                 Agendar Sessão Gratuita
@@ -30,7 +30,7 @@ export function QualificationCTA() {
 
                         <a
                             href="#simulator"
-                            className="text-sm font-bold leading-6 text-white flex items-center gap-2 group hover:text-gold-500 transition-colors"
+                            className="text-sm font-bold leading-6 text-white flex items-center gap-2 group hover:text-accent-500 transition-colors"
                         >
                             Refazer simulação de investimento
                             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -45,8 +45,8 @@ export function QualificationCTA() {
                             { label: 'Suporte VIP', value: '24/7' }
                         ].map((item, i) => (
                             <div key={i} className="text-center">
-                                <div className="text-xl font-bold text-gold-500 mb-1">{item.value}</div>
-                                <div className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">{item.label}</div>
+                                <div className="text-xl font-bold text-accent-500 mb-1">{item.value}</div>
+                                <div className="text-[10px] uppercase tracking-widest text-imi-500 font-bold">{item.label}</div>
                             </div>
                         ))}
                     </div>

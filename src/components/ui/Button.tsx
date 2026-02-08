@@ -18,22 +18,22 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         const base = [
             'inline-flex items-center justify-center font-semibold',
             'tracking-wide transition-all duration-300 ease-out',
-            'focus:outline-none focus:ring-2 focus:ring-navy-900/20 focus:ring-offset-2',
+            'focus:outline-none focus:ring-2 focus:ring-imi-900/20 focus:ring-offset-2',
             'disabled:opacity-50 disabled:cursor-not-allowed',
             'active:scale-[0.98]',
         ].join(' ')
 
         const variants = {
-            primary: 'bg-navy-900 text-white hover:bg-navy-800 shadow-sm hover:shadow-md',
-            secondary: 'bg-white text-navy-900 border-2 border-navy-900 hover:bg-navy-900 hover:text-white',
-            outline: 'bg-transparent text-navy-900 border border-slate-200 hover:border-navy-900 hover:bg-slate-50',
-            ghost: 'text-navy-700 hover:text-navy-900 hover:bg-slate-50',
+            primary: 'bg-imi-900 text-white hover:bg-imi-800 shadow-sm hover:shadow-md',
+            secondary: 'bg-white text-imi-900 border-2 border-imi-900 hover:bg-imi-900 hover:text-white',
+            outline: 'bg-transparent text-imi-900 border border-imi-100 hover:border-imi-900 hover:bg-imi-50',
+            ghost: 'text-imi-600 hover:text-imi-900 hover:bg-imi-50',
         }
 
         const sizes = {
-            sm: 'h-10 px-5 text-xs rounded-lg gap-2',
-            md: 'h-12 px-8 text-sm rounded-lg gap-2',
-            lg: 'h-14 px-10 text-base rounded-lg gap-3',
+            sm: 'h-10 px-5 text-sm rounded-lg gap-2',
+            md: 'h-12 sm:h-11 px-8 text-base sm:text-sm rounded-lg gap-2',
+            lg: 'h-14 sm:h-12 px-10 text-lg sm:text-base rounded-lg gap-3',
         }
 
         const classes = cn(base, variants[variant], sizes[size],

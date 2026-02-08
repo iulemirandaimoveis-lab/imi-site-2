@@ -12,83 +12,94 @@ interface PropertyCardProps {
     property: Property
 }
 
+import { Property } from '@/types/property'
+import Card from '@/components/ui/Card'
+import Badge from '@/components/ui/Badge'
+import Button from '@/components/ui/Button'
+import { formatCurrency } from '@/lib/utils'
+import { Bed, Move, MapPin, ChevronRight } from 'lucide-react'
+
+interface PropertyCardProps {
+    property: Property
+}
+
 export default function PropertyCard({ property }: PropertyCardProps) {
     const primaryImage = property.images.find(img => img.isPrimary) || property.images[0]
 
     return (
-        <Card hover className="overflow-hidden">
-            <Link href={`/imoveis/${property.slug}`}>
-                <div className="relative h-64 bg-neutral-200">
-                    {primaryImage ? (
-                        <Image
-                            src={primaryImage.url}
-                            alt={primaryImage.alt}
-                            fill
-                            className="object-cover"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        />
-                    ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-neutral-100">
-                            <svg className="w-16 h-16 text-neutral-400" fill="none" viewBox="0 0 24 24" strokeWidth="1" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                            </svg>
-                        </div>
-                    )}
-
-                    {/* Badges */}
-                    <div className="absolute top-4 left-4 flex flex-col gap-2">
-                        {property.status === 'lancamento' && (
-                            <Badge variant="info">Lançamento</Badge>
-                        )}
-                        {property.technicalAnalysisAvailable && (
-                            <Badge variant="success">Análise técnica disponível</Badge>
-                        )}
-                        {property.isStrategicAsset && (
-                            <Badge variant="warning">Ativo estratégico</Badge>
-                        )}
+        <Card hover className="overflow-hidden group flex flex-col h-full bg-white border-slate-200/60 shadow-soft hover:shadow-card-hover transition-all duration-300 rounded-[2rem]">
+            <Link href={`/imoveis/${property.slug}`} className="relative block overflow-hidden aspect-[4/3] sm:aspect-video lg:aspect-[4/3]">
+                {primaryImage ? (
+                    <Image
+                        src={primaryImage.url}
+                        alt={primaryImage.alt}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
+                ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-slate-100">
+                        <MapPin className="w-12 h-12 text-slate-300" />
                     </div>
+                )}
+
+                {/* Badges Overlay */}
+                <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+                    {property.status === 'lancamento' && (
+                        <Badge variant="info" className="bg-blue-600 text-white border-none px-3 py-1 shadow-lg">Lançamento</Badge>
+                    )}
+                    {property.technicalAnalysisAvailable && (
+                        <Badge variant="success" className="bg-emerald-600 text-white border-none px-3 py-1 shadow-lg">Análise Técnica</Badge>
+                    )}
                 </div>
             </Link>
 
-            <div className="p-6">
+            <div className="p-6 sm:p-8 flex flex-col flex-grow">
+                <div className="mb-2 flex items-center gap-1.5 text-slate-400">
+                    <MapPin className="w-3.5 h-3.5" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest">
+                        {property.neighborhood}, {property.city}
+                    </span>
+                </div>
+
                 <Link href={`/imoveis/${property.slug}`}>
-                    <h3 className="text-xl font-bold text-neutral-900 mb-2 hover:text-primary-700 transition-colors">
+                    <h3 className="text-xl font-bold text-navy-900 mb-4 group-hover:text-gold-600 transition-colors line-clamp-2 leading-tight font-display">
                         {property.title}
                     </h3>
                 </Link>
 
-                <p className="text-sm text-neutral-600 mb-4">
-                    {property.neighborhood}, {property.city}
-                </p>
-
-                <div className="flex items-center gap-4 text-sm text-neutral-600 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-6">
                     {property.bedrooms && (
-                        <div className="flex items-center gap-1">
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                            </svg>
-                            <span>{property.bedrooms} quartos</span>
+                        <div className="flex items-center gap-2.5 text-slate-500 bg-slate-50 p-3 rounded-2xl">
+                            <Bed className="w-4 h-4 text-navy-900" />
+                            <span className="text-sm font-medium">{property.bedrooms} Quartos</span>
                         </div>
                     )}
-                    <div className="flex items-center gap-1">
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z" />
-                        </svg>
-                        <span>{property.area}m²</span>
+                    <div className="flex items-center gap-2.5 text-slate-500 bg-slate-50 p-3 rounded-2xl">
+                        <Move className="w-4 h-4 text-navy-900" />
+                        <span className="text-sm font-medium">{property.area}m²</span>
                     </div>
                 </div>
 
-                <div className="mb-4">
-                    {property.priceOnRequest ? (
-                        <p className="text-2xl font-bold text-primary-900">Sob consulta</p>
-                    ) : (
-                        <p className="text-2xl font-bold text-primary-900">{formatCurrency(property.price!)}</p>
-                    )}
-                </div>
+                <div className="mt-auto pt-6 border-t border-slate-100 flex items-center justify-between gap-4">
+                    <div>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.1em] mb-1">
+                            Investimento
+                        </p>
+                        {property.priceOnRequest ? (
+                            <p className="text-xl font-bold text-navy-900 italic">Sob consulta</p>
+                        ) : (
+                            <p className="text-xl font-bold text-navy-900">{formatCurrency(property.price!)}</p>
+                        )}
+                    </div>
 
-                <Button asChild variant="outline" className="w-full">
-                    <Link href={`/imoveis/${property.slug}`}>Ver análise do imóvel</Link>
-                </Button>
+                    <Link
+                        href={`/imoveis/${property.slug}`}
+                        className="w-12 h-12 rounded-full bg-navy-900 flex items-center justify-center text-white hover:bg-gold-600 transition-all active:scale-95 shadow-lg"
+                    >
+                        <ChevronRight className="w-5 h-5" />
+                    </Link>
+                </div>
             </div>
         </Card>
     )

@@ -10,11 +10,11 @@
   }
 
   body {
-    @apply text-slate-600 bg-white;
+    @apply text-imi-500 bg-white;
   }
 
   ::selection {
-    @apply bg-navy-900/10 text-navy-900;
+    @apply bg-imi-900/10 text-imi-900;
   }
 }
 
@@ -28,7 +28,7 @@
   }
 
   .prose-custom {
-    @apply max-w-none text-base leading-relaxed text-slate-600;
+    @apply max-w-none text-base leading-relaxed text-imi-500;
   }
 
   .prose-custom p {
@@ -36,10 +36,19 @@
   }
 
   .prose-custom strong {
-    @apply font-semibold text-slate-900;
+    @apply font-semibold text-imi-900;
   }
 }
 
 * {
   -webkit-tap-highlight-color: transparent;
+}
+
+[dir="rtl"] .container-custom {
+  direction: rtl;
+}
+
+[dir="rtl"] .font-display {
+  /* Playfair Display has poor Arabic support - use fallback */
+  font-family: var(--font-inter), system-ui, sans-serif;
 }

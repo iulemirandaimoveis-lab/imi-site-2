@@ -23,7 +23,6 @@ export default function ContactPage() {
         e.preventDefault()
         setIsSubmitting(true)
 
-        // Formatar mensagem para WhatsApp
         const whatsappMessage = `
 *Contato via Site IMI*
 
@@ -37,11 +36,8 @@ ${formData.message}
     `.trim()
 
         const whatsappUrl = `https://wa.me/5581997230455?text=${encodeURIComponent(whatsappMessage)}`
-
-        // Abrir WhatsApp em nova aba
         window.open(whatsappUrl, '_blank')
 
-        // Reset form
         setFormData({
             name: '',
             email: '',
@@ -75,41 +71,31 @@ ${formData.message}
     ]
 
     return (
-        <>
+        <main className="bg-white">
             {/* HERO */}
-            <section className="bg-navy-900 text-white section-padding relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-1/3 h-full bg-gold-500/5 -skew-x-12 translate-x-1/4" />
-
+            <section className="bg-imi-900 text-white section-padding pt-32 lg:pt-40 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-1/3 h-full bg-accent-500/5 -skew-x-12 translate-x-1/4" />
                 <div className="container-custom relative z-10">
-                    <motion.div
-                        className="max-w-3xl"
-                        variants={slideUp}
-                        initial="hidden"
-                        animate="visible"
-                    >
+                    <div className="max-w-4xl">
                         <div className="flex items-center gap-3 mb-6">
-                            <div className="w-12 h-px bg-gold-500" />
-                            <span className="text-gold-500 font-semibold uppercase tracking-[0.2em] text-xs">
-                                Contato
-                            </span>
+                            <div className="w-12 h-px bg-accent-500" />
+                            <span className="text-accent-500 font-semibold uppercase tracking-[0.2em] text-[10px] sm:text-xs">Fale Conosco</span>
                         </div>
-
-                        <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight">
-                            Vamos Conversar Sobre Seu Projeto
+                        <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl font-bold mb-8 tracking-tight leading-tight">
+                            Atendimento Técnico Personalizado
                         </h1>
-
-                        <p className="text-slate-300 text-lg md:text-xl font-light leading-relaxed max-w-2xl">
-                            Entre em contato conosco e descubra como podemos ajudar a alcançar seus objetivos no mercado imobiliário.
+                        <p className="text-imi-300 text-lg sm:text-xl font-light leading-relaxed max-w-2xl">
+                            Entre em contato conosco e descubra como nossa inteligência pode proteger e valorizar seu patrimônio.
                         </p>
-                    </motion.div>
+                    </div>
                 </div>
             </section>
 
             {/* INFORMAÇÕES DE CONTATO */}
-            <section className="section-padding bg-slate-50">
+            <section className="section-padding bg-imi-50">
                 <div className="container-custom">
                     <motion.div
-                        className="grid md:grid-cols-3 gap-8 mb-16"
+                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
                         variants={staggerContainer}
                         initial="hidden"
                         whileInView="visible"
@@ -119,23 +105,23 @@ ${formData.message}
                             <motion.div
                                 key={index}
                                 variants={slideUp}
-                                className="p-8 rounded-xl bg-white border border-slate-100 shadow-soft text-center hover:shadow-card-hover transition-all duration-300"
+                                className="p-8 sm:p-10 rounded-3xl bg-white border border-imi-100 shadow-soft transition-all duration-300 group hover:shadow-card-hover"
                             >
-                                <div className="w-12 h-12 bg-navy-900/10 text-navy-900 rounded-xl flex items-center justify-center mb-6 mx-auto">
-                                    <item.icon className="w-5 h-5" strokeWidth={1.5} />
+                                <div className="w-14 h-14 bg-imi-900 text-white rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                                    <item.icon className="w-6 h-6" strokeWidth={1.5} />
                                 </div>
-                                <h3 className="text-xl font-bold text-navy-900 mb-3 font-display">
+                                <h3 className="text-xl font-bold text-imi-900 mb-4 font-display">
                                     {item.title}
                                 </h3>
                                 {item.link ? (
                                     <a
                                         href={item.link}
-                                        className="text-slate-600 leading-relaxed text-sm hover:text-navy-900 transition-colors"
+                                        className="text-imi-500 leading-relaxed text-sm hover:text-imi-900 transition-colors break-words"
                                     >
                                         {item.content}
                                     </a>
                                 ) : (
-                                    <p className="text-slate-600 leading-relaxed text-sm">
+                                    <p className="text-imi-500 leading-relaxed text-sm">
                                         {item.content}
                                     </p>
                                 )}
@@ -148,24 +134,28 @@ ${formData.message}
             {/* FORMULÁRIO */}
             <section className="section-padding">
                 <div className="container-custom">
-                    <div className="max-w-2xl mx-auto">
+                    <div className="max-w-4xl mx-auto">
                         <motion.div
                             variants={slideUp}
                             initial="hidden"
                             whileInView="visible"
                             viewport={{ once: true }}
+                            className="bg-white rounded-[2rem] border border-imi-100 p-8 sm:p-12 lg:p-16 shadow-elevated"
                         >
-                            <h2 className="font-display text-3xl md:text-4xl font-bold text-navy-900 mb-4 text-center">
-                                Envie sua Mensagem
-                            </h2>
-                            <p className="text-slate-600 text-lg text-center mb-12">
-                                Preencha o formulário abaixo e entraremos em contato em breve
-                            </p>
+                            <div className="text-center mb-12">
+                                <h2 className="font-display text-3xl sm:text-4xl font-bold text-imi-900 mb-4">
+                                    Envie sua Mensagem
+                                </h2>
+                                <p className="text-imi-500 text-lg font-light">
+                                    Preencha o formulário abaixo e retornaremos em breve.
+                                </p>
+                            </div>
 
-                            <form onSubmit={handleSubmit} className="space-y-6">
-                                <div className="grid md:grid-cols-2 gap-6">
+                            <form onSubmit={handleSubmit} className="space-y-8">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                                     <Input
                                         label="Nome Completo"
+                                        placeholder="Como devemos chamá-lo?"
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                         required
@@ -174,6 +164,7 @@ ${formData.message}
                                     <Input
                                         label="Email"
                                         type="email"
+                                        placeholder="seu@email.com"
                                         value={formData.email}
                                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                         required
@@ -181,9 +172,10 @@ ${formData.message}
                                     />
                                 </div>
 
-                                <div className="grid md:grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                                     <Input
-                                        label="Telefone"
+                                        label="Telefone / WhatsApp"
+                                        placeholder="(00) 00000-0000"
                                         value={formData.phone}
                                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                         required
@@ -191,6 +183,7 @@ ${formData.message}
                                     />
                                     <Input
                                         label="Assunto"
+                                        placeholder="Ex: Avaliação de Imóvel"
                                         value={formData.subject}
                                         onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                                         required
@@ -200,7 +193,7 @@ ${formData.message}
 
                                 <Textarea
                                     label="Mensagem"
-                                    rows={6}
+                                    placeholder="Conte-nos brevemente sobre sua necessidade..."
                                     value={formData.message}
                                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                                     required
@@ -210,11 +203,11 @@ ${formData.message}
                                 <Button
                                     type="submit"
                                     size="lg"
-                                    className="w-full"
+                                    className="w-full h-14"
                                     disabled={isSubmitting}
                                 >
                                     {isSubmitting ? (
-                                        <>Enviando...</>
+                                        "Enviando..."
                                     ) : (
                                         <>
                                             <Send className="w-5 h-5 mr-3" />
@@ -229,22 +222,22 @@ ${formData.message}
             </section>
 
             {/* CTA WHATSAPP */}
-            <section className="bg-navy-900 text-white section-padding text-center relative overflow-hidden">
+            <section className="bg-imi-900 text-white section-padding text-center relative overflow-hidden">
                 <div className="container-custom relative z-10">
-                    <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
-                        Prefere WhatsApp?
+                    <h2 className="font-display text-3xl sm:text-4xl font-bold mb-6">
+                        Respostas Imediatas
                     </h2>
-                    <p className="text-slate-400 text-lg mb-10 max-w-2xl mx-auto font-light">
-                        Fale diretamente com nossos especialistas pelo WhatsApp para respostas imediatas
+                    <p className="text-imi-400 text-lg mb-10 max-w-xl mx-auto font-light leading-relaxed">
+                        Precisa de agilidade? Fale diretamente com nossa equipe técnica pelo WhatsApp.
                     </p>
-                    <Button asChild size="lg" className="bg-white text-navy-900 hover:bg-slate-100">
+                    <Button asChild size="lg" className="bg-white text-imi-900 hover:bg-imi-50 h-14 px-10">
                         <a href="https://wa.me/5581997230455" target="_blank" rel="noopener noreferrer">
                             <MessageCircle className="w-5 h-5 mr-3" />
-                            Abrir WhatsApp
+                            Abrir Chat no WhatsApp
                         </a>
                     </Button>
                 </div>
             </section>
-        </>
+        </main>
     )
 }

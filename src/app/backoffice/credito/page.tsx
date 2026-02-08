@@ -5,17 +5,15 @@ import useSWR from 'swr';
 import { createClient } from '@/lib/supabase/client';
 import {
     Search,
-    Calendar,
-    Clock,
+    Banknote,
     X,
     MessageCircle,
-    Phone,
-    Mail,
     CheckCircle2,
     Loader2,
-    Briefcase,
-    MapPin,
     DollarSign,
+    Target,
+    Activity,
+    User,
     MoreHorizontal
 } from 'lucide-react';
 import Button from '@/components/ui/Button';
@@ -28,26 +26,26 @@ const supabase = createClient();
 
 const statusLabels: Record<string, string> = {
     pending: 'Pendente',
-    scheduled: 'Agendada',
-    completed: 'Concluída',
-    cancelled: 'Cancelada'
+    analyzing: 'Em Análise',
+    approved: 'Aprovado',
+    denied: 'Negado'
 };
 
 const statusColors: Record<string, string> = {
     pending: 'bg-yellow-100 text-yellow-700',
-    scheduled: 'bg-blue-100 text-blue-700',
-    completed: 'bg-green-100 text-green-700',
-    cancelled: 'bg-red-100 text-red-700'
+    analyzing: 'bg-blue-100 text-blue-700',
+    approved: 'bg-green-100 text-green-700',
+    denied: 'bg-red-100 text-red-700'
 };
 
-export default function ConsultationsPage() {
+export default function CreditRequestsPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [selectedItem, setSelectedItem] = useState<any>(null);
 
-    const { data: items, mutate, isLoading } = useSWR('consultations', async () => {
+    const { data: items, mutate, isLoading } = useSWR('credit_requests', async () => {
         const { data, error } = await supabase
-            .from('consultations')
+            .from('credit_requests')
             .select('*')
             .order('created_at', { ascending: false });
         if (error) throw error;
@@ -56,7 +54,7 @@ export default function ConsultationsPage() {
 
     const handleUpdateStatus = async (id: string, status: string) => {
         const { error } = await supabase
-            .from('consultations')
+            .from('credit_requests')
             .update({ status, updated_at: new Date().toISOString() })
             .eq('id', id);
 
@@ -80,8 +78,8 @@ export default function ConsultationsPage() {
     return (
         <div className="space-y-8">
             <div>
-                <h1 className="text-3xl font-bold text-imi-900 font-display">Solicitações de Consultoria</h1>
-                <p className="text-imi-500 mt-1">Interessados em investimento e inteligência imobiliária.</p>
+                <h1 className="text-3xl font-bold text-imi-900 font-display">Solicitações de Crédito</h1>
+                <p className="text-imi-500 mt-1">Gestão de simulações e pedidos de financiamento/consórcio.</p>
             </div>
 
             <div className="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-2xl shadow-soft border border-imi-50">
@@ -102,9 +100,9 @@ export default function ConsultationsPage() {
                 >
                     <option value="all">Todos Status</option>
                     <option value="pending">Pendentes</option>
-                    <option value="scheduled">Agendadas</option>
-                    <option value="completed">Concluídas</option>
-                    <option value="cancelled">Canceladas</option>
+                    <option value="analyzing">Em Análise</option>
+                    <option value="approved">Aprovados</option>
+                    <option value="denied">Negados</option>
                 </select>
             </div>
 
@@ -115,7 +113,7 @@ export default function ConsultationsPage() {
                             <tr className="bg-imi-50/50 border-b border-imi-100">
                                 <th className="px-6 py-4 text-xs font-bold text-imi-400 uppercase tracking-widest">Solicitante</th>
                                 <th className="px-6 py-4 text-xs font-bold text-imi-400 uppercase tracking-widest text-center">Status</th>
-                                <th className="px-6 py-4 text-xs font-bold text-imi-400 uppercase tracking-widest">Tipo / Perfil</th>
+                                <th className="px-6 py-4 text-xs font-bold text-imi-400 uppercase tracking-widest">Valor / Modalidade</th>
                                 <th className="px-6 py-4 text-xs font-bold text-imi-400 uppercase tracking-widest">Data</th>
                                 <th className="px-6 py-4 text-xs font-bold text-imi-400 uppercase tracking-widest text-right">Ações</th>
                             </tr>
@@ -140,8 +138,8 @@ export default function ConsultationsPage() {
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex flex-col">
-                                            <span className="text-xs font-bold text-imi-900">{item.consultation_type}</span>
-                                            <span className="text-[10px] text-imi-400 uppercase tracking-tighter">{item.investment_profile}</span>
+                                            <span className="text-xs font-bold text-imi-900">R$ {item.desired_value?.toLocaleString('pt-BR')}</span>
+                                            <span className="text-[10px] text-imi-400 uppercase font-bold tracking-tighter">{item.credit_type}</span>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">
@@ -168,31 +166,27 @@ export default function ConsultationsPage() {
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-imi-900/40 backdrop-blur-sm z-[200]" onClick={() => setSelectedItem(null)} />
                         <motion.aside initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} className="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl z-[210] flex flex-col">
                             <div className="p-6 border-b border-imi-100 flex items-center justify-between">
-                                <h2 className="text-xl font-bold text-imi-900 font-display">Detalhes da Consultoria</h2>
+                                <h2 className="text-xl font-bold text-imi-900 font-display">Análise de Crédito</h2>
                                 <button onClick={() => setSelectedItem(null)} className="p-2 hover:bg-imi-50 rounded-full"><X size={24} /></button>
                             </div>
 
                             <div className="flex-1 overflow-y-auto p-8 space-y-8">
                                 <div className="space-y-4">
-                                    <div className="p-4 bg-imi-50 rounded-2xl space-y-2">
-                                        <div className="text-[10px] font-bold text-imi-400 uppercase tracking-widest">Tipo de Consultoria</div>
-                                        <div className="text-lg font-bold text-imi-900">{selectedItem.consultation_type}</div>
+                                    <div className="p-5 bg-imi-900 text-white rounded-3xl space-y-2 shadow-xl shadow-imi-900/20">
+                                        <div className="text-[10px] font-bold text-imi-400 uppercase tracking-widest">Valor do Crédito Desejado</div>
+                                        <div className="text-3xl font-bold font-display leading-tight">R$ {selectedItem.desired_value?.toLocaleString('pt-BR')}</div>
+                                        <div className="inline-block px-3 py-1 bg-accent-500 rounded-full text-[10px] font-bold uppercase tracking-widest">{selectedItem.credit_type}</div>
                                     </div>
 
                                     <div className="grid grid-cols-1 gap-3">
-                                        <DetailItem icon={<MapPin size={16} />} label="Cidade de Interesse" value={selectedItem.city_interest} />
-                                        <DetailItem icon={<Briefcase size={16} />} label="Perfil do Investidor" value={selectedItem.investment_profile} />
-                                        <DetailItem icon={<DollarSign size={16} />} label="Budget Disponível" value={selectedItem.budget_range} />
-                                    </div>
-
-                                    <div className="p-4 bg-white border border-imi-50 rounded-2xl space-y-2">
-                                        <div className="text-[10px] font-bold text-imi-400 uppercase tracking-widest">Mensagem do Solicitante</div>
-                                        <p className="text-sm text-imi-600 leading-relaxed italic">"{selectedItem.message}"</p>
+                                        <DetailItem icon={<Target size={16} />} label="Renda Familiar" value={selectedItem.income_range} />
+                                        <DetailItem icon={<Activity size={16} />} label="Uso do FGTS" value={selectedItem.has_fgts ? 'Sim' : 'Não'} />
+                                        <DetailItem icon={<User size={16} />} label="Perfil Financeiro" value="Verificado via formulário" />
                                     </div>
                                 </div>
 
                                 <div className="space-y-4">
-                                    <h4 className="text-xs font-bold text-imi-900 uppercase tracking-[0.2em]">Atualizar Status</h4>
+                                    <h4 className="text-xs font-bold text-imi-900 uppercase tracking-[0.2em]">Decisão de Crédito</h4>
                                     <div className="grid grid-cols-2 gap-2">
                                         {Object.entries(statusLabels).map(([key, label]) => (
                                             <button key={key} onClick={() => handleUpdateStatus(selectedItem.id, key)} className={cn("py-3 rounded-xl text-xs font-bold border transition-all", selectedItem.status === key ? cn(statusColors[key], "border-transparent ring-2 ring-accent-500") : "bg-white border-imi-100 text-imi-400 hover:border-imi-300")}>
@@ -201,13 +195,18 @@ export default function ConsultationsPage() {
                                         ))}
                                     </div>
                                 </div>
+
+                                <div className="p-4 bg-imi-50 rounded-2xl">
+                                    <div className="text-[10px] font-bold text-imi-400 uppercase tracking-widest mb-2">Histórico de Notas</div>
+                                    <textarea className="w-full bg-white border border-imi-100 rounded-xl p-3 text-sm h-24" placeholder="Adicionar observação interna..." />
+                                </div>
                             </div>
 
                             <div className="p-8 border-t border-imi-100">
                                 <Button asChild fullWidth className="h-14 bg-imi-900">
                                     <a href={`https://wa.me/55${selectedItem.phone?.replace(/\D/g, '')}`} target="_blank">
                                         <MessageCircle size={20} className="mr-2" />
-                                        Entrar em contato
+                                        Falar pelo WhatsApp
                                     </a>
                                 </Button>
                             </div>

@@ -21,13 +21,14 @@ export default async function WebsiteLayout({
     params: { lang }
 }: {
     children: React.ReactNode
-    params: { lang: 'pt' | 'en' | 'ja' }
+    params: { lang: 'pt' | 'en' | 'ja' | 'ar' | 'es' }
 }) {
+    const isRTL = lang === 'ar';
     const organizationSchema = generateOrganizationSchema()
     const dict = await getDictionary(lang)
 
     return (
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col min-h-screen" dir={isRTL ? 'rtl' : 'ltr'}>
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}

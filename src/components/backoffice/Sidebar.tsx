@@ -9,25 +9,23 @@ import {
     Users,
     Building2,
     Calendar,
-    BarChart3,
     Settings,
     X,
     Menu,
     LogOut,
-    Ticket,
-    MessageSquare
+    Banknote,
+    FileText
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 
 const sidebarItems = [
     { label: 'Dashboard', href: '/backoffice/dashboard', icon: LayoutDashboard },
+    { label: 'Imóveis', href: '/backoffice/imoveis', icon: Building2 },
     { label: 'Leads', href: '/backoffice/leads', icon: Users },
-    { label: 'Imóveis', href: '/backoffice/properties', icon: Building2 },
     { label: 'Consultorias', href: '/backoffice/consultations', icon: Calendar },
-    { label: 'Cupons', href: '/backoffice/coupons', icon: Ticket },
-    { label: 'WhatsApp', href: '/backoffice/whatsapp', icon: MessageSquare },
-    { label: 'Relatórios', href: '/backoffice/reports', icon: BarChart3 },
+    { label: 'Crédito', href: '/backoffice/credito', icon: Banknote },
+    { label: 'Avaliações', href: '/backoffice/avaliacoes', icon: FileText },
     { label: 'Configurações', href: '/backoffice/settings', icon: Settings },
 ];
 
@@ -46,11 +44,11 @@ export default function Sidebar() {
     return (
         <>
             {/* Desktop Sidebar */}
-            <aside className="hidden lg:flex lg:flex-col lg:w-72 lg:border-r lg:border-gray-200 lg:bg-white/80 lg:backdrop-blur-xl lg:shadow-soft fixed inset-y-0 left-0 z-30 overflow-y-auto">
+            <aside className="hidden lg:flex lg:flex-col lg:w-72 lg:border-r lg:border-imi-100 lg:bg-white/80 lg:backdrop-blur-xl lg:shadow-soft fixed inset-y-0 left-0 z-30 overflow-y-auto">
                 <div className="p-6 flex flex-col h-full">
                     <div className="mb-8">
-                        <h2 className="text-2xl font-bold text-navy-700">IMI Admin</h2>
-                        <p className="text-sm text-gray-600 mt-1">Inteligência Imobiliária</p>
+                        <h2 className="text-2xl font-bold text-imi-900 font-display">IMI Admin</h2>
+                        <p className="text-sm text-imi-400 mt-1 uppercase tracking-widest text-[10px] font-bold">Inteligência Imobiliária</p>
                     </div>
 
                     <nav className="space-y-1 flex-1">
@@ -62,11 +60,11 @@ export default function Sidebar() {
                                     key={item.href}
                                     href={item.href}
                                     className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-300 ${isActive
-                                        ? 'bg-blue-50 text-blue-600 shadow-soft'
-                                        : 'text-gray-700 hover:bg-gray-100/80 hover:text-navy-600'
+                                        ? 'bg-imi-50 text-imi-900 shadow-soft'
+                                        : 'text-imi-500 hover:bg-imi-50 hover:text-imi-900'
                                         }`}
                                 >
-                                    <item.icon size={20} />
+                                    <item.icon size={20} className={isActive ? 'text-accent-500' : ''} />
                                     <span className="font-medium">{item.label}</span>
                                 </Link>
                             );
@@ -87,9 +85,9 @@ export default function Sidebar() {
             {/* Mobile Menu Button */}
             <button
                 onClick={() => setIsOpen(true)}
-                className="lg:hidden fixed top-4 left-4 z-50 p-3 bg-white/80 backdrop-blur-xl rounded-full shadow-soft hover:shadow-md transition-all duration-300"
+                className="lg:hidden fixed top-4 left-4 z-50 p-3 bg-white/80 backdrop-blur-xl rounded-full shadow-soft hover:shadow-md transition-all duration-300 border border-imi-100"
             >
-                <Menu size={24} className="text-navy-700" />
+                <Menu size={24} className="text-imi-900" />
             </button>
 
             {/* Mobile Drawer */}
@@ -102,7 +100,7 @@ export default function Sidebar() {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.2 }}
-                            className="lg:hidden fixed inset-0 z-50 bg-black/30 backdrop-blur-sm"
+                            className="lg:hidden fixed inset-0 z-50 bg-imi-900/20 backdrop-blur-sm"
                             onClick={() => setIsOpen(false)}
                         />
 
@@ -112,20 +110,20 @@ export default function Sidebar() {
                             animate={{ x: 0 }}
                             exit={{ x: '-100%' }}
                             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                            className="lg:hidden fixed inset-y-0 left-0 z-50 w-80 bg-white/95 backdrop-blur-xl shadow-2xl overflow-y-auto"
+                            className="lg:hidden fixed inset-y-0 left-0 z-50 w-80 bg-white shadow-2xl overflow-y-auto"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div className="p-6 flex flex-col h-full">
                                 <div className="flex justify-between items-center mb-8">
                                     <div>
-                                        <h2 className="text-2xl font-bold text-navy-700">IMI Admin</h2>
-                                        <p className="text-sm text-gray-600 mt-1">Inteligência Imobiliária</p>
+                                        <h2 className="text-2xl font-bold text-imi-900 font-display">IMI Admin</h2>
+                                        <p className="text-sm text-imi-400 mt-1 uppercase tracking-widest text-[10px] font-bold">Inteligência Imobiliária</p>
                                     </div>
                                     <button
                                         onClick={() => setIsOpen(false)}
-                                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                                        className="p-2 hover:bg-imi-50 rounded-lg transition-colors"
                                     >
-                                        <X size={24} />
+                                        <X size={24} className="text-imi-900" />
                                     </button>
                                 </div>
 
@@ -139,11 +137,11 @@ export default function Sidebar() {
                                                 href={item.href}
                                                 onClick={() => setIsOpen(false)}
                                                 className={`flex items-center gap-4 px-4 py-4 rounded-xl transition-all duration-300 active:scale-95 ${isActive
-                                                    ? 'bg-blue-50 text-blue-600'
-                                                    : 'text-gray-700 hover:bg-gray-100/80 hover:text-navy-600'
+                                                    ? 'bg-imi-50 text-imi-900 border-l-4 border-accent-500 pl-3'
+                                                    : 'text-imi-500 hover:bg-imi-50 hover:text-imi-900'
                                                     }`}
                                             >
-                                                <item.icon size={24} />
+                                                <item.icon size={24} className={isActive ? 'text-accent-500' : ''} />
                                                 <span className="font-semibold text-lg">{item.label}</span>
                                             </Link>
                                         );

@@ -10,46 +10,36 @@ export default function AppraisalsPage() {
     return (
         <>
             {/* HERO */}
-            <section className="bg-navy-900 text-white section-padding relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-1/3 h-full bg-gold-500/5 -skew-x-12 translate-x-1/4" />
-
+            <section className="bg-imi-900 text-white section-padding relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-1/3 h-full bg-accent-500/5 -skew-x-12 translate-x-1/4" />
                 <div className="container-custom relative z-10">
-                    <motion.div
-                        className="max-w-3xl"
-                        variants={slideUp}
-                        initial="hidden"
-                        animate="visible"
-                    >
+                    <div className="max-w-3xl">
                         <div className="flex items-center gap-3 mb-6">
-                            <div className="w-12 h-px bg-gold-500" />
-                            <span className="text-gold-500 font-semibold uppercase tracking-[0.2em] text-xs">
-                                Certificação CNAI 53290
-                            </span>
+                            <div className="w-12 h-px bg-accent-500" />
+                            <span className="text-accent-500 font-semibold uppercase tracking-[0.2em] text-xs">CNAI 53290</span>
                         </div>
-
                         <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight">
                             Avaliações Imobiliárias
                         </h1>
-
-                        <p className="text-slate-300 text-lg md:text-xl font-light leading-relaxed max-w-2xl">
-                            Laudos técnicos conforme NBR 14653 e normas do CNAI. Decisões seguras baseadas em análise profissional e rigorosa.
+                        <p className="text-imi-300 text-lg md:text-xl font-light leading-relaxed max-w-2xl">
+                            Laudos técnicos com metodologia normativa NBR 14653. Decisões seguras baseadas em análise profissional.
                         </p>
-                    </motion.div>
+                    </div>
                 </div>
             </section>
 
             {/* BADGE CNAI */}
-            <section className="bg-slate-50 border-b border-slate-100 py-8">
+            <section className="bg-imi-50 border-b border-imi-100 py-8">
                 <div className="container-custom">
                     <div className="flex items-center justify-center gap-4 flex-wrap">
-                        <div className="flex items-center gap-3 px-6 py-3 bg-gold-500/10 rounded-xl border border-gold-500/20">
-                            <ShieldCheck className="w-6 h-6 text-gold-500" strokeWidth={1.5} />
-                            <span className="text-navy-900 font-semibold">
+                        <div className="flex items-center gap-3 px-6 py-3 bg-accent-500/10 rounded-xl border border-accent-500/20">
+                            <ShieldCheck className="w-6 h-6 text-accent-600" strokeWidth={1.5} />
+                            <span className="text-imi-900 font-semibold">
                                 Avaliador Certificado CNAI Nº 53290
                             </span>
                         </div>
-                        <div className="hidden md:block w-px h-8 bg-slate-200" />
-                        <span className="text-slate-500 text-sm font-medium">
+                        <div className="hidden md:block w-px h-8 bg-imi-100" />
+                        <span className="text-imi-500 text-sm font-medium">
                             Certificação Nacional de Avaliador Imobiliário
                         </span>
                     </div>
@@ -59,10 +49,10 @@ export default function AppraisalsPage() {
             {/* TIPOS DE AVALIAÇÃO */}
             <section className="section-padding">
                 <div className="container-custom">
-                    <h2 className="font-display text-3xl md:text-4xl font-bold text-navy-900 mb-4 text-center">
+                    <h2 className="font-display text-3xl md:text-4xl font-bold text-imi-900 mb-4 text-center">
                         Tipos de Avaliação
                     </h2>
-                    <p className="text-slate-600 text-lg max-w-2xl mx-auto text-center mb-12">
+                    <p className="text-imi-500 text-lg max-w-2xl mx-auto text-center mb-12">
                         Serviços especializados para diferentes necessidades de mercado e conformidade legal
                     </p>
 
@@ -98,15 +88,15 @@ export default function AppraisalsPage() {
                             <motion.div
                                 key={index}
                                 variants={slideUp}
-                                className="p-8 rounded-xl bg-white border border-slate-100 shadow-soft hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1"
+                                className="p-8 rounded-xl bg-white border border-imi-100 shadow-soft hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1"
                             >
-                                <div className="w-12 h-12 bg-navy-900 text-white rounded-xl flex items-center justify-center mb-6">
+                                <div className="w-12 h-12 bg-imi-900 text-white rounded-xl flex items-center justify-center mb-6">
                                     <item.icon className="w-5 h-5" strokeWidth={1.5} />
                                 </div>
-                                <h3 className="text-xl font-bold text-navy-900 mb-3 font-display">
+                                <h3 className="text-xl font-bold text-imi-900 mb-3 font-display">
                                     {item.title}
                                 </h3>
-                                <p className="text-slate-600 leading-relaxed text-sm">
+                                <p className="text-imi-500 leading-relaxed text-sm">
                                     {item.description}
                                 </p>
                             </motion.div>
@@ -116,12 +106,12 @@ export default function AppraisalsPage() {
             </section>
 
             {/* METODOLOGIA */}
-            <section className="section-padding bg-slate-50">
+            <section className="section-padding bg-imi-50">
                 <div className="container-custom">
-                    <h2 className="font-display text-3xl md:text-4xl font-bold text-navy-900 mb-6 text-center">
+                    <h2 className="font-display text-3xl md:text-4xl font-bold text-imi-900 mb-6 text-center">
                         Nossa Metodologia
                     </h2>
-                    <p className="text-slate-600 text-center max-w-2xl mx-auto mb-12">
+                    <p className="text-imi-500 text-center max-w-2xl mx-auto mb-12">
                         Todas as avaliações seguem rigorosamente a <strong>NBR 14653</strong> e as diretrizes do IBAPE, garantindo segurança técnica absoluta.
                     </p>
 
@@ -140,13 +130,13 @@ export default function AppraisalsPage() {
                                 viewport={{ once: true }}
                                 transition={{ delay: i * 0.1 }}
                             >
-                                <div className="w-16 h-16 bg-navy-900 text-white rounded-full flex items-center justify-center font-bold text-2xl mx-auto mb-6">
+                                <div className="w-12 h-12 bg-imi-900 text-white rounded-full flex items-center justify-center font-bold text-lg mx-auto mb-6">
                                     {item.step}
                                 </div>
-                                <h3 className="text-xl font-bold text-navy-900 mb-3 font-display">
+                                <h3 className="text-xl font-bold text-imi-900 mb-3 font-display">
                                     {item.title}
                                 </h3>
-                                <p className="text-slate-600 text-sm leading-relaxed px-4">
+                                <p className="text-imi-500 text-sm leading-relaxed px-4">
                                     {item.desc}
                                 </p>
                             </motion.div>
@@ -156,10 +146,10 @@ export default function AppraisalsPage() {
             </section>
 
             {/* FORMULÁRIO */}
-            <section className="section-padding">
+            <section className="section-padding" id="form">
                 <div className="container-custom">
                     <div className="max-w-4xl mx-auto">
-                        <h2 className="font-display text-3xl md:text-4xl font-bold text-navy-900 mb-12 text-center">
+                        <h2 className="font-display text-3xl md:text-4xl font-bold text-imi-900 mb-12 text-center">
                             Solicitar Avaliação Técnica
                         </h2>
                         <AppraisalForm />
@@ -168,15 +158,15 @@ export default function AppraisalsPage() {
             </section>
 
             {/* CTA FINAL */}
-            <section className="bg-navy-900 text-white section-padding text-center relative overflow-hidden">
+            <section className="bg-imi-900 text-white section-padding text-center relative overflow-hidden">
                 <div className="container-custom relative z-10">
                     <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
                         Dúvidas sobre Avaliações?
                     </h2>
-                    <p className="text-slate-400 text-lg mb-10 max-w-2xl mx-auto font-light">
+                    <p className="text-imi-300 text-lg mb-10 max-w-2xl mx-auto font-light">
                         Nossa equipe técnica está pronta para esclarecer qualquer questão normativa ou processual.
                     </p>
-                    <Button asChild size="lg" className="bg-white text-navy-900 hover:bg-slate-100">
+                    <Button asChild size="lg" className="bg-white text-imi-900 hover:bg-imi-50">
                         <a href="https://wa.me/5581997230455" target="_blank" rel="noopener noreferrer">
                             <MessageCircle className="w-5 h-5 mr-3" />
                             Falar com Especialista

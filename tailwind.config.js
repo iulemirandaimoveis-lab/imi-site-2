@@ -9,56 +9,22 @@ const config: Config = {
     theme: {
         extend: {
             colors: {
-                navy: {
-                    600: '#1E40AF',
-                    700: '#111827',
-                    800: '#0f172a',
-                    900: '#020617',
+                imi: {
+                    50: '#F7F8FA',
+                    100: '#ECEEF2',
+                    200: '#D0D5DE',
+                    300: '#A0AABB',
+                    400: '#6B83A0',
+                    500: '#59718C',
+                    600: '#3C495D',
+                    700: '#2E2E3A',
+                    800: '#282834',
+                    900: '#23232D',
                 },
-                gold: {
+                accent: {
                     400: '#E5C158',
                     500: '#D4AF37',
                     600: '#B8952F',
-                },
-                // Sober, professional color palette
-                primary: {
-                    50: '#f5f7fa',
-                    100: '#eaeef4',
-                    200: '#d0dae7',
-                    300: '#a7bbd3',
-                    400: '#7797ba',
-                    500: '#567aa3',
-                    600: '#426089',
-                    700: '#364e70',
-                    800: '#2f425e',
-                    900: '#2b3950',
-                    950: '#1c2535',
-                },
-                accent: {
-                    50: '#f0f7fb',
-                    100: '#d9ebf5',
-                    200: '#b3d7eb',
-                    300: '#6bb5d9',
-                    400: '#3d95c7',
-                    500: '#1e75b5',
-                    600: '#165a91',
-                    700: '#0f4470',
-                    800: '#0a2f52',
-                    900: '#051d34',
-                    950: '#031221',
-                },
-                neutral: {
-                    50: '#f8f9fa',
-                    100: '#f1f3f5',
-                    200: '#e9ecef',
-                    300: '#dee2e6',
-                    400: '#ced4da',
-                    500: '#adb5bd',
-                    600: '#868e96',
-                    700: '#495057',
-                    800: '#343a40',
-                    900: '#212529',
-                    950: '#0d0f12',
                 },
             },
             fontFamily: {
@@ -83,9 +49,10 @@ const config: Config = {
             },
             boxShadow: {
                 'soft': '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)',
-                'card': '0 4px 20px rgba(0,0,0,0.06)',
-                'card-hover': '0 8px 30px rgba(0,0,0,0.08)',
+                'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)',
+                'card-hover': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
                 'header': '0 1px 3px rgba(0,0,0,0.05)',
+                'elevated': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
             },
             animation: {
                 'fade-in': 'fadeIn 0.6s ease-in-out',
@@ -103,7 +70,6 @@ const config: Config = {
                 },
                 slideDown: {
                     '0%': { transform: 'translateY(-20px)', opacity: '0' },
-                    '100%': { transform: 'translateY(0)', opacity: '1' },
                 },
             },
         },

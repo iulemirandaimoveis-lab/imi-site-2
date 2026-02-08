@@ -37,12 +37,12 @@ export function InvestmentSimulator() {
     }, [propertyValue, downPaymentPercent, interestRate, rentalYield]);
 
     return (
-        <div className="bg-white rounded-3xl overflow-hidden shadow-soft border border-slate-100" id="simulator">
+        <div className="bg-white rounded-3xl overflow-hidden shadow-soft border border-imi-100" id="simulator">
             <div className="grid grid-cols-1 lg:grid-cols-2">
                 {/* Inputs */}
                 <div className="p-8 md:p-12 space-y-10">
-                    <h3 className="text-2xl font-bold text-navy-900 font-display flex items-center gap-3">
-                        <TrendingUp className="w-6 h-6 text-gold-500" />
+                    <h3 className="text-2xl font-bold text-imi-900 font-display flex items-center gap-3">
+                        <TrendingUp className="w-6 h-6 text-accent-500" />
                         Configurar Cenário
                     </h3>
 
@@ -50,10 +50,10 @@ export function InvestmentSimulator() {
                         {/* Property Value */}
                         <div className="space-y-4">
                             <div className="flex justify-between items-center">
-                                <label className="text-sm font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                                <label className="text-sm font-bold text-imi-500 uppercase tracking-wider flex items-center gap-2">
                                     Valor do Imóvel
                                 </label>
-                                <span className="text-xl font-bold text-navy-900">${propertyValue.toLocaleString()}</span>
+                                <span className="text-xl font-bold text-imi-900">${propertyValue.toLocaleString()}</span>
                             </div>
                             <input
                                 type="range"
@@ -62,17 +62,17 @@ export function InvestmentSimulator() {
                                 step="50000"
                                 value={propertyValue}
                                 onChange={(e) => setPropertyValue(Number(e.target.value))}
-                                className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-navy-900"
+                                className="w-full h-2 bg-imi-100 rounded-lg appearance-none cursor-pointer accent-imi-900"
                             />
                         </div>
 
                         {/* Down Payment */}
                         <div className="space-y-4">
                             <div className="flex justify-between items-center">
-                                <label className="text-sm font-bold text-slate-500 uppercase tracking-wider">
+                                <label className="text-sm font-bold text-imi-500 uppercase tracking-wider">
                                     Entrada (Down Payment)
                                 </label>
-                                <span className="text-xl font-bold text-navy-900">{downPaymentPercent}%</span>
+                                <span className="text-xl font-bold text-imi-900">{downPaymentPercent}%</span>
                             </div>
                             <input
                                 type="range"
@@ -81,19 +81,19 @@ export function InvestmentSimulator() {
                                 step="5"
                                 value={downPaymentPercent}
                                 onChange={(e) => setDownPaymentPercent(Number(e.target.value))}
-                                className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-navy-900"
+                                className="w-full h-2 bg-imi-100 rounded-lg appearance-none cursor-pointer accent-imi-900"
                             />
-                            <div className="text-xs text-slate-400 font-medium">Equivalente a: ${(propertyValue * (downPaymentPercent / 100)).toLocaleString()}</div>
+                            <div className="text-xs text-imi-400 font-medium">Equivalente a: ${(propertyValue * (downPaymentPercent / 100)).toLocaleString()}</div>
                         </div>
 
                         <div className="grid md:grid-cols-2 gap-8">
                             {/* Interest Rate */}
                             <div className="space-y-4">
                                 <div className="flex justify-between items-center">
-                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                    <label className="text-xs font-bold text-imi-500 uppercase tracking-wider">
                                         Taxa de Juros (a.a.)
                                     </label>
-                                    <span className="font-bold text-navy-900">{interestRate}%</span>
+                                    <span className="font-bold text-imi-900">{interestRate}%</span>
                                 </div>
                                 <input
                                     type="range"
@@ -102,17 +102,17 @@ export function InvestmentSimulator() {
                                     step="0.25"
                                     value={interestRate}
                                     onChange={(e) => setInterestRate(Number(e.target.value))}
-                                    className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-navy-900"
+                                    className="w-full h-2 bg-imi-100 rounded-lg appearance-none cursor-pointer accent-imi-900"
                                 />
                             </div>
 
                             {/* Yield */}
                             <div className="space-y-4">
                                 <div className="flex justify-between items-center">
-                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                    <label className="text-xs font-bold text-imi-500 uppercase tracking-wider">
                                         Yield Bruto (%)
                                     </label>
-                                    <span className="font-bold text-navy-900">{rentalYield}%</span>
+                                    <span className="font-bold text-imi-900">{rentalYield}%</span>
                                 </div>
                                 <input
                                     type="range"
@@ -121,7 +121,7 @@ export function InvestmentSimulator() {
                                     step="0.5"
                                     value={rentalYield}
                                     onChange={(e) => setRentalYield(Number(e.target.value))}
-                                    className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-navy-900"
+                                    className="w-full h-2 bg-imi-100 rounded-lg appearance-none cursor-pointer accent-imi-900"
                                 />
                             </div>
                         </div>
@@ -129,20 +129,20 @@ export function InvestmentSimulator() {
                 </div>
 
                 {/* Result */}
-                <div className="bg-navy-900 p-8 md:p-12 text-white flex flex-col justify-between relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-gold-500 opacity-5 rounded-full blur-3xl -mr-32 -mt-32" />
+                <div className="bg-imi-900 p-8 md:p-12 text-white flex flex-col justify-between relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-accent-500 opacity-5 rounded-full blur-3xl -mr-32 -mt-32" />
 
                     <div className="relative z-10 space-y-12">
                         <div>
-                            <p className="text-slate-400 text-sm font-bold uppercase tracking-widest mb-4 flex items-center gap-2">
-                                <DollarSign className="w-4 h-4 text-gold-500" />
+                            <p className="text-imi-400 text-sm font-bold uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <DollarSign className="w-4 h-4 text-accent-500" />
                                 Fluxo de Caixa Mensal Limpo
                             </p>
                             <div className="flex items-baseline gap-2">
                                 <span className={`text-5xl font-bold font-display ${monthlyCashflow >= 0 ? 'text-white' : 'text-red-400'}`}>
                                     ${Math.abs(monthlyCashflow).toLocaleString(undefined, { maximumFractionDigits: 0 })}
                                 </span>
-                                <span className="text-slate-500 font-medium">/ mês</span>
+                                <span className="text-imi-500 font-medium">/ mês</span>
                             </div>
                             {monthlyCashflow < 0 && <p className="text-red-400 text-xs mt-2 font-medium">Saldo Negativo no Cenário Atual</p>}
                         </div>
@@ -150,20 +150,20 @@ export function InvestmentSimulator() {
                         <div className="h-px bg-white/10" />
 
                         <div>
-                            <p className="text-slate-400 text-sm font-bold uppercase tracking-widest mb-4 flex items-center gap-2">
-                                <PieChart className="w-4 h-4 text-gold-500" />
+                            <p className="text-imi-400 text-sm font-bold uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <PieChart className="w-4 h-4 text-accent-500" />
                                 Retorno Cash-on-Cash
                             </p>
                             <div className="flex items-baseline gap-2">
-                                <span className={`text-5xl font-bold font-display ${cocReturn > 0 ? 'text-gold-500' : 'text-red-400'}`}>
+                                <span className={`text-5xl font-bold font-display ${cocReturn > 0 ? 'text-accent-500' : 'text-red-400'}`}>
                                     {cocReturn.toFixed(1)}%
                                 </span>
-                                <span className="text-slate-500 font-medium">ao ano</span>
+                                <span className="text-imi-500 font-medium">ao ano</span>
                             </div>
                         </div>
 
-                        <div className="bg-white/5 border border-white/10 p-4 rounded-xl flex gap-3 text-xs text-slate-400 leading-relaxed">
-                            <Info className="w-4 h-4 text-gold-500 flex-shrink-0" />
+                        <div className="bg-white/5 border border-white/10 p-4 rounded-xl flex gap-3 text-xs text-imi-400 leading-relaxed">
+                            <Info className="w-4 h-4 text-accent-500 flex-shrink-0" />
                             <p>
                                 Estimativa líquida após hipoteca, impostos, HOA e taxas de gestão. Calculado com base no capital inicial investido (entrada + custos de fechamento).
                             </p>
@@ -171,13 +171,13 @@ export function InvestmentSimulator() {
                     </div>
 
                     <div className="mt-12 relative z-10">
-                        <button className="w-full bg-white text-navy-900 py-4 rounded-xl font-bold hover:bg-slate-100 transition-all duration-300 shadow-xl">
+                        <button className="w-full bg-white text-imi-900 py-4 rounded-xl font-bold hover:bg-imi-50 transition-all duration-300 shadow-xl">
                             Receber Plano Detalhado
                         </button>
                     </div>
                 </div>
             </div>
-            <div className="bg-slate-50 py-4 px-8 text-[10px] text-slate-400 text-center uppercase tracking-tighter">
+            <div className="bg-imi-50 py-4 px-8 text-[10px] text-imi-400 text-center uppercase tracking-tighter">
                 * Simulação informativa para fins de projeção. Resultados reais podem variar conforme mercado e gestão.
             </div>
         </div>

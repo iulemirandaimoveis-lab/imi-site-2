@@ -30,10 +30,10 @@ export function LocationsSection() {
         <section id="locations" className="section-padding">
             <div className="container-custom">
                 <div className="max-w-2xl mx-auto text-center mb-16">
-                    <h2 className="text-3xl md:text-5xl font-display font-bold text-navy-900 mb-6">
+                    <h2 className="text-3xl md:text-5xl font-display font-bold text-imi-900 mb-6">
                         Mercados Premium Selecionados
                     </h2>
-                    <p className="text-lg text-slate-600 font-light">
+                    <p className="text-lg text-imi-500 font-light">
                         Atuamos apenas onde existem fundamentos sólidos de economia, turismo e potencial de valorização comprovado.
                     </p>
                 </div>
@@ -49,7 +49,7 @@ export function LocationsSection() {
                         <motion.article
                             key={location.name}
                             variants={slideUp}
-                            className="flex flex-col bg-white rounded-3xl overflow-hidden shadow-soft border border-slate-100 group hover:shadow-card-hover transition-all duration-500"
+                            className="flex flex-col bg-white rounded-3xl overflow-hidden shadow-soft border border-imi-100 group hover:shadow-card-hover transition-all duration-500"
                         >
                             <div className="relative aspect-[4/3] overflow-hidden">
                                 <Image
@@ -58,24 +58,24 @@ export function LocationsSection() {
                                     fill
                                     className="object-cover group-hover:scale-110 transition-transform duration-700"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-navy-900/60 to-transparent opacity-60" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-imi-900/60 to-transparent opacity-60" />
                                 <div className="absolute bottom-6 left-6">
-                                    <span className="bg-gold-500 text-navy-900 text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full">
+                                    <span className="bg-accent-500 text-imi-900 text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full">
                                         Internacional
                                     </span>
                                 </div>
                             </div>
 
                             <div className="p-8 flex flex-col flex-grow">
-                                <h3 className="text-2xl font-bold text-navy-900 mb-4 font-display">
+                                <h3 className="text-2xl font-bold text-imi-900 mb-4 font-display">
                                     {location.name}
                                 </h3>
-                                <p className="text-slate-600 text-sm leading-relaxed mb-6 flex-grow">
+                                <p className="text-imi-500 text-sm leading-relaxed mb-6 flex-grow">
                                     {location.description}
                                 </p>
-                                <div className="pt-6 border-t border-slate-50">
-                                    <span className="text-sm font-bold text-navy-900 flex items-center gap-2">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-gold-500" />
+                                <div className="pt-6 border-t border-imi-50">
+                                    <span className="text-sm font-bold text-imi-900 flex items-center gap-2">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-accent-500" />
                                         {location.stats}
                                     </span>
                                 </div>
