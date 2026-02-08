@@ -1,4 +1,4 @@
-import { Playfair_Display, Inter } from 'next/font/google';
+import { Playfair_Display, Outfit } from 'next/font/google';
 import './globals.css';
 
 const playfair = Playfair_Display({
@@ -8,10 +8,10 @@ const playfair = Playfair_Display({
     display: 'swap',
 });
 
-const inter = Inter({
+const outfit = Outfit({
     subsets: ['latin'],
-    weight: ['400', '500', '600', '700'],
-    variable: '--font-inter',
+    weight: ['300', '400', '500', '600', '700'],
+    variable: '--font-outfit',
     display: 'swap',
 });
 
@@ -22,7 +22,7 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <html lang="pt-BR" className={`${playfair.variable} ${inter.variable}`}>
+        <html lang="pt-BR" className={`${playfair.variable} ${outfit.variable}`}>
             <body className="font-sans antialiased bg-white text-imi-600">
                 {children}
             </body>
