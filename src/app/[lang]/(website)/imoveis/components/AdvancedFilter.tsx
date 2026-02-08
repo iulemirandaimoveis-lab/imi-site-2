@@ -59,6 +59,44 @@ export default function AdvancedFilter({ filters, onFilterChange, locations, max
         };
     }, [isMobileOpen]);
 
+    // Helper function to update desktop filters
+    const updateFilter = (key: keyof FilterState, value: any) => {
+        onFilterChange({ ...filters, [key]: value });
+    };
+
+    // Helper function to update mobile filters (local state)
+    const updateMobileFilter = (key: keyof FilterState, value: any) => {
+        setMobileFilters(prev => ({ ...prev, [key]: value }));
+    };
+
+    // Clear all filters
+    const clearFilters = () => {
+        const cleared: FilterState = {
+            status: [],
+            type: [],
+            bedrooms: null,
+            priceRange: [0, maxPrice],
+            location: null,
+            sort: 'relevant'
+        };
+        onFilterChange(cleared);
+        setMobileFilters(cleared);
+        setActiveDropdown(null);
+    };
+
+    // Apply mobile filters to parent
+    const applyMobileFilters = () => {
+        onFilterChange(mobileFilters);
+        setIsMobileOpen(false);
+    };
+
+    // Sync mobile filters when drawer opens
+    useEffect(() => {
+        if (isMobileOpen) {
+            setMobileFilters(filters);
+        }
+    }, [isMobileOpen, filters]);
+
     return (
         <div className="sticky top-20 z-40 w-full">
             {/* Desktop / Tablet Bar */}

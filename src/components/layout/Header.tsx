@@ -14,6 +14,7 @@ interface HeaderProps {
         presentation: string;
         services: string;
         properties: string;
+        developers?: string;
         credit: string;
         consulting: string;
         intelligence: string;
@@ -82,6 +83,7 @@ export default function Header({ lang, dict }: HeaderProps) {
     const navigation = [
         { label: dict.services, href: `/${lang}/avaliacoes` },
         { label: dict.properties, href: `/${lang}/imoveis` },
+        { label: dict.developers || 'Construtoras', href: `/${lang}/construtoras` },
         { label: dict.credit, href: `/${lang}/credito` },
         { label: dict.consulting, href: `/${lang}/consultoria` },
         { label: dict.intelligence, href: `/${lang}/inteligencia` },

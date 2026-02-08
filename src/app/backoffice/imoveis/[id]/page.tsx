@@ -129,6 +129,12 @@ export default function PropertyFormPage() {
     };
 
     const onSubmit = async (values: DevelopmentFormValues) => {
+        // Validação: não permitir publicação sem imagem principal
+        if (!values.images?.main) {
+            toast.error('É obrigatório adicionar uma imagem principal antes de salvar.');
+            return;
+        }
+
         setLoading(true);
         try {
             const { error } = isNew

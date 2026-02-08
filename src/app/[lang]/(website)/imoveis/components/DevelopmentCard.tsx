@@ -52,15 +52,15 @@ export default function DevelopmentCard({ development, index, lang }: Developmen
                         className="object-cover group-hover:scale-110 transition-transform duration-700"
                     />
                 ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-imi-50 to-imi-100 flex flex-col items-center justify-center p-8">
+                    <div className="w-full h-full bg-gradient-to-br from-imi-900 via-imi-800 to-imi-900 flex flex-col items-center justify-center p-8">
                         {development.developerLogo ? (
-                            <div className="relative w-32 h-16 mb-4 filter grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all">
+                            <div className="relative w-40 h-20 mb-4 filter brightness-0 invert opacity-80 group-hover:opacity-100 transition-all">
                                 <Image src={development.developerLogo} alt={development.developer} fill className="object-contain" />
                             </div>
                         ) : (
-                            <Building2 className="w-16 h-16 text-imi-200 mb-3" strokeWidth={1} />
+                            <Building2 className="w-16 h-16 text-imi-400 mb-3" strokeWidth={1} />
                         )}
-                        <span className="text-[10px] text-imi-400 font-bold px-4 text-center uppercase tracking-[0.2em] leading-relaxed">
+                        <span className="text-[10px] text-imi-300 font-bold px-4 text-center uppercase tracking-[0.2em] leading-relaxed">
                             {development.name}
                         </span>
                     </div>
@@ -90,8 +90,13 @@ export default function DevelopmentCard({ development, index, lang }: Developmen
                         </h3>
                     </Link>
                     {development.developerLogo && (
-                        <div className="relative w-12 h-6 flex-shrink-0 grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all">
-                            <Image src={development.developerLogo} alt={development.developer} fill className="object-contain" />
+                        <div className="relative w-12 h-8 flex-shrink-0 bg-imi-900 rounded-lg p-1.5 shadow-sm">
+                            <Image
+                                src={development.developerLogo}
+                                alt={development.developer}
+                                fill
+                                className="object-contain filter brightness-0 invert"
+                            />
                         </div>
                     )}
                 </div>
