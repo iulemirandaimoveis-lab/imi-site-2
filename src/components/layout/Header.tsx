@@ -227,27 +227,23 @@ export default function Header({ lang, dict }: HeaderProps) {
                                 </Button>
                             </motion.div>
 
-                            {/* Mobile Lang Selector with Flags and Labels */}
-                            <div className="mt-8 grid grid-cols-1 gap-2">
+                            {/* Mobile Lang Selector — compact flags only */}
+                            <div className="mt-6 flex items-center justify-center gap-3 py-4 border-t border-imi-100">
                                 {langOptions.map((opt) => (
-                                    <motion.div key={opt.code} variants={itemVariants}>
-                                        <Link
-                                            href={`/${opt.code}`}
-                                            onClick={() => setIsOpen(false)}
-                                            className={cn(
-                                                "flex items-center gap-4 p-4 rounded-2xl transition-all",
-                                                lang === opt.code ? "bg-imi-50 border border-imi-100" : "grayscale opacity-70 hover:grayscale-0"
-                                            )}
-                                        >
-                                            <div className="w-8">{opt.flag}</div>
-                                            <span className={cn("text-sm font-bold uppercase", lang === opt.code ? "text-imi-900" : "text-imi-400")}>
-                                                {opt.label}
-                                            </span>
-                                            {lang === opt.code && (
-                                                <div className="ml-auto w-2 h-2 rounded-full bg-accent-500" />
-                                            )}
-                                        </Link>
-                                    </motion.div>
+                                    <Link
+                                        key={opt.code}
+                                        href={`/${opt.code}`}
+                                        onClick={() => setIsOpen(false)}
+                                        className={cn(
+                                            "flex items-center justify-center w-10 h-10 rounded-xl transition-all",
+                                            lang === opt.code
+                                                ? "bg-imi-900 ring-2 ring-accent-500 scale-110"
+                                                : "bg-imi-50 grayscale opacity-60 hover:grayscale-0 hover:opacity-100"
+                                        )}
+                                        title={opt.label}
+                                    >
+                                        <div className="w-5 h-3.5">{opt.flag}</div>
+                                    </Link>
                                 ))}
                             </div>
 

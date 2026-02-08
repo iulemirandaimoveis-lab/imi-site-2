@@ -13,10 +13,10 @@ export default function TermosPage() {
                     variants={staggerContainer}
                     className="max-w-3xl mx-auto"
                 >
-                    <motion.h1 variants={slideUp} className="text-display-sm font-bold text-neutral-900 mb-8">
+                    <motion.h1 variants={slideUp} className="text-display-sm font-bold text-imi-900 mb-8">
                         Termos de Uso
                     </motion.h1>
-                    <motion.div variants={slideUp} className="prose prose-neutral max-w-none">
+                    <motion.div variants={slideUp} className="prose prose-slate max-w-none">
                         <p>
                             Ao acessar o site da IMI – Inteligência Imobiliária, você concorda em cumprir estes termos de uso.
                         </p>

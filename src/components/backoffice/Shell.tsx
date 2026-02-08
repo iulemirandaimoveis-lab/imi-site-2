@@ -16,7 +16,7 @@ export default function BackofficeShell({
     }
 
     return (
-        <div className="flex h-[100dvh] bg-neutral-50 overflow-hidden">
+        <div className="flex h-[100dvh] bg-imi-50 overflow-hidden">
             {/* Sidebar handles its own mobile state and responsiveness */}
             <Sidebar />
 

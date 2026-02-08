@@ -12,17 +12,17 @@ export default function DevelopmentLocation({ development }: DevelopmentLocation
     const mapSrc = `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
 
     return (
-        <section className="section-padding bg-slate-50">
+        <section className="section-padding bg-imi-50">
             <div className="container-custom">
                 <div className="max-w-3xl mb-12">
-                    <h2 className="font-display text-3xl md:text-4xl text-navy-900 mb-4 font-bold">Localização Privilegiada</h2>
-                    <p className="text-slate-500 font-light text-lg">
+                    <h2 className="font-display text-3xl md:text-4xl text-imi-900 mb-4 font-bold">Localização Privilegiada</h2>
+                    <p className="text-imi-500 font-light text-lg">
                         Situado em uma das regiões mais valorizadas e estrategicamente posicionadas para garantir liquidez e qualidade de vida.
                     </p>
                 </div>
 
                 {/* Mapa - Premium rounded border */}
-                <div className="aspect-[21/9] rounded-2xl overflow-hidden mb-8 shadow-card border border-slate-200">
+                <div className="aspect-[21/9] rounded-2xl overflow-hidden mb-8 shadow-card border border-imi-200">
                     <iframe
                         src={mapSrc}
                         width="100%"
@@ -36,15 +36,15 @@ export default function DevelopmentLocation({ development }: DevelopmentLocation
                 </div>
 
                 {/* Endereço Card */}
-                <div className="inline-flex items-start gap-4 bg-white p-8 rounded-2xl border border-slate-100 shadow-soft max-w-2xl">
-                    <div className="w-12 h-12 rounded-full bg-navy-900 flex items-center justify-center shrink-0">
-                        <MapPin className="w-6 h-6 text-gold-500" />
+                <div className="inline-flex items-start gap-4 bg-white p-8 rounded-2xl border border-imi-100 shadow-soft max-w-2xl">
+                    <div className="w-12 h-12 rounded-full bg-imi-900 flex items-center justify-center shrink-0">
+                        <MapPin className="w-6 h-6 text-accent-500" />
                     </div>
                     <div>
-                        <p className="font-bold text-navy-900 text-xl mb-1">
+                        <p className="font-bold text-imi-900 text-xl mb-1">
                             {development.location.neighborhood}
                         </p>
-                        <p className="text-slate-500 font-light">
+                        <p className="text-imi-500 font-light">
                             {development.location.address ||
                                 `${development.location.city}, ${development.location.state}`}
                         </p>

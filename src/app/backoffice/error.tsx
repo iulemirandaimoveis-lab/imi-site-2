@@ -33,7 +33,7 @@ export default function Error({
 
                 <button
                     onClick={reset}
-                    className="w-full bg-navy-600 text-white px-6 py-3 rounded-xl hover:bg-navy-700 transition-all duration-300 hover:shadow-md font-medium"
+                    className="w-full bg-imi-900 text-white px-6 py-3 rounded-xl hover:bg-imi-800 transition-all duration-300 hover:shadow-md font-medium"
                 >
                     Tentar novamente
                 </button>

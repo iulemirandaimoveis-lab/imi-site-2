@@ -48,10 +48,10 @@ export default function ConsultationForm() {
             variants={staggerContainer}
             className="bg-white/80 backdrop-blur-md shadow-soft rounded-2xl shadow-lg p-8 md:p-12"
         >
-            <motion.h2 variants={slideUp} className="text-3xl font-bold text-neutral-900 mb-2">
+            <motion.h2 variants={slideUp} className="text-3xl font-bold text-imi-900 mb-2">
                 Agendar Diagnóstico
             </motion.h2>
-            <motion.p variants={slideUp} className="text-neutral-600 mb-8">
+            <motion.p variants={slideUp} className="text-imi-600 mb-8">
                 Conte-nos sobre seu contexto e objetivos. Retornaremos com uma proposta personalizada.
             </motion.p>
 

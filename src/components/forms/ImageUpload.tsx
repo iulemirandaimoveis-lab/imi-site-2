@@ -109,7 +109,7 @@ export default function ImageUpload({ images, onChange, maxFiles = 10 }: ImageUp
         <div className="w-full">
             <div className="mb-4 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 {images.map((img, index) => (
-                    <div key={index} className="relative aspect-square group rounded-xl overflow-hidden border border-neutral-200 bg-neutral-100">
+                    <div key={index} className="relative aspect-square group rounded-xl overflow-hidden border border-imi-200 bg-imi-100">
                         <Image
                             src={img.url}
                             alt={img.alt}
@@ -130,7 +130,7 @@ export default function ImageUpload({ images, onChange, maxFiles = 10 }: ImageUp
                     <div
                         className={`
                             relative aspect-square rounded-xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-all
-                            ${dragActive ? 'border-primary-500 bg-primary-50' : 'border-neutral-300 hover:border-primary-400 hover:bg-neutral-50'}
+                            ${dragActive ? 'border-accent-500 bg-accent-50' : 'border-imi-300 hover:border-accent-400 hover:bg-imi-50'}
                             ${isUploading ? 'opacity-50 pointer-events-none' : ''}
                         `}
                         onDragEnter={handleDrag}
@@ -149,11 +149,11 @@ export default function ImageUpload({ images, onChange, maxFiles = 10 }: ImageUp
                         />
 
                         {isUploading ? (
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent-600"></div>
                         ) : (
                             <>
-                                <ArrowUpTrayIcon className="w-8 h-8 text-neutral-400 mb-2" />
-                                <span className="text-sm font-medium text-neutral-500 text-center px-2">
+                                <ArrowUpTrayIcon className="w-8 h-8 text-imi-400 mb-2" />
+                                <span className="text-sm font-medium text-imi-500 text-center px-2">
                                     Click or Drag
                                 </span>
                             </>
@@ -162,7 +162,7 @@ export default function ImageUpload({ images, onChange, maxFiles = 10 }: ImageUp
                 )}
             </div>
 
-            <p className="text-xs text-neutral-500">
+            <p className="text-xs text-imi-500">
                 Suporta JPG, PNG, WebP (Max 5MB). Arraste e solte para adicionar.
             </p>
         </div>

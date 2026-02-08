@@ -13,10 +13,10 @@ export default function PrivacidadePage() {
                     variants={staggerContainer}
                     className="max-w-3xl mx-auto"
                 >
-                    <motion.h1 variants={slideUp} className="text-display-sm font-bold text-neutral-900 mb-8">
+                    <motion.h1 variants={slideUp} className="text-display-sm font-bold text-imi-900 mb-8">
                         Política de Privacidade
                     </motion.h1>
-                    <motion.div variants={slideUp} className="prose prose-neutral max-w-none">
+                    <motion.div variants={slideUp} className="prose prose-slate max-w-none">
                         <p>
                             A IMI – Inteligência Imobiliária está comprometida com a proteção de sua privacidade. Esta Política de Privacidade descreve como coletamos, usamos e protegemos suas informações pessoais.
                         </p>

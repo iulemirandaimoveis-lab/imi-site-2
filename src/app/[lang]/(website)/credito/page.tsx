@@ -253,7 +253,7 @@ export default function CreditPage() {
                                                 setPropertyValue(val)
                                                 if (loanAmount > val * 0.8) setLoanAmount(val * 0.8)
                                             }}
-                                            className="w-full h-2 bg-imi-100 rounded-lg appearance-none cursor-pointer accent-imi-900"
+                                            className="w-full h-3 bg-imi-100 rounded-lg appearance-none cursor-pointer accent-imi-900 touch-pan-x"
                                         />
                                     </div>
 
@@ -263,12 +263,12 @@ export default function CreditPage() {
                                             <label className="text-sm font-bold text-imi-900 uppercase tracking-wider">Valor a Financiar</label>
                                             <span className="text-xl font-bold text-imi-900 font-display">{formatCurrency(loanAmount)}</span>
                                         </div>
-                                        <div className="grid grid-cols-3 gap-2 mb-6">
+                                        <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-6">
                                             {[50, 70, 80].map((percent) => (
                                                 <button
                                                     key={percent}
                                                     onClick={() => setLoanAmount((propertyValue * percent) / 100)}
-                                                    className={`py-2 text-xs font-bold rounded-lg border transition-all ${Math.round((loanAmount / propertyValue) * 100) === percent
+                                                    className={`py-3 sm:py-2 text-sm sm:text-xs font-bold rounded-xl border transition-all min-h-[44px] ${Math.round((loanAmount / propertyValue) * 100) === percent
                                                         ? 'bg-imi-900 text-white border-imi-900'
                                                         : 'border-imi-100 text-imi-500 hover:border-imi-900'
                                                         }`}
@@ -284,7 +284,7 @@ export default function CreditPage() {
                                             step="10000"
                                             value={loanAmount}
                                             onChange={(e) => setLoanAmount(Number(e.target.value))}
-                                            className="w-full h-2 bg-imi-100 rounded-lg appearance-none cursor-pointer accent-imi-900"
+                                            className="w-full h-3 bg-imi-100 rounded-lg appearance-none cursor-pointer accent-imi-900 touch-pan-x"
                                         />
                                     </div>
 
@@ -294,12 +294,12 @@ export default function CreditPage() {
                                             <label className="text-sm font-bold text-imi-900 uppercase tracking-wider">Prazo de Pagamento</label>
                                             <span className="text-xl font-bold text-imi-900 font-display">{years} anos</span>
                                         </div>
-                                        <div className="grid grid-cols-4 gap-2">
+                                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                                             {[10, 15, 20, 30].map((y) => (
                                                 <button
                                                     key={y}
                                                     onClick={() => setYears(y)}
-                                                    className={`py-2 text-xs font-bold rounded-lg border transition-all ${years === y
+                                                    className={`py-3 sm:py-2 text-sm sm:text-xs font-bold rounded-xl border transition-all min-h-[44px] ${years === y
                                                         ? 'bg-imi-900 text-white border-imi-900'
                                                         : 'border-imi-100 text-imi-500 hover:border-imi-900'
                                                         }`}
@@ -316,7 +316,7 @@ export default function CreditPage() {
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-accent-500/10 rounded-full blur-3xl -mr-16 -mt-16" />
                                     <div className="relative z-10">
                                         <div className="text-imi-400 text-xs font-bold uppercase tracking-widest mb-2">Parcela Mensal Estimada</div>
-                                        <div className="text-5xl font-bold mb-10 font-display text-accent-500">
+                                        <div className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 sm:mb-10 font-display text-accent-500">
                                             {formatCurrency(monthlyPayment)}
                                         </div>
 
@@ -444,7 +444,7 @@ export default function CreditPage() {
                         <p className="text-imi-300 text-lg md:text-xl mb-12 max-w-2xl mx-auto font-light leading-relaxed relative z-10">
                             Fale agora com um especialista IMI e descubra qual a melhor alavancagem para o seu momento de investimento.
                         </p>
-                        <Button asChild size="lg" className="bg-white text-imi-900 hover:bg-imi-50 h-16 px-12 text-lg font-bold shadow-xl relative z-10">
+                        <Button asChild size="lg" className="w-full sm:w-auto bg-white text-imi-900 hover:bg-imi-50 h-14 sm:h-16 px-8 sm:px-12 text-base sm:text-lg font-bold shadow-xl relative z-10">
                             <a href="https://wa.me/5581997230455" target="_blank" rel="noopener noreferrer">
                                 <MessageCircle className="w-6 h-6 mr-3 text-imi-900" />
                                 Agendar Sessão de Crédito

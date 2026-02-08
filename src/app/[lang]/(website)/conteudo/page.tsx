@@ -2,92 +2,45 @@
 
 import { motion } from 'framer-motion'
 import { slideUp, staggerContainer } from '@/lib/animations'
+import { BookOpen, CheckCircle } from 'lucide-react'
 
 export default function ConteudoPage() {
     return (
-        <div className="bg-white">
-            {/* Hero */}
-            <section className="bg-gradient-to-br from-primary-900 to-primary-800 text-white">
-                <div className="container-custom py-16 lg:py-24">
-                    <motion.div
-                        initial="hidden"
-                        animate="visible"
-                        variants={staggerContainer}
-                        className="max-w-3xl"
-                    >
-                        <motion.h1 variants={slideUp} className="text-display-md md:text-display-lg font-bold mb-6">
-                            Conteúdo
-                        </motion.h1>
-                        <motion.p variants={slideUp} className="text-xl text-primary-100">
-                            Insights, análises de mercado e conhecimento técnico sobre o mercado imobiliário.
-                        </motion.p>
-                    </motion.div>
+        <main className="bg-white">
+            <section className="bg-imi-900 text-white section-padding relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-1/3 h-full bg-accent-500/5 -skew-x-12 translate-x-1/4" />
+                <div className="container-custom relative z-10">
+                    <div className="max-w-3xl">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="w-12 h-px bg-accent-500" />
+                            <span className="text-accent-500 font-semibold uppercase tracking-[0.2em] text-xs">Conteúdo</span>
+                        </div>
+                        <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight">Conteúdo & Insights</h1>
+                        <p className="text-imi-300 text-lg md:text-xl font-light leading-relaxed max-w-2xl">
+                            Análises, artigos e insights sobre o mercado imobiliário.
+                        </p>
+                    </div>
                 </div>
             </section>
 
-            {/* Coming Soon */}
             <section className="section-padding">
-                <div className="container-custom">
-                    <motion.div
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true }}
-                        variants={staggerContainer}
-                        className="max-w-2xl mx-auto text-center"
-                    >
-                        <motion.div variants={slideUp} className="mb-8">
-                            <svg className="w-24 h-24 mx-auto text-primary-700" fill="none" viewBox="0 0 24 24" strokeWidth="1" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                            </svg>
-                        </motion.div>
-
-                        <motion.h2 variants={slideUp} className="text-3xl font-bold text-neutral-900 mb-4">
-                            Em Breve
-                        </motion.h2>
-
-                        <motion.p variants={slideUp} className="text-lg text-neutral-700 mb-8">
-                            Estamos preparando conteúdo técnico de qualidade sobre avaliações imobiliárias,
-                            análises de mercado e estratégias de investimento.
-                        </motion.p>
-
-                        <motion.div variants={slideUp} className="bg-primary-50 rounded-xl p-8">
-                            <h3 className="font-semibold text-neutral-900 mb-4">Temas que serão abordados:</h3>
-                            <ul className="text-left space-y-2 text-neutral-700 max-w-md mx-auto">
-                                <li className="flex items-start gap-2">
-                                    <svg className="w-5 h-5 text-primary-700 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                                    </svg>
-                                    <span>Metodologia de avaliação imobiliária</span>
+                <div className="container-custom text-center">
+                    <BookOpen className="w-16 h-16 mx-auto text-imi-200 mb-6" strokeWidth={1} />
+                    <h2 className="text-3xl font-bold text-imi-900 mb-4 font-display">Em Breve</h2>
+                    <p className="text-lg text-imi-500 mb-8">Esta seção está sendo preparada com nosso portfólio de conteúdo.</p>
+                    <div className="bg-imi-50 rounded-xl p-8 max-w-md mx-auto">
+                        <h3 className="font-semibold text-imi-900 mb-4">Temas previstos:</h3>
+                        <ul className="text-left space-y-3 text-imi-500">
+                            {['Análises de mercado regionais', 'Guias de investimento imobiliário', 'Fundamentos de avaliação imobiliária', 'Tendências do mercado de crédito', 'Estratégias de patrimônio'].map((t) => (
+                                <li key={t} className="flex items-center gap-3">
+                                    <CheckCircle className="w-5 h-5 text-accent-500 flex-shrink-0" />
+                                    <span className="text-sm">{t}</span>
                                 </li>
-                                <li className="flex items-start gap-2">
-                                    <svg className="w-5 h-5 text-primary-700 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                                    </svg>
-                                    <span>Análises de mercado e tendências</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <svg className="w-5 h-5 text-primary-700 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                                    </svg>
-                                    <span>Estratégias de investimento imobiliário</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <svg className="w-5 h-5 text-primary-700 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                                    </svg>
-                                    <span>Aspectos legais e documentação</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <svg className="w-5 h-5 text-primary-700 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                                    </svg>
-                                    <span>Casos práticos e estudos de mercado</span>
-                                </li>
-                            </ul>
-                        </motion.div>
-                    </motion.div>
+                            ))}
+                        </ul>
+                    </div>
                 </div>
             </section>
-        </div>
+        </main>
     )
 }

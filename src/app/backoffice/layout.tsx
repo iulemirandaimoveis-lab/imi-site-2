@@ -12,22 +12,20 @@ export default function BackofficeLayout({
     const pathname = usePathname();
     const isLoginPage = pathname === '/backoffice';
 
-    // Login page: render sem sidebar
     if (isLoginPage) {
         return (
-            <div className="min-h-screen bg-offwhite antialiased">
+            <div className="min-h-screen bg-imi-50 antialiased">
                 {children}
                 <Toaster position="top-right" richColors theme="light" />
             </div>
         );
     }
 
-    // Páginas internas: render com sidebar
     return (
-        <div className="min-h-screen bg-offwhite antialiased">
+        <div className="min-h-screen bg-imi-50 antialiased">
             <Sidebar />
-            <main className="lg:pl-72">
-                <div className="p-6 lg:p-8">
+            <main className="lg:pl-72 min-h-screen">
+                <div className="p-4 sm:p-6 lg:p-8">
                     {children}
                 </div>
             </main>

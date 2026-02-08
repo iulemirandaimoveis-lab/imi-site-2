@@ -48,10 +48,10 @@ export default function AppraisalForm() {
             variants={staggerContainer}
             className="bg-white/80 backdrop-blur-md shadow-soft rounded-2xl shadow-lg p-8 md:p-12"
         >
-            <motion.h2 variants={slideUp} className="text-3xl font-bold text-neutral-900 mb-2">
+            <motion.h2 variants={slideUp} className="text-3xl font-bold text-imi-900 mb-2">
                 Solicitar Avaliação Técnica
             </motion.h2>
-            <motion.p variants={slideUp} className="text-neutral-600 mb-8">
+            <motion.p variants={slideUp} className="text-imi-600 mb-8">
                 Preencha o formulário abaixo e entraremos em contato em até 24 horas.
             </motion.p>
 
