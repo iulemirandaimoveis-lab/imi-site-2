@@ -536,7 +536,7 @@ export const developments: Development[] = [
         slug: 'kempinski-residences-miami',
         name: 'Kempinski Hotel \u0026 Residences',
         developer: 'Kempinski Hotels',
-        developerLogo: '/images/logos/kempinski.jpg',
+        developerLogo: '/images/logos/kempinski.svg',
         status: 'launch',
         region: 'internacional',
         location: {
@@ -572,7 +572,7 @@ export const developments: Development[] = [
         slug: 'kempinski-residences-orlando',
         name: 'Kempinski Residences Orlando',
         developer: 'Kempinski Hotels',
-        developerLogo: '/images/logos/kempinski.jpg',
+        developerLogo: '/images/logos/kempinski.svg',
         status: 'launch',
         region: 'internacional',
         location: {

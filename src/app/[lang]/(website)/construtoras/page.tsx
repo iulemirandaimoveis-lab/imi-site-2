@@ -94,7 +94,7 @@ const staticDevelopers: Developer[] = [
         id: '7',
         name: 'Kempinski Hotels',
         slug: 'kempinski',
-        logo_url: '/images/logos/kempinski.jpg',
+        logo_url: '/images/logos/kempinski.svg',
         website: 'https://kempinski.com',
         city: 'Miami',
         state: 'FL',
