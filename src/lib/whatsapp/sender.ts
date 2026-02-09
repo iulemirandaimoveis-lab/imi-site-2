@@ -182,12 +182,19 @@ export async function processWhatsAppWebhook(payload: any) {
             });
 
             // Atualiza conversa
+            // Primeiro busca contador atual
+            const { data: currentConv } = await supabase
+                .from('whatsapp_conversations')
+                .select('unread_count')
+                .eq('id', conversation.id)
+                .single();
+
             await supabase
                 .from('whatsapp_conversations')
                 .update({
                     last_message_at: new Date().toISOString(),
                     last_message_preview: content.substring(0, 100),
-                    unread_count: supabase.sql`unread_count + 1`,
+                    unread_count: (currentConv?.unread_count || 0) + 1,
                 })
                 .eq('id', conversation.id);
 

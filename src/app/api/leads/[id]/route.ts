@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import prisma from '@/lib/prisma'
+import { createClient } from '@/lib/supabase/server'
 
 export const runtime = 'nodejs';
 
@@ -9,18 +9,22 @@ export async function GET(
     { params }: { params: { id: string } }
 ) {
     try {
-        const client = await prisma.client.findUnique({
-            where: { id: params.id },
-        })
+        const supabase = await createClient();
 
-        if (!client) {
+        const { data: lead, error } = await supabase
+            .from('leads')
+            .select('*')
+            .eq('id', params.id)
+            .single();
+
+        if (error || !lead) {
             return NextResponse.json(
                 { error: 'Lead não encontrado' },
                 { status: 404 }
             )
         }
 
-        return NextResponse.json({ client })
+        return NextResponse.json({ lead })
     } catch (error) {
         console.error('Erro ao buscar lead:', error)
         return NextResponse.json(
@@ -36,37 +40,29 @@ export async function PUT(
     { params }: { params: { id: string } }
 ) {
     try {
-        const { name, email, phone, origin, notes } = await request.json()
+        const body = await request.json();
+        const supabase = await createClient();
 
-        const client = await prisma.client.update({
-            where: { id: params.id },
-            data: {
-                name,
-                email,
-                phone,
-                origin,
-                notes,
-            },
-        })
+        const { data: lead, error } = await supabase
+            .from('leads')
+            .update(body)
+            .eq('id', params.id)
+            .select()
+            .single();
 
-        return NextResponse.json({ client })
-    } catch (error: any) {
+        if (error) {
+            if (error.code === 'PGRST116') {
+                return NextResponse.json(
+                    { error: 'Lead não encontrado' },
+                    { status: 404 }
+                )
+            }
+            throw error;
+        }
+
+        return NextResponse.json({ lead })
+    } catch (error: unknown) {
         console.error('Erro ao atualizar lead:', error)
-
-        if (error.code === 'P2025') {
-            return NextResponse.json(
-                { error: 'Lead não encontrado' },
-                { status: 404 }
-            )
-        }
-
-        if (error.code === 'P2002') {
-            return NextResponse.json(
-                { error: 'Este email já está cadastrado' },
-                { status: 409 }
-            )
-        }
-
         return NextResponse.json(
             { error: 'Erro ao atualizar lead' },
             { status: 500 }
@@ -80,21 +76,20 @@ export async function DELETE(
     { params }: { params: { id: string } }
 ) {
     try {
-        await prisma.client.delete({
-            where: { id: params.id },
-        })
+        const supabase = await createClient();
 
-        return NextResponse.json({ success: true })
-    } catch (error: any) {
-        console.error('Erro ao excluir lead:', error)
+        const { error } = await supabase
+            .from('leads')
+            .delete()
+            .eq('id', params.id);
 
-        if (error.code === 'P2025') {
-            return NextResponse.json(
-                { error: 'Lead não encontrado' },
-                { status: 404 }
-            )
+        if (error) {
+            throw error;
         }
 
+        return NextResponse.json({ success: true })
+    } catch (error: unknown) {
+        console.error('Erro ao excluir lead:', error)
         return NextResponse.json(
             { error: 'Erro ao excluir lead' },
             { status: 500 }

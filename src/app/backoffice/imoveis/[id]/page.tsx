@@ -16,7 +16,9 @@ import {
     Loader2,
     Building2,
     MapPin,
-    Hash
+    Hash,
+    Banknote,
+    Settings
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -32,6 +34,7 @@ interface DevelopmentFormValues {
     developer: string;
     status: string;
     region: string;
+    country?: string;
     neighborhood: string;
     city: string;
     state: string;
@@ -44,6 +47,7 @@ interface DevelopmentFormValues {
     registration_number: string;
     display_order: number;
     is_highlighted: boolean;
+    virtual_tour_url?: string;
     images: {
         main: string;
         gallery: string[];
@@ -79,9 +83,12 @@ export default function PropertyFormPage() {
         }
     });
 
-    const galleryFields = useFieldArray({ control, name: "images.gallery" as any });
-    const videoFields = useFieldArray({ control, name: "images.videos" as any });
-    const floorPlanFields = useFieldArray({ control, name: "images.floorPlans" as any });
+    // @ts-expect-error - useFieldArray com arrays aninhados tem tipagem complexa
+    const galleryFields = useFieldArray({ control, name: "images.gallery" });
+    // @ts-expect-error - useFieldArray com arrays aninhados tem tipagem complexa
+    const videoFields = useFieldArray({ control, name: "images.videos" });
+    // @ts-expect-error - useFieldArray com arrays aninhados tem tipagem complexa
+    const floorPlanFields = useFieldArray({ control, name: "images.floorPlans" });
 
     const currentImages = watch('images');
 

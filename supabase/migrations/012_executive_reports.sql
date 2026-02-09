@@ -93,8 +93,9 @@ LEFT JOIN content_items ci ON ci.tenant_id = t.id
 LEFT JOIN content_publications cp ON cp.tenant_id = t.id
 LEFT JOIN ads_campaigns ac ON ac.tenant_id = t.id
 LEFT JOIN ads_metrics am ON am.campaign_id = ac.id
-LEFT JOIN leads l ON l.user_id IN (SELECT user_id FROM tenant_users WHERE tenant_id = t.id)
+LEFT JOIN leads l ON l.tenant_id = t.id
 LEFT JOIN ai_requests air ON air.tenant_id = t.id
+
 
 GROUP BY t.id, t.name;
 

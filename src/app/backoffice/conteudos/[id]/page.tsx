@@ -339,7 +339,7 @@ export default function CalendarDetailPage({
                                     </Link>
                                 ) : (
                                     <Button
-                                        variant="default"
+                                        variant="primary"
                                         size="sm"
                                         className="w-full bg-accent-600 hover:bg-accent-700"
                                         onClick={() => handleGeneratePost(post)}

@@ -1,10 +1,10 @@
+
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createLead } from '@/lib/leads-service'
 
 export async function POST(request: NextRequest) {
     try {
         const data = await request.json()
-        const supabase = await createClient()
 
         // Validate required fields
         const requiredFields = ['name', 'phone', 'consultationType']
@@ -17,26 +17,31 @@ export async function POST(request: NextRequest) {
             }
         }
 
-        // Store in Supabase 'consultations' table
-        const { error } = await supabase.from('consultations').insert({
+        // Use the unified lead service
+        // This handles:
+        // 1. Finding/Creating Lead
+        // 2. Associating with Tenant
+        // 3. Creating Consultation Record
+        // 4. Logging interaction
+        const result = await createLead({
             name: data.name,
             email: data.email,
             phone: data.phone,
-            consultation_type: data.consultationType,
-            city_interest: data.cityInterest || data.city || '',
-            investment_profile: data.investmentProfile,
-            budget_range: data.budgetRange || '',
-            message: data.message || data.context || '',
-            status: 'pending'
-        })
+            source: 'website_consultation',
+            consultationType: data.consultationType,
+            message: data.message || data.context,
+            cityInterest: data.cityInterest,
+            investmentProfile: data.investmentProfile,
+            budgetRange: data.budgetRange
+        });
 
-        if (error) {
-            console.error('Supabase insert error:', error)
-            return NextResponse.json({ error: error.message }, { status: 500 })
+        if (!result.success) {
+            console.error('Lead service error:', result.error)
+            return NextResponse.json({ error: 'Erro ao salvar lead / consulta.' }, { status: 500 })
         }
 
         return NextResponse.json(
-            { success: true, message: 'Solicitação recebida com sucesso' },
+            { success: true, message: 'Solicitação recebida com sucesso', leadId: result.leadId },
             { status: 200 }
         )
     } catch (error) {

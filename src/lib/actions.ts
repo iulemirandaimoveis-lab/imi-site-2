@@ -1,136 +1,39 @@
 'use server';
 
-import { prisma } from '@/lib/prisma';
-import { revalidatePath } from 'next/cache';
-import { LeadStage, InvestmentGoal, ExperienceLevel, ConsultationStatus } from '@prisma/client';
+/**
+ * DEPRECATED: Este arquivo continha funções Prisma que foram migradas para Supabase.
+ * As operações de CRUD agora são feitas diretamente via supabase-js no frontend (Backoffice).
+ * 
+ * Mantido apenas para evitar erros de import em código legado.
+ * Todas as funções retornam erro indicando migração.
+ */
 
-export async function createProperty(data: any) {
-    try {
-        const property = await prisma.property.create({ data });
-        revalidatePath('/backoffice/properties');
-        revalidatePath('/properties');
-        return { success: true, data: property };
-    } catch (error) {
-        console.error('Error creating property:', error);
-        return { success: false, error: 'Failed to create property' };
-    }
+const MIGRATION_ERROR = {
+    success: false,
+    error: 'Esta função foi migrada para Supabase. Use o cliente supabase-js diretamente.'
+};
+
+export async function createProperty(_data: unknown) {
+    console.warn('[DEPRECATED] createProperty chamado. Use supabase-js.');
+    return MIGRATION_ERROR;
 }
 
-export async function createLead(data: any) {
-    try {
-        let leadStage: LeadStage = LeadStage.NEW;
-        if (data.status) {
-            const statusMap: Record<string, LeadStage> = {
-                'NEW': LeadStage.NEW,
-                'CONTACTED': LeadStage.CONTACTED,
-                'QUALIFIED': LeadStage.QUALIFIED,
-                'LOST': LeadStage.LOST,
-                'WON': LeadStage.CONVERTED,
-                'CONVERTED': LeadStage.CONVERTED
-            };
-            leadStage = statusMap[data.status] || LeadStage.NEW;
-        }
-
-        const leadData = {
-            name: data.name,
-            email: data.email,
-            phone: data.phone,
-            leadSource: data.source,
-            leadStage: leadStage,
-            capital: 0,
-            investmentGoal: InvestmentGoal.GROWTH,
-            experienceLevel: ExperienceLevel.BEGINNER
-        };
-
-        const lead = await prisma.lead.create({ data: leadData });
-        revalidatePath('/backoffice/leads');
-
-        if (data.notes) {
-            await prisma.activityLog.create({
-                data: {
-                    leadId: lead.id,
-                    action: 'NOTE_ADDED',
-                    entity: 'Lead',
-                    metadata: { note: data.notes }
-                }
-            });
-        }
-
-        return { success: true, data: lead };
-    } catch (error: any) {
-        console.error('Error creating lead:', error);
-        return { success: false, error: error.message };
-    }
+export async function createLead(_data: unknown) {
+    console.warn('[DEPRECATED] createLead chamado. Use supabase-js.');
+    return MIGRATION_ERROR;
 }
 
-export async function createConsultoria(data: any) {
-    try {
-        let lead = await prisma.lead.findFirst({ where: { email: data.clientName } });
-
-        const timestamp = Date.now();
-        const placeholderEmail = `client_${timestamp}@placeholder.com`;
-
-        lead = await prisma.lead.create({
-            data: {
-                name: data.clientName,
-                email: placeholderEmail,
-                capital: 0,
-                investmentGoal: InvestmentGoal.GROWTH,
-                experienceLevel: ExperienceLevel.BEGINNER
-            }
-        });
-
-        const consultant = await prisma.user.findFirst({
-            where: { role: { in: ['ADMIN', 'CONSULTANT'] } }
-        });
-
-        if (!consultant) throw new Error('No consultant available to assign.');
-
-        const statusMap: Record<string, ConsultationStatus> = {
-            'SCHEDULED': ConsultationStatus.SCHEDULED,
-            'CONFIRMED': ConsultationStatus.CONFIRMED,
-            'COMPLETED': ConsultationStatus.COMPLETED,
-            'CANCELLED': ConsultationStatus.CANCELLED
-        };
-
-        const consultation = await prisma.consultation.create({
-            data: {
-                leadId: lead.id,
-                consultantId: consultant.id,
-                scheduledAt: new Date(data.date),
-                status: statusMap[data.status] || ConsultationStatus.SCHEDULED,
-                price: parseFloat(data.investment.toString()) * 0.01,
-                consultantNotes: data.notes
-            }
-        });
-
-        revalidatePath('/backoffice/consultorias');
-        return { success: true, data: consultation };
-    } catch (error: any) {
-        console.error('Error creating consultoria:', error);
-        return { success: false, error: error.message };
-    }
+export async function createConsultoria(_data: unknown) {
+    console.warn('[DEPRECATED] createConsultoria chamado. Use supabase-js.');
+    return MIGRATION_ERROR;
 }
 
-export async function updateProperty(id: string, data: any) {
-    try {
-        const result = await prisma.property.update({ where: { id }, data });
-        revalidatePath('/backoffice/properties');
-        revalidatePath(`/backoffice/properties/${id}`);
-        revalidatePath('/properties');
-        return { success: true, data: result };
-    } catch (error) {
-        return { success: false, error: 'Failed to update property' };
-    }
+export async function updateProperty(_id: string, _data: unknown) {
+    console.warn('[DEPRECATED] updateProperty chamado. Use supabase-js.');
+    return MIGRATION_ERROR;
 }
 
-export async function deleteProperty(id: string) {
-    try {
-        await prisma.property.delete({ where: { id } });
-        revalidatePath('/backoffice/properties');
-        revalidatePath('/properties');
-        return { success: true };
-    } catch (error) {
-        return { success: false, error: 'Failed to delete property' };
-    }
+export async function deleteProperty(_id: string) {
+    console.warn('[DEPRECATED] deleteProperty chamado. Use supabase-js.');
+    return MIGRATION_ERROR;
 }

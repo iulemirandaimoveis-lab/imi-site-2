@@ -88,7 +88,7 @@ export default function LeadsPage() {
         return matchesSearch && matchesPriority;
     });
 
-    const priorityConfig = {
+    const priorityConfig: Record<string, { color: string; icon: typeof Flame; label: string }> = {
         critical: {
             color: 'bg-red-100 text-red-700 border-red-200',
             icon: Flame,
@@ -268,10 +268,10 @@ export default function LeadsPage() {
                                                 </div>
                                                 <div
                                                     className={`text-3xl font-black ${(lead.ai_score || 0) >= 80
-                                                            ? 'text-green-600'
-                                                            : (lead.ai_score || 0) >= 60
-                                                                ? 'text-yellow-600'
-                                                                : 'text-imi-600'
+                                                        ? 'text-green-600'
+                                                        : (lead.ai_score || 0) >= 60
+                                                            ? 'text-yellow-600'
+                                                            : 'text-imi-600'
                                                         }`}
                                                 >
                                                     {lead.ai_score || '—'}

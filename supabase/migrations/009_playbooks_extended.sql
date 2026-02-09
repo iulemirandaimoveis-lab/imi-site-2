@@ -52,7 +52,7 @@ CREATE OR REPLACE FUNCTION create_playbook_version()
 RETURNS TRIGGER AS $$
 BEGIN
     -- Incrementa versão
-    NEW.version = OLD.version + 1;
+    NEW.version = COALESCE(OLD.version, 1) + 1;
     
     -- Cria snapshot da versão anterior
     INSERT INTO playbook_versions (
@@ -62,9 +62,9 @@ BEGIN
         changed_by
     ) VALUES (
         OLD.id,
-        OLD.version,
+        COALESCE(OLD.version, 1),
         row_to_json(OLD.*),
-        NEW.updated_at::TEXT::UUID -- Workaround: pegar do contexto
+        auth.uid() -- Melhor forma de pegar o usuário no Supabase
     );
     
     RETURN NEW;
@@ -76,6 +76,7 @@ CREATE TRIGGER playbook_versioning
     FOR EACH ROW
     WHEN (OLD.* IS DISTINCT FROM NEW.*)
     EXECUTE FUNCTION create_playbook_version();
+
 
 -- ============================================================================
 -- DADOS: Atualizar playbook real_estate com novos campos

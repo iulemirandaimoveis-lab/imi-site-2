@@ -28,12 +28,12 @@ const sidebarItems = [
     { label: 'Imóveis', href: '/backoffice/imoveis', icon: Building2 },
     { label: 'Construtoras', href: '/backoffice/construtoras', icon: Building },
     { label: 'Leads', href: '/backoffice/leads', icon: Users },
-    { label: 'Conteúdos', href: '/backoffice/conteudos', icon: Sparkles, badge: 'IA' },
+    { label: 'Blog & IA', href: '/backoffice/conteudos', icon: Sparkles, badge: 'IA' },
     { label: 'Ads', href: '/backoffice/ads', icon: BarChart3, badge: 'IA' },
     { label: 'Consultorias', href: '/backoffice/consultations', icon: Calendar },
     { label: 'Crédito', href: '/backoffice/credito', icon: Banknote },
     { label: 'Avaliações', href: '/backoffice/avaliacoes', icon: FileText },
-    { label: 'Conteúdo', href: '/backoffice/conteudo', icon: FileEdit },
+    { label: 'Páginas Inst.', href: '/backoffice/conteudo', icon: FileEdit },
     { label: 'Configurações', href: '/backoffice/settings', icon: Settings },
 ];
 

@@ -5,17 +5,6 @@ import Image from 'next/image'
 import { Property } from '@/types/property'
 import Card from '@/components/ui/Card'
 import Badge from '@/components/ui/Badge'
-import Button from '@/components/ui/Button'
-import { formatCurrency } from '@/lib/utils'
-
-interface PropertyCardProps {
-    property: Property
-}
-
-import { Property } from '@/types/property'
-import Card from '@/components/ui/Card'
-import Badge from '@/components/ui/Badge'
-import Button from '@/components/ui/Button'
 import { formatCurrency } from '@/lib/utils'
 import { Bed, Move, MapPin, ChevronRight } from 'lucide-react'
 

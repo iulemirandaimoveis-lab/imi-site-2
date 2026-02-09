@@ -1,6 +1,4 @@
 import { NextResponse } from 'next/server'
-import prisma from '@/lib/prisma'
-import bcrypt from 'bcryptjs'
 import { supabaseAdmin } from '@/lib/supabase'
 
 export const runtime = 'nodejs';
@@ -8,60 +6,48 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
     try {
+        if (!supabaseAdmin) {
+            return NextResponse.json({
+                success: false,
+                error: 'Supabase Admin não configurado. Configure SUPABASE_SERVICE_ROLE_KEY.'
+            }, { status: 500 });
+        }
+
         const admins = [
             { email: 'iule@imi.com', name: 'Iule Miranda' },
             { email: 'admin@imi.com.br', name: 'Admin IMI' }
         ]
         const password = 'teste123'
 
-        const summary = []
+        const summary: Array<{ email: string; status: string }> = []
 
         for (const admin of admins) {
             const { email, name } = admin;
-            // 1. Criar no Supabase Auth se o supabaseAdmin estiver disponível
-            let authStatus = 'Pulado (supabaseAdmin não configurado)';
-            if (supabaseAdmin) {
-                const { data: authUser, error: authError } = await supabaseAdmin.auth.admin.createUser({
-                    email,
-                    password,
-                    email_confirm: true,
-                    user_metadata: { name }
-                })
 
-                if (authError) {
-                    if (authError.message.includes('already registered')) {
-                        authStatus = 'Já existe no Supabase Auth';
-                        const { data: listData } = await supabaseAdmin.auth.admin.listUsers();
-                        const existingUser = listData.users.find(u => u.email === email);
-                        if (existingUser) {
-                            await supabaseAdmin.auth.admin.updateUserById(existingUser.id, { password });
-                            authStatus += ' (senha atualizada)';
-                        }
+            const { data: authUser, error: authError } = await supabaseAdmin.auth.admin.createUser({
+                email,
+                password,
+                email_confirm: true,
+                user_metadata: { name }
+            })
+
+            if (authError) {
+                if (authError.message.includes('already registered')) {
+                    // Atualiza senha do usuário existente
+                    const { data: listData } = await supabaseAdmin.auth.admin.listUsers();
+                    const existingUser = listData.users.find((u: { email?: string }) => u.email === email);
+                    if (existingUser) {
+                        await supabaseAdmin.auth.admin.updateUserById(existingUser.id, { password });
+                        summary.push({ email, status: 'Já existe, senha atualizada' });
                     } else {
-                        authStatus = `Erro: ${authError.message}`;
+                        summary.push({ email, status: `Erro: ${authError.message}` });
                     }
                 } else {
-                    authStatus = 'Criado com sucesso no Supabase Auth';
+                    summary.push({ email, status: `Erro: ${authError.message}` });
                 }
+            } else {
+                summary.push({ email, status: 'Criado com sucesso' });
             }
-
-            // 2. Criar no Banco de Dados (Prisma)
-            const hashedPassword = await bcrypt.hash(password, 10)
-            const user = await prisma.user.upsert({
-                where: { email },
-                update: {
-                    passwordHash: hashedPassword,
-                    role: 'ADMIN',
-                    updatedAt: new Date()
-                },
-                create: {
-                    email,
-                    name,
-                    passwordHash: hashedPassword,
-                    role: 'ADMIN'
-                }
-            })
-            summary.push({ email, authStatus, prisma: 'Sincronizado' })
         }
 
         return NextResponse.json({
@@ -69,12 +55,12 @@ export async function GET() {
             message: 'Configuração concluída',
             results: summary
         })
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('❌ Erro no setup:', error)
         return NextResponse.json({
             success: false,
             error: 'Falha ao configurar admin',
-            debug: error.message
+            debug: error instanceof Error ? error.message : 'Unknown error'
         }, { status: 500 })
     }
 }
