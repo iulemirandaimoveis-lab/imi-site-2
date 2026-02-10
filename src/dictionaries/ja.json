@@ -7,10 +7,20 @@
         "credit": "ローン",
         "consulting": "コンサルティング",
         "intelligence": "市場分析",
-        "projects": "プロジェクト",
         "about": "会社概要",
         "contact": "お問い合わせ",
-        "whatsapp": "WhatsAppで相談"
+        "whatsapp": "WhatsApp"
+    },
+    "Footer": {
+        "tagline": "不動産インテリジェンス",
+        "description": "データに基づいた意思決定、メソッド、そして安全性。",
+        "services_title": "サービス",
+        "company_title": "会社情報",
+        "contact_title": "お問い合わせ",
+        "location": "ブラジル、ジョアンペソア",
+        "rights": "© 2026 IMI 不動産インテリジェンス。全著作権所有。",
+        "privacy": "プライバシーポリシー",
+        "terms": "利用規約"
     },
     "Home": {
         "hero_title": "知性、メソッド、そして安全性。\n不動産意思決定における確信。",

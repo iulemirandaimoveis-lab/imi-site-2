@@ -7,10 +7,20 @@
         "credit": "الائتمان",
         "consulting": "الاستشارات",
         "intelligence": "الذكاء",
-        "projects": "المشاريع",
         "about": "عن الشركة",
         "contact": "اتصل بنا",
-        "whatsapp": "تحدث عبر واتساب"
+        "whatsapp": "WhatsApp"
+    },
+    "Footer": {
+        "tagline": "الذكاء العقاري",
+        "description": "القرارات القائمة على البيانات والمنهجية والأمان.",
+        "services_title": "الخدمات",
+        "company_title": "الشركة",
+        "contact_title": "الاتصال",
+        "location": "جواو بيسوا، البرازيل",
+        "rights": "© 2026 IMI الذكاء العقاري. جميع الحقوق محفوظة.",
+        "privacy": "الخصوصية",
+        "terms": "الشروط"
     },
     "Home": {
         "hero_title": "ذكاء ومنهجية\nوأمان في القرارات\nالعقارية",

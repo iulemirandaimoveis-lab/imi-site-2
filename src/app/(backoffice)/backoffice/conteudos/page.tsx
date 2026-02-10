@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/client'
 import { Plus, Edit, Trash2, Calendar, Image as ImageIcon, Video, FileText, CheckCircle, Clock, X } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
@@ -22,7 +22,7 @@ interface Content {
 }
 
 export default function ContentPage() {
-  const supabase = createClientComponentClient()
+  const supabase = createClient()
   const { toasts, showToast, removeToast } = useToast()
   const [contents, setContents] = useState<Content[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -52,9 +52,13 @@ export default function ContentPage() {
         .select('*')
         .order('created_at', { ascending: false })
 
-      if (error) throw error
+      if (error) {
+        console.error('Error fetching content:', error)
+        throw error
+      }
       setContents(data || [])
     } catch (err: any) {
+      console.error('Caught error:', err)
       showToast(err.message || 'Erro ao carregar conteúdos', 'error')
     } finally {
       setIsLoading(false)
@@ -105,13 +109,19 @@ export default function ContentPage() {
           .from('content')
           .update(payload)
           .eq('id', editingContent.id)
-        if (error) throw error
+        if (error) {
+          console.error('Error updating content:', error)
+          throw error
+        }
         showToast('Conteúdo atualizado', 'success')
       } else {
         const { error } = await supabase
           .from('content')
           .insert([payload])
-        if (error) throw error
+        if (error) {
+          console.error('Error inserting content:', error)
+          throw error
+        }
         showToast('Conteúdo criado', 'success')
       }
 
@@ -119,6 +129,7 @@ export default function ContentPage() {
       resetForm()
       fetchContents()
     } catch (err: any) {
+      console.error('Caught error:', err)
       showToast(err.message || 'Erro ao salvar', 'error')
     } finally {
       setIsSaving(false)
@@ -141,10 +152,14 @@ export default function ContentPage() {
         .delete()
         .eq('id', id)
 
-      if (error) throw error
+      if (error) {
+        console.error('Error deleting content:', error)
+        throw error
+      }
       showToast('Conteúdo excluído', 'success')
       fetchContents()
     } catch (err: any) {
+      console.error('Caught error:', err)
       showToast('Erro ao excluir', 'error')
     }
   }
@@ -160,10 +175,14 @@ export default function ContentPage() {
         })
         .eq('id', id)
 
-      if (error) throw error
+      if (error) {
+        console.error('Error updating status:', error)
+        throw error
+      }
       showToast(`Status alterado para ${newStatus === 'published' ? 'Publicado' : 'Rascunho'}`, 'success')
       fetchContents()
     } catch (err: any) {
+      console.error('Caught error:', err)
       showToast('Erro ao atualizar status', 'error')
     }
   }
@@ -237,7 +256,7 @@ export default function ContentPage() {
 
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-navy-900">Conteúdos & Blog</h1>
+          <h1 className="text-3xl font-bold text-imi-900">Conteúdos & Blog</h1>
           <p className="text-slate-600 mt-1">Gerencie posts, stories e artigos</p>
         </div>
         <Button onClick={() => setIsModalOpen(true)}>
@@ -265,7 +284,7 @@ export default function ContentPage() {
             <div className="flex-1">
               <div className="flex items-start justify-between mb-2">
                 <div>
-                  <h3 className="text-xl font-bold text-navy-900 mb-1">{content.title}</h3>
+                  <h3 className="text-xl font-bold text-imi-900 mb-1">{content.title}</h3>
                   <div className="flex items-center gap-3 text-sm text-slate-500 mb-3">
                     {getStatusBadge(content.status)}
                     <span className="capitalize px-2 py-1 bg-slate-50 rounded text-xs">{content.type}</span>
@@ -298,7 +317,7 @@ export default function ContentPage() {
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
             <div className="sticky top-0 bg-white border-b border-slate-200 px-8 py-6 flex items-center justify-between z-10">
-              <h2 className="text-2xl font-bold text-navy-900">
+              <h2 className="text-2xl font-bold text-imi-900">
                 {editingContent ? 'Editar Conteúdo' : 'Novo Conteúdo'}
               </h2>
               <button onClick={() => { setIsModalOpen(false); resetForm(); }} className="p-2 hover:bg-slate-100 rounded-full">
@@ -315,11 +334,11 @@ export default function ContentPage() {
                   required
                 />
                 <div>
-                  <label className="block text-sm font-semibold text-navy-900 mb-2">Tipo de Conteúdo</label>
+                  <label className="block text-sm font-semibold text-imi-900 mb-2">Tipo de Conteúdo</label>
                   <select
                     value={formData.type}
                     onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value }))}
-                    className="w-full h-11 px-4 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-navy-900"
+                    className="w-full h-11 px-4 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-imi-900"
                   >
                     <option value="post">Post (Feed)</option>
                     <option value="story">Story</option>
@@ -346,9 +365,9 @@ export default function ContentPage() {
               />
 
               <div>
-                <label className="block text-sm font-semibold text-navy-900 mb-2">Mídias (Imagens/Vídeos)</label>
+                <label className="block text-sm font-semibold text-imi-900 mb-2">Mídias (Imagens/Vídeos)</label>
                 <div className="flex gap-4 items-center">
-                  <input type="file" accept="image/*,video/*" multiple onChange={handleMediaUpload} disabled={isUploading} className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-navy-50 file:text-navy-700 hover:file:bg-navy-100" />
+                  <input type="file" accept="image/*,video/*" multiple onChange={handleMediaUpload} disabled={isUploading} className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-imi-50 file:text-imi-700 hover:file:bg-imi-100" />
                   {isUploading && <span className="text-sm text-blue-600 animate-pulse">Enviando...</span>}
                 </div>
 
@@ -374,11 +393,11 @@ export default function ContentPage() {
                   onChange={(e) => setFormData(prev => ({ ...prev, scheduled_at: e.target.value }))}
                 />
                 <div>
-                  <label className="block text-sm font-semibold text-navy-900 mb-2">Status Inicial</label>
+                  <label className="block text-sm font-semibold text-imi-900 mb-2">Status Inicial</label>
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value }))}
-                    className="w-full h-11 px-4 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-navy-900"
+                    className="w-full h-11 px-4 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-imi-900"
                   >
                     <option value="draft">Rascunho</option>
                     <option value="scheduled">Agendado</option>

@@ -1,13 +1,13 @@
 'use client'
 
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/client'
 import { useRouter, usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import BackofficeShell from '@/components/backoffice/Shell'
 import Header from '@/components/backoffice/Header'
 
 export default function BackofficeLayout({ children }: { children: React.ReactNode }) {
-    const supabase = createClientComponentClient()
+    const supabase = createClient()
     const router = useRouter()
     const pathname = usePathname()
     const [isLoading, setIsLoading] = useState(true)
@@ -17,20 +17,43 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
     }, [])
 
     async function checkUser() {
-        const { data: { session } } = await supabase.auth.getSession()
+        try {
+            // Add timeout race condition
+            const timeoutPromise = new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Auth check timeout')), 10000)
+            )
 
-        if (!session && pathname !== '/login') {
-            router.push('/login')
-            return
+            const authPromise = supabase.auth.getSession()
+
+            const { data: { session }, error } = await Promise.race([
+                authPromise,
+                timeoutPromise
+            ]) as any
+
+            if (error) {
+                console.error('Auth check error:', error)
+                throw error
+            }
+
+            if (!session && pathname !== '/login') {
+                router.push('/login')
+                return
+            }
+        } catch (error) {
+            console.error('Failed to check auth:', error)
+            // On error, redirect to login as safety measure
+            if (pathname !== '/login') {
+                router.push('/login')
+            }
+        } finally {
+            setIsLoading(false)
         }
-
-        setIsLoading(false)
     }
 
     if (isLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-slate-50">
-                <div className="text-navy-900 font-semibold animate-pulse">Carregando...</div>
+                <div className="text-imi-900 font-semibold animate-pulse">Carregando...</div>
             </div>
         )
     }

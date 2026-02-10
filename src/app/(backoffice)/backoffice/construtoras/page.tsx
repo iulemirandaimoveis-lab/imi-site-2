@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/client'
 import { Plus, Edit, Trash2, Upload, X } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
@@ -23,7 +23,7 @@ interface Developer {
 }
 
 export default function DevelopersPage() {
-    const supabase = createClientComponentClient()
+    const supabase = createClient()
     const { toasts, showToast, removeToast } = useToast()
     const [developers, setDevelopers] = useState<Developer[]>([])
     const [isLoading, setIsLoading] = useState(true)
@@ -57,9 +57,13 @@ export default function DevelopersPage() {
                 .select('*')
                 .order('created_at', { ascending: false })
 
-            if (error) throw error
+            if (error) {
+                console.error('Error fetching:', error)
+                throw error
+            }
             setDevelopers(data || [])
         } catch (err: any) {
+            console.error('Caught error:', err)
             showToast(err.message || 'Erro ao carregar construtoras', 'error')
         } finally {
             setIsLoading(false)
@@ -92,7 +96,9 @@ export default function DevelopersPage() {
         if (!file.type.startsWith('image/')) {
             showToast('Apenas imagens são permitidas', 'error')
             return
-        } \n\n    if (file.size > 5 * 1024 * 1024) {
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
             showToast('Imagem deve ter no máximo 5MB', 'error')
             return
         }
@@ -132,14 +138,20 @@ export default function DevelopersPage() {
                     .update(formData)
                     .eq('id', editingDeveloper.id)
 
-                if (error) throw error
+                if (error) {
+                    console.error('Error updating:', error)
+                    throw error
+                }
                 showToast('Construtora atualizada com sucesso', 'success')
             } else {
                 const { error } = await supabase
                     .from('developers')
                     .insert([formData])
 
-                if (error) throw error
+                if (error) {
+                    console.error('Error inserting:', error)
+                    throw error
+                }
                 showToast('Construtora criada com sucesso', 'success')
             }
 
@@ -147,6 +159,7 @@ export default function DevelopersPage() {
             resetForm()
             fetchDevelopers()
         } catch (err: any) {
+            console.error('Caught error:', err)
             showToast(err.message || 'Erro ao salvar construtora', 'error')
         } finally {
             setIsSaving(false)
@@ -167,10 +180,14 @@ export default function DevelopersPage() {
                 .delete()
                 .eq('id', id)
 
-            if (error) throw error
+            if (error) {
+                console.error('Error deleting:', error)
+                throw error
+            }
             showToast('Construtora excluída com sucesso', 'success')
             fetchDevelopers()
         } catch (err: any) {
+            console.error('Caught error:', err)
             showToast(err.message || 'Erro ao excluir construtora', 'error')
         }
     }
@@ -187,7 +204,8 @@ export default function DevelopersPage() {
             email: developer.email || '',
             active: developer.active
         })
-        setErrors({}) \n    setIsModalOpen(true)
+        setErrors({})
+        setIsModalOpen(true)
     }
 
     function resetForm() {
@@ -199,7 +217,7 @@ export default function DevelopersPage() {
             cnpj: '',
             phone: '',
             email: '',
-            active: true\n
+            active: true
         })
         setEditingDeveloper(null)
         setErrors({})
@@ -212,12 +230,12 @@ export default function DevelopersPage() {
                     <div className="h-8 bg-slate-200 rounded w-1/4"></div>
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {[1, 2, 3].map(i => (
-                            <div key={i} className=\"h-64 bg-slate-200 rounded-xl\"></div>
-            ))}
+                            <div key={i} className="h-64 bg-slate-200 rounded-xl"></div>
+                        ))}
+                    </div>
                 </div>
             </div>
-      </div >
-    )
+        )
     }
 
     return (
@@ -231,29 +249,208 @@ export default function DevelopersPage() {
                 />
             ))}
 
-            <div className=\"flex items-center justify-between mb-8\">
-            <div>
-                <h1 className=\"text-3xl font-bold text-navy-900\">Construtoras</h1>
-            <p className=\"text-slate-600 mt-1\">{developers.length} construtoras cadastradas</p>
-        </div >
-        <Button onClick={() => setIsModalOpen(true)}>
-            <Plus className=\"w-5 h-5 mr-2\" />
-            Nova Construtora
-        </Button>
-      </div >
+            <div className="flex items-center justify-between mb-8">
+                <div>
+                    <h1 className="text-3xl font-bold text-imi-900">Construtoras</h1>
+                    <p className="text-slate-600 mt-1">{developers.length} construtoras cadastradas</p>
+                </div>
+                <Button onClick={() => setIsModalOpen(true)}>
+                    <Plus className="w-5 h-5 mr-2" />
+                    Nova Construtora
+                </Button>
+            </div>
 
-    {
-        developers.length === 0 ? (
-            <div className=\"text-center py-12 bg-white rounded-xl border border-slate-200\">
-            <p className =\"text-slate-600 mb-4\">Nenhuma construtora cadastrada</p>\n          <Button onClick={() => setIsModalOpen(true)}>
-            <Plus className =\"w-5 h-5 mr-2\" />
-            Cadastrar Primeira Construtora
-          </Button>\n        </div >
-      ) : (
-        <div className=\"grid md:grid-cols-2 lg:grid-cols-3 gap-6\">
-    {
-        developers.map((developer) => (
-            <div key={developer.id} className=\"bg-white rounded-xl p-6 border border-slate-200 hover:shadow-lg transition-shadow\">
-              { developer.logo_url ? (\n<img \n                  src = {developer.logo_url } \n                  alt = { developer.name }\n                  className =\"w-full h-32 object-contain mb-4 bg-slate-50 rounded-lg p-4\"\n                />\n              ) : (\n                <div className=\"w-full h-32 bg-slate-100 rounded-lg flex items-center justify-center mb-4\">\n                  <Upload className=\"w-8 h-8 text-slate-400\" />\n                </div>\n              )}\n              \n              <h3 className=\"text-xl font-bold text-navy-900 mb-2\">{developer.name}</h3>\n              \n              {developer.description && (\n                <p className=\"text-slate-600 text-sm mb-4 line-clamp-2\">{developer.description}</p>\n              )}\n              \n              <div className=\"flex items-center gap-2 mb-4\">\n                <span className={`px-2 py-1 rounded text-xs font-semibold ${\n                  developer.active ? 'bg-green-100 text-green-800' : 'bg-slate-100 text-slate-600'\n                }`}>\n                  {developer.active ? 'Ativa' : 'Inativa'}\n                </span>\n              </div>\n              \n              <div className=\"flex gap-2\">\n                <Button size=\"sm\" variant=\"outline\" onClick={() => openEditModal(developer)} className=\"flex-1\">\n                  <Edit className=\"w-4 h-4 mr-1\" />\n                  Editar\n                </Button>\n                <Button \n                  size=\"sm\" \n                  variant=\"outline\" \n                  onClick={() => handleDelete(developer.id, developer.logo_url)}\n                  className=\"flex-1\"\n                >\n                  <Trash2 className=\"w-4 h-4 mr-1\" />\n                  Excluir\n                </Button>\n              </div>\n            </div>\n          ))}\n        </div>
-        )
-    } \n\n      { isModalOpen && (\n < div className =\"fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4\">\n          <div className=\"bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto\">\n            <div className=\"sticky top-0 bg-white border-b border-slate-200 px-8 py-6 flex items-center justify-between\">\n              <h2 className=\"text-2xl font-bold text-navy-900\">\n                {editingDeveloper ? 'Editar Construtora' : 'Nova Construtora'}\n              </h2>\n              <button\n                onClick={() => {\n                  setIsModalOpen(false)\n                  resetForm()\n                }}\n                className=\"w-8 h-8 flex items-center justify-center hover:bg-slate-100 rounded-lg transition-colors\"\n              >\n                <X className=\"w-5 h-5\" />\n              </button>\n            </div>\n\n            <form onSubmit={handleSubmit} className=\"p-8 space-y-6\">\n              <Input\n                label=\"Nome *\"\n                value={formData.name}\n                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}\n                error={errors.name}\n                required\n              />\n\n              <div>\n                <label className=\"block text-sm font-semibold text-navy-900 mb-2\">\n                  Logo\n                </label>\n                <div className=\"flex gap-4 items-start\">\n                  <div className=\"flex-1\">\n                    <input\n                      type=\"file\"\n                      accept=\"image/*\"\n                      onChange={handleLogoUpload}\n                      className=\"w-full text-sm\"\n                      disabled={isUploading}\n                    />\n                    <p className=\"text-xs text-slate-500 mt-1\">PNG, JPG ou SVG até 5MB</p>\n                  </div>\n                  {isUploading && (\n                    <span className=\"text-sm text-slate-600\">Enviando...</span>\n                  )}\n                </div>\n                {formData.logo_url && (\n                  <div className=\"mt-4 relative inline-block\">\n                    <img src={formData.logo_url} alt=\"Preview\" className=\"h-24 object-contain bg-slate-50 rounded-lg p-2\" />\n                    <button\n                      type=\"button\"\n                      onClick={() => setFormData(prev => ({ ...prev, logo_url: '' }))}\n                      className=\"absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600\"\n                    >\n                      <X className=\"w-4 h-4\" />\n                    </button>\n                  </div>\n                )}\n              </div>\n\n              <Textarea\n                label=\"Descrição\"\n                value={formData.description}\n                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}\n                rows={4}\n              />\n\n              <Input\n                label=\"Website\"\n                type=\"url\"\n                value={formData.website}\n                onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}\n                error={errors.website}\n                placeholder=\"https://exemplo.com.br\"\n              />\n\n              <div className=\"grid md:grid-cols-2 gap-4\">\n                <Input\n                  label=\"CNPJ\"\n                  value={formData.cnpj}\n                  onChange={(e) => setFormData(prev => ({ ...prev, cnpj: e.target.value }))}\n                  placeholder=\"00.000.000/0000-00\"\n                />\n                <Input\n                  label=\"Telefone\"\n                  value={formData.phone}\n                  onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}\n                  placeholder=\"(81) 99999-9999\"\n                />\n              </div>\n\n              <Input\n                label=\"Email\"\n                type=\"email\"\n                value={formData.email}\n                onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}\n                error={errors.email}\n                placeholder=\"contato@construtora.com.br\"\n              />\n\n              <label className=\"flex items-center gap-2 cursor-pointer\">\n                <input\n                  type=\"checkbox\"\n                  checked={formData.active}\n                  onChange={(e) => setFormData(prev => ({ ...prev, active: e.target.checked }))}\n                  className=\"w-4 h-4 rounded border-slate-300\"\n                />\n                <span className=\"text-sm text-navy-900 font-medium\">Construtora ativa</span>\n              </label>\n\n              <div className=\"flex gap-4 pt-4 border-t border-slate-200\">\n                <Button type=\"submit\" className=\"flex-1\" disabled={isSaving}>\n                  {isSaving ? 'Salvando...' : (editingDeveloper ? 'Atualizar' : 'Criar')}\n                </Button>\n                <Button \n                  type=\"button\" \n                  variant=\"outline\" \n                  className=\"flex-1\"\n                  onClick={() => {\n                    setIsModalOpen(false)\n                    resetForm()\n                  }}\n                  disabled={isSaving}\n                >\n                  Cancelar\n                </Button>\n              </div>\n            </form>\n          </div>\n        </div>\n      )}\n    </div>\n  )\n}
+            {
+                developers.length === 0 ? (
+                    <div className="text-center py-12 bg-white rounded-xl border border-slate-200">
+                        <p className="text-slate-600 mb-4">Nenhuma construtora cadastrada</p>
+                        <Button onClick={() => setIsModalOpen(true)}>
+                            <Plus className="w-5 h-5 mr-2" />
+                            Cadastrar Primeira Construtora
+                        </Button>
+                    </div>
+                ) : (
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {
+                            developers.map((developer) => (
+                                <div key={developer.id} className="bg-white rounded-xl p-6 border border-slate-200 hover:shadow-lg transition-shadow">
+                                    {developer.logo_url ? (
+                                        <img
+                                            src={developer.logo_url}
+                                            alt={developer.name}
+                                            className="w-full h-32 object-contain mb-4 bg-slate-50 rounded-lg p-4"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-32 bg-slate-100 rounded-lg flex items-center justify-center mb-4">
+                                            <Upload className="w-8 h-8 text-slate-400" />
+                                        </div>
+                                    )}
+
+                                    <h3 className="text-xl font-bold text-imi-900 mb-2">{developer.name}</h3>
+
+                                    {developer.description && (
+                                        <p className="text-slate-600 text-sm mb-4 line-clamp-2">{developer.description}</p>
+                                    )}
+
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <span className={`px-2 py-1 rounded text-xs font-semibold ${developer.active ? 'bg-green-100 text-green-800' : 'bg-slate-100 text-slate-600'
+                                            }`}>
+                                            {developer.active ? 'Ativa' : 'Inativa'}
+                                        </span>
+                                    </div>
+
+                                    <div className="flex gap-2">
+                                        <Button size="sm" variant="outline" onClick={() => openEditModal(developer)} className="flex-1">
+                                            <Edit className="w-4 h-4 mr-1" />
+                                            Editar
+                                        </Button>
+                                        <Button
+                                            size="sm"
+                                            variant="outline"
+                                            onClick={() => handleDelete(developer.id, developer.logo_url)}
+                                            className="flex-1"
+                                        >
+                                            <Trash2 className="w-4 h-4 mr-1" />
+                                            Excluir
+                                        </Button>
+                                    </div>
+                                </div>
+                            ))}
+                    </div>
+                )
+            }
+
+            {isModalOpen && (
+                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                        <div className="sticky top-0 bg-white border-b border-slate-200 px-8 py-6 flex items-center justify-between">
+                            <h2 className="text-2xl font-bold text-imi-900">
+                                {editingDeveloper ? 'Editar Construtora' : 'Nova Construtora'}
+                            </h2>
+                            <button
+                                onClick={() => {
+                                    setIsModalOpen(false)
+                                    resetForm()
+                                }}
+                                className="w-8 h-8 flex items-center justify-center hover:bg-slate-100 rounded-lg transition-colors"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="p-8 space-y-6">
+                            <Input
+                                label="Nome *"
+                                value={formData.name}
+                                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                                error={errors.name}
+                                required
+                            />
+
+                            <div>
+                                <label className="block text-sm font-semibold text-imi-900 mb-2">
+                                    Logo
+                                </label>
+                                <div className="flex gap-4 items-start">
+                                    <div className="flex-1">
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleLogoUpload}
+                                            className="w-full text-sm"
+                                            disabled={isUploading}
+                                        />
+                                        <p className="text-xs text-slate-500 mt-1">PNG, JPG ou SVG até 5MB</p>
+                                    </div>
+                                    {isUploading && (
+                                        <span className="text-sm text-slate-600">Enviando...</span>
+                                    )}
+                                </div>
+                                {formData.logo_url && (
+                                    <div className="mt-4 relative inline-block">
+                                        <img src={formData.logo_url} alt="Preview" className="h-24 object-contain bg-slate-50 rounded-lg p-2" />
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData(prev => ({ ...prev, logo_url: '' }))}
+                                            className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600"
+                                        >
+                                            <X className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+
+                            <Textarea
+                                label="Descrição"
+                                value={formData.description}
+                                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                                rows={4}
+                            />
+
+                            <Input
+                                label="Website"
+                                type="url"
+                                value={formData.website}
+                                onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}
+                                error={errors.website}
+                                placeholder="https://exemplo.com.br"
+                            />
+
+                            <div className="grid md:grid-cols-2 gap-4">
+                                <Input
+                                    label="CNPJ"
+                                    value={formData.cnpj}
+                                    onChange={(e) => setFormData(prev => ({ ...prev, cnpj: e.target.value }))}
+                                    placeholder="00.000.000/0000-00"
+                                />
+                                <Input
+                                    label="Telefone"
+                                    value={formData.phone}
+                                    onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                                    placeholder="(81) 99999-9999"
+                                />
+                            </div>
+
+                            <Input
+                                label="Email"
+                                type="email"
+                                value={formData.email}
+                                onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                                error={errors.email}
+                                placeholder="contato@construtora.com.br"
+                            />
+
+                            <label className="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    checked={formData.active}
+                                    onChange={(e) => setFormData(prev => ({ ...prev, active: e.target.checked }))}
+                                    className="w-4 h-4 rounded border-slate-300"
+                                />
+                                <span className="text-sm text-imi-900 font-medium">Construtora ativa</span>
+                            </label>
+
+                            <div className="flex gap-4 pt-4 border-t border-slate-200">
+                                <Button type="submit" className="flex-1" disabled={isSaving}>
+                                    {isSaving ? 'Salvando...' : (editingDeveloper ? 'Atualizar' : 'Criar')}
+                                </Button>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    className="flex-1"
+                                    onClick={() => {
+                                        setIsModalOpen(false)
+                                        resetForm()
+                                    }}
+                                    disabled={isSaving}
+                                >
+                                    Cancelar
+                                </Button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+        </div>
+    )
+}

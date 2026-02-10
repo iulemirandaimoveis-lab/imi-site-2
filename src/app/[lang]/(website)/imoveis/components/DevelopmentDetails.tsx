@@ -24,7 +24,7 @@ export default function DevelopmentDetails({ development }: DevelopmentDetailsPr
                     <div className="lg:col-span-7">
                         <motion.div variants={slideUp} className="mb-12">
                             <h2 className="font-display text-3xl md:text-4xl text-imi-900 mb-6 font-bold">Sobre o empreendimento</h2>
-                            <div className="prose prose-slate max-w-none text-imi-600 leading-relaxed text-lg font-light">
+                            <div className="prose prosebg-imi-50 max-w-none text-imi-600 leading-relaxed text-lg font-light">
                                 {development.description}
                             </div>
                         </motion.div>

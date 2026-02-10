@@ -1,1 +1,67 @@
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'\n\nconst supabase = createClientComponentClient() \n\nexport async function uploadFile(\n  bucket: string, \n  path: string, \n  file: File\n): Promise<{ url: string | null; error: Error | null }> { \n  try { \n    const { data, error } = await supabase.storage\n      .from(bucket) \n.upload(path, file, { \n        cacheControl: '3600', \n        upsert: false\n }) \n\n    if (error) throw error\n\n    const { data: urlData } = supabase.storage\n      .from(bucket) \n.getPublicUrl(data.path) \n\n    return { url: urlData.publicUrl, error: null }\n } catch (error) { \n    return { url: null, error: error as Error }\n } \n } \n\nexport async function deleteFile(\n  bucket: string, \n  path: string\n): Promise<{ error: Error | null }> { \n  try { \n    const { error } = await supabase.storage\n      .from(bucket) \n.remove([path]) \n\n    if (error) throw error\n\n    return { error: null }\n } catch (error) { \n    return { error: error as Error }\n } \n } \n\nexport async function uploadMultipleFiles(\n  bucket: string, \n  files: File[]\n): Promise<{ urls: string[]; errors: Error[] }> { \n  const urls: string[] = []\n  const errors: Error[] = []\n\n  for (const file of files) { \n    const timestamp = Date.now() \n    const fileName = `${timestamp}-${file.name}`\n    const { url, error } = await uploadFile(bucket, fileName, file) \n\n    if (error) { \n      errors.push(error) \n } else if (url) { \n      urls.push(url) \n } \n } \n\n  return { urls, errors }\n }
+import { createClient } from '@/lib/supabase/client'
+
+const supabase = createClient()
+
+export async function uploadFile(
+    bucket: string,
+    path: string,
+    file: File
+): Promise<{ url: string | null; error: Error | null }> {
+    try {
+        const { data, error } = await supabase.storage
+            .from(bucket)
+            .upload(path, file, {
+                cacheControl: '3600',
+                upsert: false
+            })
+
+        if (error) throw error
+
+        const { data: urlData } = supabase.storage
+            .from(bucket)
+            .getPublicUrl(data.path)
+
+        return { url: urlData.publicUrl, error: null }
+    } catch (error) {
+        return { url: null, error: error as Error }
+    }
+}
+
+export async function deleteFile(
+    bucket: string,
+    path: string
+): Promise<{ error: Error | null }> {
+    try {
+        const { error } = await supabase.storage
+            .from(bucket)
+            .remove([path])
+
+        if (error) throw error
+
+        return { error: null }
+    } catch (error) {
+        return { error: error as Error }
+    }
+}
+
+export async function uploadMultipleFiles(
+    bucket: string,
+    files: File[]
+): Promise<{ urls: string[]; errors: Error[] }> {
+    const urls: string[] = []
+    const errors: Error[] = []
+
+    for (const file of files) {
+        const timestamp = Date.now()
+        const fileName = `${timestamp}-${file.name}`
+        const { url, error } = await uploadFile(bucket, fileName, file)
+
+        if (error) {
+            errors.push(error)
+        } else if (url) {
+            urls.push(url)
+        }
+    }
+
+    return { urls, errors }
+}

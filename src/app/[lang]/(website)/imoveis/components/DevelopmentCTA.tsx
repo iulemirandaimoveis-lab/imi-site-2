@@ -37,17 +37,17 @@ export default function DevelopmentCTA({ development }: DevelopmentCTAProps) {
                     <motion.h2 variants={slideUp} className="font-display text-4xl md:text-5xl lg:text-6xl mb-6 font-bold tracking-tight">
                         Interessado neste <span className="text-accent-500 italic">ativo?</span>
                     </motion.h2>
-                    <motion.p variants={slideUp} className="text-imi-300 text-lg md:text-xl mb-12 font-light max-w-2xl mx-auto leading-relaxed">
+                    <motion.p variants={slideUp} className="text-accent-500 text-lg md:text-xl mb-12 font-light max-w-2xl mx-auto leading-relaxed">
                         Fale diretamente com nossa mesa de negócios técnica e tire todas as suas dúvidas sobre rentabilidade e viabilidade.
                     </motion.p>
 
                     <motion.div variants={slideUp} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                         <Button
                             size="lg"
-                            className="bg-white text-imi-900 hover:bg-imi-100 min-w-[280px] h-16 font-bold uppercase tracking-[0.2em] text-sm shadow-xl"
+                            className="bg-white text-imi-900 hover:bg-imi-50 min-w-[280px] h-16 font-bold uppercase tracking-[0.2em] text-sm shadow-xl"
                             onClick={() => handleWhatsApp('info')}
                         >
-                            <MessageCircle className="w-5 h-5 mr-3 text-imi-700" />
+                            <MessageCircle className="w-5 h-5 mr-3 text-imi-600" />
                             Falar com Especialista
                         </Button>
 

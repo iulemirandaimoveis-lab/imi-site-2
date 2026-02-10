@@ -7,10 +7,27 @@
         "credit": "Crédito",
         "consulting": "Consultoría",
         "intelligence": "Inteligencia",
-        "projects": "Proyectos",
         "about": "Sobre nosotros",
         "contact": "Contacto",
-        "whatsapp": "Hablar por WhatsApp"
+        "whatsapp": "WhatsApp"
+    },
+    "Footer": {
+        "tagline": "Inteligencia Inmobiliaria",
+        "description": "Decisiones basadas en datos, método y seguridad.",
+        "services_title": "Servicios",
+        "company_title": "Empresa",
+        "contact_title": "Contacto",
+        "location": "João Pessoa, PB, Brasil",
+        "rights": "© 2026 IMI Inteligencia Inmobiliaria. Todos los derechos reservados.",
+        "privacy": "Privacidad",
+        "terms": "Términos",
+        "nav_appraisals": "Valoraciones",
+        "nav_properties": "Propiedades",
+        "nav_credit": "Crédito",
+        "nav_consulting": "Consultoría",
+        "nav_intelligence": "Inteligencia",
+        "nav_about": "Sobre nosotros",
+        "nav_contact": "Contacto"
     },
     "Home": {
         "hero_title": "Inteligencia,\nmétodo y seguridad\nen decisiones inmobiliarias",

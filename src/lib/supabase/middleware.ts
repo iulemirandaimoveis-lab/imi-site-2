@@ -2,8 +2,10 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function updateSession(request: NextRequest) {
-    let supabaseResponse = NextResponse.next({
-        request,
+    let response = NextResponse.next({
+        request: {
+            headers: request.headers,
+        },
     })
 
     const supabase = createServerClient(
@@ -18,37 +20,35 @@ export async function updateSession(request: NextRequest) {
                     cookiesToSet.forEach(({ name, value, options }) =>
                         request.cookies.set(name, value)
                     )
-                    supabaseResponse = NextResponse.next({
+                    response = NextResponse.next({
                         request,
                     })
                     cookiesToSet.forEach(({ name, value, options }) =>
-                        supabaseResponse.cookies.set(name, value, options)
+                        response.cookies.set(name, value, options)
                     )
                 },
             },
         }
     )
 
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
+    const { data: { session } } = await supabase.auth.getSession()
 
     // Proteger rotas do backoffice
     if (request.nextUrl.pathname.startsWith('/backoffice')) {
-        // Permitir acesso a pagina de login
-        if (request.nextUrl.pathname === '/backoffice') {
-            if (user) {
-                // Ja logado, redirecionar para dashboard
-                return NextResponse.redirect(new URL('/backoffice/dashboard', request.url))
-            }
-            return supabaseResponse
+        if (!session) {
+            const redirectUrl = request.nextUrl.clone()
+            redirectUrl.pathname = '/login'
+            redirectUrl.searchParams.set('redirectedFrom', request.nextUrl.pathname)
+            return NextResponse.redirect(redirectUrl)
         }
+    }
 
-        // Todas as outras rotas do backoffice requerem autenticacao
-        if (!user) {
+    // Se já estiver logado e tentar acessar /login, redireciona para /backoffice
+    if (request.nextUrl.pathname === '/login') {
+        if (session) {
             return NextResponse.redirect(new URL('/backoffice', request.url))
         }
     }
 
-    return supabaseResponse
+    return response
 }

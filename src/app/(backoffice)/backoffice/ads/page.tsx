@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/client'
 import { Plus, TrendingUp, TrendingDown, DollarSign, Target, MousePointerClick, RefreshCw, X } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
@@ -98,7 +98,7 @@ export default function AdsPage() {
 
             <div className="flex items-center justify-between mb-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-navy-900">Anúncios & Performance</h1>
+                    <h1 className="text-3xl font-bold text-imi-900">Anúncios & Performance</h1>
                     <p className="text-slate-600 mt-1">Gestão unificada de Google e Meta Ads</p>
                 </div>
                 <div className="flex gap-3">
@@ -120,7 +120,7 @@ export default function AdsPage() {
                         <span className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Investimento Total</span>
                         <div className="p-2 bg-blue-50 rounded-lg"><DollarSign className="w-5 h-5 text-blue-600" /></div>
                     </div>
-                    <h3 className="text-3xl font-bold text-navy-900">
+                    <h3 className="text-3xl font-bold text-imi-900">
                         {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalSpend)}
                     </h3>
                     <p className="text-xs text-green-600 flex items-center mt-2 font-medium">
@@ -133,7 +133,7 @@ export default function AdsPage() {
                         <span className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Conversões (Leads)</span>
                         <div className="p-2 bg-purple-50 rounded-lg"><Target className="w-5 h-5 text-purple-600" /></div>
                     </div>
-                    <h3 className="text-3xl font-bold text-navy-900">{totalConversions}</h3>
+                    <h3 className="text-3xl font-bold text-imi-900">{totalConversions}</h3>
                     <p className="text-xs text-slate-500 mt-2">CPA Médio: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(avgCpa)}</p>
                 </div>
 
@@ -142,7 +142,7 @@ export default function AdsPage() {
                         <span className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Cliques</span>
                         <div className="p-2 bg-green-50 rounded-lg"><MousePointerClick className="w-5 h-5 text-green-600" /></div>
                     </div>
-                    <h3 className="text-3xl font-bold text-navy-900">{totalClicks.toLocaleString()}</h3>
+                    <h3 className="text-3xl font-bold text-imi-900">{totalClicks.toLocaleString()}</h3>
                     <p className="text-xs text-slate-500 mt-2">CTR Médio: {avgCtr.toFixed(2)}%</p>
                 </div>
             </div>
@@ -150,7 +150,7 @@ export default function AdsPage() {
             {/* Campaigns Table */}
             <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
                 <div className="px-6 py-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
-                    <h3 className="font-bold text-navy-900">Campanhas Ativas</h3>
+                    <h3 className="font-bold text-imi-900">Campanhas Ativas</h3>
                     <span className="text-xs text-slate-500">Última atualização: Hoje, 09:30</span>
                 </div>
                 <div className="overflow-x-auto">
@@ -168,7 +168,7 @@ export default function AdsPage() {
                         <tbody className="divide-y divide-slate-100">
                             {campaigns.map((camp) => (
                                 <tr key={camp.id} className="hover:bg-slate-50 transition-colors group">
-                                    <td className="px-6 py-4 font-medium text-navy-900">{camp.name}</td>
+                                    <td className="px-6 py-4 font-medium text-imi-900">{camp.name}</td>
                                     <td className="px-6 py-4">
                                         <span className={`px-2 py-1 rounded-full text-xs font-bold uppercase ${getPlatformColor(camp.platform)}`}>
                                             {camp.platform.replace('_', ' ')}
@@ -183,7 +183,7 @@ export default function AdsPage() {
                                     <td className="px-6 py-4 text-right font-medium text-slate-700">
                                         {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(camp.spend)}
                                     </td>
-                                    <td className="px-6 py-4 text-right font-bold text-navy-900 bg-slate-50/50">
+                                    <td className="px-6 py-4 text-right font-bold text-imi-900 bg-slate-50/50">
                                         {camp.conversions}
                                     </td>
                                     <td className="px-6 py-4 text-right text-slate-600">
@@ -203,7 +203,7 @@ export default function AdsPage() {
                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
                     <div className="bg-white rounded-xl max-w-lg w-full">
                         <div className="flex items-center justify-between p-6 border-b border-slate-200">
-                            <h2 className="text-xl font-bold text-navy-900">Nova Campanha Manual</h2>
+                            <h2 className="text-xl font-bold text-imi-900">Nova Campanha Manual</h2>
                             <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-slate-100 rounded-full">
                                 <X className="w-5 h-5 text-slate-500" />
                             </button>
@@ -216,11 +216,11 @@ export default function AdsPage() {
                                 required
                             />
                             <div>
-                                <label className="block text-sm font-semibold text-navy-900 mb-2">Plataforma</label>
+                                <label className="block text-sm font-semibold text-imi-900 mb-2">Plataforma</label>
                                 <select
                                     value={formData.platform}
                                     onChange={(e) => setFormData(prev => ({ ...prev, platform: e.target.value }))}
-                                    className="w-full h-11 px-4 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-navy-900"
+                                    className="w-full h-11 px-4 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-imi-900"
                                 >
                                     <option value="google_ads">Google Ads</option>
                                     <option value="meta_ads">Meta Ads (Facebook/Instagram)</option>

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/client'
 import { Plus, Edit, Trash2, CheckCircle, Clock, X, Calendar, Phone, Mail } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
@@ -22,7 +22,7 @@ interface Consultation {
 }
 
 export default function ConsultationPage() {
-    const supabase = createClientComponentClient()
+    const supabase = createClient()
     const { toasts, showToast, removeToast } = useToast()
     const [consultations, setConsultations] = useState<Consultation[]>([])
     const [isLoading, setIsLoading] = useState(true)
@@ -58,9 +58,13 @@ export default function ConsultationPage() {
             }
 
             const { data, error } = await query
-            if (error) throw error
+            if (error) {
+                console.error('Error fetching consultations:', error)
+                throw error
+            }
             setConsultations(data || [])
         } catch (err: any) {
+            console.error('Caught error:', err)
             showToast(err.message || 'Erro ao carregar consultorias', 'error')
         } finally {
             setIsLoading(false)
@@ -87,13 +91,19 @@ export default function ConsultationPage() {
                     .from('consultations')
                     .update(payload)
                     .eq('id', editingConsultation.id)
-                if (error) throw error
+                if (error) {
+                    console.error('Error updating consultation:', error)
+                    throw error
+                }
                 showToast('Consultoria atualizada', 'success')
             } else {
                 const { error } = await supabase
                     .from('consultations')
                     .insert([payload])
-                if (error) throw error
+                if (error) {
+                    console.error('Error inserting consultation:', error)
+                    throw error
+                }
                 showToast('Consultoria agendada', 'success')
             }
 
@@ -101,6 +111,7 @@ export default function ConsultationPage() {
             resetForm()
             fetchConsultations()
         } catch (err: any) {
+            console.error('Caught error:', err)
             showToast(err.message || 'Erro ao salvar', 'error')
         } finally {
             setIsSaving(false)
@@ -116,10 +127,14 @@ export default function ConsultationPage() {
                 .delete()
                 .eq('id', id)
 
-            if (error) throw error
+            if (error) {
+                console.error('Error deleting consultation:', error)
+                throw error
+            }
             showToast('Consultoria excluída', 'success')
             fetchConsultations()
         } catch (err: any) {
+            console.error('Caught error:', err)
             showToast('Erro ao excluir', 'error')
         }
     }
@@ -134,10 +149,14 @@ export default function ConsultationPage() {
                 })
                 .eq('id', id)
 
-            if (error) throw error
+            if (error) {
+                console.error('Error completing consultation:', error)
+                throw error
+            }
             showToast('Consultoria marcada como concluída', 'success')
             fetchConsultations()
         } catch (err: any) {
+            console.error('Caught error:', err)
             showToast('Erro ao atualizar status', 'error')
         }
     }
@@ -210,7 +229,7 @@ export default function ConsultationPage() {
 
             <div className="flex items-center justify-between mb-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-navy-900">Agenda & Consultoria</h1>
+                    <h1 className="text-3xl font-bold text-imi-900">Agenda & Consultoria</h1>
                     <p className="text-slate-600 mt-1">Gerencie os agendamentos e leads</p>
                 </div>
                 <Button onClick={() => setIsModalOpen(true)}>
@@ -225,8 +244,8 @@ export default function ConsultationPage() {
                         key={status}
                         onClick={() => setFilterStatus(status)}
                         className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${filterStatus === status
-                                ? 'bg-navy-900 text-white shadow-md'
-                                : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+                            ? 'bg-imi-900 text-white shadow-md'
+                            : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
                             }`}
                     >
                         {status === 'all' ? 'Todos' : getStatusLabel(status)}
@@ -241,11 +260,11 @@ export default function ConsultationPage() {
                     </div>
                 ) : (
                     consultations.map((consultation) => (
-                        <div key={consultation.id} className="bg-white rounded-xl p-6 border border-slate-200 hover:border-navy-200 transition-all shadow-sm hover:shadow-md">
+                        <div key={consultation.id} className="bg-white rounded-xl p-6 border border-slate-200 hover:border-imi-200 transition-all shadow-sm hover:shadow-md">
                             <div className="flex flex-col md:flex-row justify-between gap-4">
                                 <div className="flex-1 space-y-3">
                                     <div className="flex items-center justify-between">
-                                        <h3 className="text-xl font-bold text-navy-900 flex items-center gap-2">
+                                        <h3 className="text-xl font-bold text-imi-900 flex items-center gap-2">
                                             {consultation.client_name}
                                             <span className={`px-2 py-0.5 rounded-full text-xs border ${getStatusColor(consultation.status)}`}>
                                                 {getStatusLabel(consultation.status)}
@@ -274,7 +293,7 @@ export default function ConsultationPage() {
                                     </div>
 
                                     {consultation.notes && (
-                                        <div className="p-3 bg-slate-50 rounded border border-slate-100 text-sm text-slate-700 italic border-l-4 border-l-navy-200">
+                                        <div className="p-3 bg-slate-50 rounded border border-slate-100 text-sm text-slate-700 italic border-l-4 border-l-imi-200">
                                             "{consultation.notes}"
                                         </div>
                                     )}
@@ -303,7 +322,7 @@ export default function ConsultationPage() {
                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
                     <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                         <div className="sticky top-0 bg-white border-b border-slate-200 px-8 py-6 flex items-center justify-between z-10">
-                            <h2 className="text-2xl font-bold text-navy-900">
+                            <h2 className="text-2xl font-bold text-imi-900">
                                 {editingConsultation ? 'Editar Agendamento' : 'Novo Agendamento'}
                             </h2>
                             <button onClick={() => { setIsModalOpen(false); resetForm(); }} className="p-2 hover:bg-slate-100 rounded-full">
@@ -337,11 +356,11 @@ export default function ConsultationPage() {
 
                             <div className="grid md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-semibold text-navy-900 mb-2">Tipo de Consultoria</label>
+                                    <label className="block text-sm font-semibold text-imi-900 mb-2">Tipo de Consultoria</label>
                                     <select
                                         value={formData.consultation_type}
                                         onChange={(e) => setFormData(prev => ({ ...prev, consultation_type: e.target.value }))}
-                                        className="w-full h-11 px-4 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-navy-900"
+                                        className="w-full h-11 px-4 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-imi-900"
                                     >
                                         <option value="avaliacao">Avaliação de Imóvel</option>
                                         <option value="credito">Crédito Imobiliário</option>
@@ -359,7 +378,7 @@ export default function ConsultationPage() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-semibold text-navy-900 mb-2">Status</label>
+                                <label className="block text-sm font-semibold text-imi-900 mb-2">Status</label>
                                 <div className="flex gap-4">
                                     {['pending', 'scheduled', 'completed', 'cancelled'].map(status => (
                                         <label key={status} className="flex items-center gap-2 cursor-pointer">
@@ -369,7 +388,7 @@ export default function ConsultationPage() {
                                                 value={status}
                                                 checked={formData.status === status}
                                                 onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value }))}
-                                                className="w-4 h-4 text-navy-900 focus:ring-navy-900"
+                                                className="w-4 h-4 text-imi-900 focus:ring-imi-900"
                                             />
                                             <span className="text-sm capitalize">{getStatusLabel(status)}</span>
                                         </label>

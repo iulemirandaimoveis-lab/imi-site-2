@@ -23,7 +23,7 @@ export default function Error({
                     </svg>
                 </div>
 
-                <h2 className="text-2xl font-bold text-navy-900 mb-4">Erro no Backoffice</h2>
+                <h2 className="text-2xl font-bold text-imi-900 mb-4">Erro no Backoffice</h2>
 
                 <p className="text-slate-600 mb-6">
                     Ocorreu um erro ao carregar esta página. Verifique:
@@ -44,18 +44,18 @@ export default function Error({
                 )}
 
                 <div className="flex gap-4">
-                    <Button onClick={() => reset()} className=\"flex-1\">
-                    Tentar Novamente
-                </Button>
-                <Button
-                    onClick={() => window.location.href = '/backoffice'}
-                    variant="outline"
-                    className="flex-1"
-                >
-                    Voltar ao Dashboard
-                </Button>
+                    <Button onClick={() => reset()} className="flex-1">
+                        Tentar Novamente
+                    </Button>
+                    <Button
+                        onClick={() => window.location.href = '/backoffice'}
+                        variant="outline"
+                        className="flex-1"
+                    >
+                        Voltar ao Dashboard
+                    </Button>
+                </div>
             </div>
         </div>
-    </div >
-  )
+    )
 }

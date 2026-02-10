@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/client'
 import { Plus, Edit, Trash2, Phone, Mail, MessageCircle, Star, Search, Filter, X, Check, Loader2 } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
@@ -24,7 +24,7 @@ interface Lead {
 }
 
 export default function LeadsPage() {
-    const supabase = createClientComponentClient()
+    const supabase = createClient()
     const { toasts, showToast, removeToast } = useToast()
     const [leads, setLeads] = useState<Lead[]>([])
     const [isLoading, setIsLoading] = useState(true)
@@ -57,9 +57,13 @@ export default function LeadsPage() {
                 .select('*')
                 .order('created_at', { ascending: false })
 
-            if (error) throw error
+            if (error) {
+                console.error('Error fetching leads:', error)
+                throw error
+            }
             setLeads(data || [])
         } catch (err: any) {
+            console.error('Caught error:', err)
             showToast(err.message || 'Erro ao carregar leads', 'error')
         } finally {
             setIsLoading(false)
@@ -92,13 +96,19 @@ export default function LeadsPage() {
                     .from('leads')
                     .update(formData)
                     .eq('id', editingLead.id)
-                if (error) throw error
+                if (error) {
+                    console.error('Error updating lead:', error)
+                    throw error
+                }
                 showToast('Lead atualizado com sucesso', 'success')
             } else {
                 const { error } = await supabase
                     .from('leads')
                     .insert([formData])
-                if (error) throw error
+                if (error) {
+                    console.error('Error inserting lead:', error)
+                    throw error
+                }
                 showToast('Lead criado com sucesso', 'success')
             }
 
@@ -106,6 +116,7 @@ export default function LeadsPage() {
             resetForm()
             fetchLeads()
         } catch (err: any) {
+            console.error('Caught error:', err)
             showToast(err.message || 'Erro ao salvar lead', 'error')
         } finally {
             setIsSaving(false)
@@ -121,10 +132,14 @@ export default function LeadsPage() {
                 .delete()
                 .eq('id', id)
 
-            if (error) throw error
+            if (error) {
+                console.error('Error deleting lead:', error)
+                throw error
+            }
             showToast('Lead excluído', 'success')
             fetchLeads()
         } catch (err: any) {
+            console.error('Caught error:', err)
             showToast('Erro ao excluir lead', 'error')
         }
     }
@@ -215,7 +230,7 @@ export default function LeadsPage() {
 
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-navy-900">Leads & CRM</h1>
+                    <h1 className="text-3xl font-bold text-imi-900">Leads & CRM</h1>
                     <p className="text-slate-600 mt-1">Gerencie seus potenciais clientes</p>
                 </div>
                 <Button onClick={() => setIsModalOpen(true)}>
@@ -232,13 +247,13 @@ export default function LeadsPage() {
                         placeholder="Buscar por nome, email ou telefone..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-navy-900 outline-none"
+                        className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-imi-900 outline-none"
                     />
                 </div>
                 <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-navy-900 outline-none bg-white"
+                    className="px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-imi-900 outline-none bg-white"
                 >
                     <option value="all">Todos os Status</option>
                     <option value="new">Novos</option>
@@ -260,7 +275,7 @@ export default function LeadsPage() {
                         <div key={lead.id} className="bg-white rounded-xl p-6 border border-slate-200 hover:shadow-md transition-all flex flex-col md:flex-row justify-between gap-4 group">
                             <div className="flex-1">
                                 <div className="flex items-center gap-3 mb-2">
-                                    <h3 className="text-lg font-bold text-navy-900">{lead.name}</h3>
+                                    <h3 className="text-lg font-bold text-imi-900">{lead.name}</h3>
                                     {getPriorityBadge(lead.ai_priority)}
                                     <span className="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded-full uppercase tracking-wider">{lead.source}</span>
                                 </div>
@@ -282,13 +297,13 @@ export default function LeadsPage() {
                                 </div>
 
                                 {lead.interest && (
-                                    <p className="text-sm text-navy-700 mb-2">
+                                    <p className="text-sm text-imi-700 mb-2">
                                         <span className="font-semibold">Interesse:</span> {lead.interest}
                                     </p>
                                 )}
 
                                 {lead.notes && (
-                                    <div className="bg-slate-50 p-3 rounded text-sm text-slate-600 italic border-l-4 border-navy-200">
+                                    <div className="bg-slate-50 p-3 rounded text-sm text-slate-600 italic border-l-4 border-imi-200">
                                         "{lead.notes}"
                                     </div>
                                 )}
@@ -298,9 +313,9 @@ export default function LeadsPage() {
                                 <select
                                     value={lead.status}
                                     onChange={(e) => handleStatusChange(lead.id, e.target.value)}
-                                    className={`text-sm font-semibold px-3 py-1 rounded-lg border cursor-pointer outline-none focus:ring-2 focus:ring-navy-900 ${lead.status === 'won' ? 'bg-green-50 border-green-200 text-green-700' :
-                                            lead.status === 'lost' ? 'bg-red-50 border-red-200 text-red-700' :
-                                                'bg-slate-50 border-slate-200 text-slate-700'
+                                    className={`text-sm font-semibold px-3 py-1 rounded-lg border cursor-pointer outline-none focus:ring-2 focus:ring-imi-900 ${lead.status === 'won' ? 'bg-green-50 border-green-200 text-green-700' :
+                                        lead.status === 'lost' ? 'bg-red-50 border-red-200 text-red-700' :
+                                            'bg-slate-50 border-slate-200 text-slate-700'
                                         }`}
                                 >
                                     <option value="new">Novo</option>
@@ -333,7 +348,7 @@ export default function LeadsPage() {
                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
                     <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                         <div className="sticky top-0 bg-white border-b border-slate-200 px-8 py-6 flex items-center justify-between z-10">
-                            <h2 className="text-2xl font-bold text-navy-900">
+                            <h2 className="text-2xl font-bold text-imi-900">
                                 {editingLead ? 'Editar Lead' : 'Novo Lead'}
                             </h2>
                             <button onClick={() => { setIsModalOpen(false); resetForm(); }} className="p-2 hover:bg-slate-100 rounded-full">
@@ -350,11 +365,11 @@ export default function LeadsPage() {
                                     required
                                 />
                                 <div>
-                                    <label className="block text-sm font-semibold text-navy-900 mb-2">Status</label>
+                                    <label className="block text-sm font-semibold text-imi-900 mb-2">Status</label>
                                     <select
                                         value={formData.status}
                                         onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value }))}
-                                        className="w-full h-11 px-4 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-navy-900"
+                                        className="w-full h-11 px-4 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-imi-900"
                                     >
                                         <option value="new">Novo</option>
                                         <option value="contacted">Contatado</option>
@@ -381,7 +396,7 @@ export default function LeadsPage() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-semibold text-navy-900 mb-2">Prioridade (IA)</label>
+                                <label className="block text-sm font-semibold text-imi-900 mb-2">Prioridade (IA)</label>
                                 <div className="flex gap-4">
                                     {['low', 'medium', 'high', 'critical'].map(p => (
                                         <label key={p} className="flex items-center gap-2 cursor-pointer">
@@ -391,7 +406,7 @@ export default function LeadsPage() {
                                                 value={p}
                                                 checked={formData.ai_priority === p}
                                                 onChange={(e) => setFormData(prev => ({ ...prev, ai_priority: e.target.value as any }))}
-                                                className="w-4 h-4 text-navy-900 focus:ring-navy-900"
+                                                className="w-4 h-4 text-imi-900 focus:ring-imi-900"
                                             />
                                             <span className="text-sm capitalize">{p === 'low' ? 'Baixa' : p === 'medium' ? 'Média' : p === 'high' ? 'Alta' : 'Crítica'}</span>
                                         </label>

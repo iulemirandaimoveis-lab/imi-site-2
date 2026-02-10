@@ -1,4 +1,3 @@
-
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { match } from '@formatjs/intl-localematcher'
@@ -17,8 +16,13 @@ function getLocale(request: Request) {
 export async function middleware(request: NextRequest) {
     const pathname = request.nextUrl.pathname
 
-    // 1. Handle API/Backoffice with Supabase Auth (ignore locale)
-    if (pathname.startsWith('/backoffice') || pathname.startsWith('/api') || pathname.startsWith('/auth')) {
+    // 1. Handle API/Backoffice/Login with Supabase Auth (ignore locale)
+    if (
+        pathname.startsWith('/backoffice') ||
+        pathname.startsWith('/api') ||
+        pathname.startsWith('/auth') ||
+        pathname.startsWith('/login')
+    ) {
         return await updateSession(request)
     }
 

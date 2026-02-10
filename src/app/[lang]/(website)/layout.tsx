@@ -35,7 +35,7 @@ export default async function WebsiteLayout({
             />
             <Header lang={lang} dict={dict.Header} />
             <main className="flex-grow pt-16 lg:pt-20">{children}</main>
-            <Footer lang={lang} dict={dict.Header} />
+            <Footer lang={lang} dict={dict.Footer} />
         </div>
     )
 }

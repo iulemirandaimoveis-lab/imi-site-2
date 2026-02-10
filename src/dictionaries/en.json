@@ -7,13 +7,30 @@
         "credit": "Credit",
         "consulting": "Consulting",
         "intelligence": "Intelligence",
-        "projects": "Projects",
         "about": "About",
         "contact": "Contact",
-        "whatsapp": "Chat on WhatsApp"
+        "whatsapp": "WhatsApp"
+    },
+    "Footer": {
+        "tagline": "Real Estate Intelligence",
+        "description": "Data-driven decisions, method, and security.",
+        "services_title": "Services",
+        "company_title": "Company",
+        "contact_title": "Contact",
+        "location": "João Pessoa, PB, Brazil",
+        "rights": "© 2026 IMI Real Estate Intelligence. All rights reserved.",
+        "privacy": "Privacy",
+        "terms": "Terms",
+        "nav_appraisals": "Appraisals",
+        "nav_properties": "Properties",
+        "nav_credit": "Credit",
+        "nav_consulting": "Consulting",
+        "nav_intelligence": "Intelligence",
+        "nav_about": "About",
+        "nav_contact": "Contact"
     },
     "Home": {
-        "hero_title": "Intelligence,\nmethod and security\nin real estate decisions",
+        "hero_title": "Intelligence,\nmethod and security in real estate decisions",
         "hero_subtitle": "Strategic consulting and technical appraisals.\nWe transform uncertainty into secure capital.",
         "cta_appraisal": "Request Appraisal",
         "cta_whatsapp": "Chat on WhatsApp",

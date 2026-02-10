@@ -1,84 +1,63 @@
 'use client'
 
 import { useState } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useRouter } from 'next/navigation'
-import Button from '@/components/ui/Button'
-import Input from '@/components/ui/Input'
+import { createClient } from '@/lib/supabase/client'
+import { Eye, EyeOff, Loader2 } from 'lucide-react'
 
 export default function LoginPage() {
-    const supabase = createClientComponentClient()
-    const router = useRouter()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
-    const [isLoading, setIsLoading] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [showPassword, setShowPassword] = useState(false)
+    const router = useRouter()
+    const supabase = createClient()
 
-    async function handleLogin(e: React.FormEvent) {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
         setError('')
-        setIsLoading(true)
-
+        setLoading(true)
         try {
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email,
-                password,
-            })
-
-            if (error) throw error
-
-            router.push('/backoffice')
-            router.refresh()
-        } catch (err: any) {
-            setError(err.message || 'Erro ao fazer login')
-        } finally {
-            setIsLoading(false)
-        }
+            const { data, error: authError } = await supabase.auth.signInWithPassword({ email, password })
+            if (authError) { setError('Falha na autenticação. Verifique suas credenciais.'); return }
+            if (data.session) {
+                router.push('/backoffice')
+                router.refresh()
+            }
+        } catch (err) { setError('Erro inesperado. Tente novamente.') }
+        finally { setLoading(false) }
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-50">
-            <div className="max-w-md w-full bg-white rounded-xl p-8 border border-slate-200">
-                <div className="text-center mb-8">
-                    <h1 className="font-display text-3xl font-bold text-navy-900 mb-2">
-                        IMI Admin
-                    </h1>
-                    <p className="text-slate-600">Sistema de Gestão Imobiliária</p>\n        </div>
-
-                <form onSubmit={handleLogin} className="space-y-6">
-                    {error && (
-                        <div className=\"p-4 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm\">
-                    {error}
+        <div className="min-h-screen flex items-center justify-center px-6 bg-imi-50">
+            <div className="w-full max-w-sm">
+                <div className="text-center mb-10">
+                    <h1 className="text-3xl font-bold text-imi-900 font-display">IMI Admin</h1>
+                    <div className="w-10 h-1 bg-accent-500 mx-auto mt-4 mb-3 rounded-full" />
+                    <p className="text-xs text-imi-400 uppercase tracking-[0.2em] font-bold">Plataforma de Inteligência Imobiliária</p>
+                </div>
+                <form onSubmit={handleLogin} className="space-y-5">
+                    <div>
+                        <label className="block text-[10px] font-bold text-imi-400 uppercase tracking-widest mb-2">E-mail</label>
+                        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 h-12 bg-white border border-imi-100 rounded-xl text-imi-900 placeholder:text-imi-300 focus:outline-none focus:ring-2 focus:ring-imi-900/10 focus:border-imi-900 transition-all" placeholder="seu@email.com" required />
+                    </div>
+                    <div>
+                        <label className="block text-[10px] font-bold text-imi-400 uppercase tracking-widest mb-2">Senha</label>
+                        <div className="relative">
+                            <input type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 h-12 bg-white border border-imi-100 rounded-xl text-imi-900 placeholder:text-imi-300 focus:outline-none focus:ring-2 focus:ring-imi-900/10 focus:border-imi-900 transition-all" placeholder="********" required />
+                            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-imi-300 hover:text-imi-600 transition-colors">
+                                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </button>
+                        </div>
+                    </div>
+                    {error && <div className="bg-red-50 border border-red-200 rounded-xl p-3"><p className="text-red-600 text-sm font-semibold">{error}</p></div>}
+                    <button type="submit" disabled={loading} className="w-full bg-imi-900 text-white h-12 rounded-xl font-bold text-sm uppercase tracking-wider hover:bg-imi-800 transition-all disabled:opacity-50 flex items-center justify-center gap-2">
+                        {loading ? <><Loader2 className="w-4 h-4 animate-spin" />Autenticando...</> : 'Entrar'}
+                    </button>
+                </form>
+                <p className="mt-10 text-center text-[10px] text-imi-300 uppercase tracking-widest font-bold">2026 IMI • TODOS OS DIREITOS RESERVADOS</p>
             </div>
-          )}
-
-            <Input
-                label="Email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                autoComplete="email"
-                placeholder="seu@email.com"
-            />
-
-            <Input
-                label="Senha"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                autoComplete="current-password"
-                placeholder="••••••••"
-            />
-
-            <Button
-                type="submit"
-                className="w-full"
-                disabled={isLoading}
-            >
-                {isLoading ? 'Entrando...' : 'Entrar'}\n          </Button>
-        </form>
-      </div >\n    </div >
-  )
+        </div>
+    )
 }

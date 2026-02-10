@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { FileText, Plus, Loader2, TrendingUp, DollarSign, Users, Target, Calendar, Download, Eye } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
+import { FileText, Plus, Loader2, TrendingUp, DollarSign, Users, Target, Calendar, Download } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import Toast, { useToast } from '@/components/ui/Toast'
 
@@ -19,7 +19,7 @@ interface Report {
 }
 
 export default function ReportsPage() {
-    const supabase = createClientComponentClient()
+    const supabase = createClient()
     const { toasts, showToast, removeToast } = useToast()
 
     // Dados Mockados para Demonstração (Enquanto API não responde)
@@ -81,7 +81,7 @@ export default function ReportsPage() {
 
             <div className="flex items-center justify-between mb-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-navy-900">Relatórios Executivos</h1>
+                    <h1 className="text-3xl font-bold text-imi-900">Relatórios Executivos</h1>
                     <p className="text-slate-600 mt-1">Inteligência Artificial aplicada aos seus dados</p>
                 </div>
                 <div className="flex gap-3">
@@ -100,7 +100,7 @@ export default function ReportsPage() {
                 {reports.length === 0 ? (
                     <div className="text-center py-16 bg-slate-50 rounded-xl border border-dashed border-slate-300">
                         <FileText className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                        <h3 className="text-lg font-semibold text-navy-900">Nenhum relatório disponível</h3>
+                        <h3 className="text-lg font-semibold text-imi-900">Nenhum relatório disponível</h3>
                         <p className="text-slate-500 mb-6">Gere seu primeiro relatório para desbloquear insights valiosos.</p>
                     </div>
                 ) : (
@@ -110,11 +110,11 @@ export default function ReportsPage() {
                                 {/* Header do Relatório */}
                                 <div className="md:w-1/4 border-b md:border-b-0 md:border-r border-slate-100 pb-4 md:pb-0 md:pr-6">
                                     <div className="flex items-center gap-3 mb-2">
-                                        <div className="p-2 bg-navy-50 rounded-lg">
-                                            <FileText className="w-6 h-6 text-navy-600" />
+                                        <div className="p-2 bg-imi-50 rounded-lg">
+                                            <FileText className="w-6 h-6 text-imi-600" />
                                         </div>
                                         <div>
-                                            <h3 className="font-bold text-navy-900 text-lg capitalize">
+                                            <h3 className="font-bold text-imi-900 text-lg capitalize">
                                                 {report.report_type === 'weekly' ? 'Relatório Semanal' : 'Relatório Mensal'}
                                             </h3>
                                             <span className="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded-full">
@@ -135,21 +135,21 @@ export default function ReportsPage() {
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                                         <div className="bg-slate-50 p-3 rounded-lg">
                                             <span className="text-xs text-slate-500 block mb-1">Novos Leads</span>
-                                            <span className="text-xl font-bold text-navy-900 flex items-center gap-1">
+                                            <span className="text-xl font-bold text-imi-900 flex items-center gap-1">
                                                 <Users className="w-4 h-4 text-blue-500" /> {report.metrics?.crm?.new_leads}
                                             </span>
                                         </div>
                                         <div className="bg-slate-50 p-3 rounded-lg">
                                             <span className="text-xs text-slate-500 block mb-1">Investimento</span>
-                                            <span className="text-xl font-bold text-navy-900 flex items-center gap-1">
+                                            <span className="text-xl font-bold text-imi-900 flex items-center gap-1">
                                                 <DollarSign className="w-4 h-4 text-green-500" /> R$ {report.metrics?.ads?.total_spend}
                                             </span>
                                         </div>
                                     </div>
 
                                     <div className="mb-4">
-                                        <h4 className="font-bold text-navy-900 mb-2 flex items-center gap-2">
-                                            <Target className="w-4 h-4 text-navy-500" /> Insights da IA
+                                        <h4 className="font-bold text-imi-900 mb-2 flex items-center gap-2">
+                                            <Target className="w-4 h-4 text-imi-500" /> Insights da IA
                                         </h4>
                                         <ul className="space-y-2">
                                             {report.insights.map((insight, idx) => (
@@ -162,7 +162,7 @@ export default function ReportsPage() {
                                     </div>
 
                                     <div>
-                                        <h4 className="font-bold text-navy-900 mb-2 flex items-center gap-2">
+                                        <h4 className="font-bold text-imi-900 mb-2 flex items-center gap-2">
                                             <TrendingUp className="w-4 h-4 text-green-600" /> Recomendações
                                         </h4>
                                         <ul className="space-y-2">
