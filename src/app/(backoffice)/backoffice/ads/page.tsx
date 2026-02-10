@@ -1,8 +1,13 @@
 'use client'
 
-import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import { Plus, TrendingUp, TrendingDown, DollarSign, Target, MousePointerClick, RefreshCw, X } from 'lucide-react'
+import { useState, useMemo } from 'react'
+import {
+    Plus, TrendingUp, TrendingDown, DollarSign, Target,
+    MousePointerClick, RefreshCw, X, Sparkles, Zap,
+    BarChart3, PieChart, Activity, ExternalLink, MoreVertical,
+    ArrowUpRight, ArrowDownRight, Search, Filter, Calendar
+} from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import Toast, { useToast } from '@/components/ui/Toast'
@@ -17,231 +22,259 @@ interface Campaign {
     impressions: number
     clicks: number
     conversions: number
-    created_at: string
+    ctr: number
+    cpa: number
+    trend: 'up' | 'down' | 'neutral'
 }
 
 export default function AdsPage() {
     const { toasts, showToast, removeToast } = useToast()
-
-    // Dados Mockados para Demonstração (Simulando API Real)
-    const [campaigns, setCampaigns] = useState<Campaign[]>([
-        { id: '1', name: 'Lançamento Ocean View', platform: 'meta_ads', status: 'active', budget: 5000, spend: 3450.50, impressions: 125000, clicks: 3420, conversions: 48, created_at: new Date().toISOString() },
-        { id: '2', name: 'Google Search - Alto Padrão', platform: 'google_ads', status: 'active', budget: 8000, spend: 6200.00, impressions: 45000, clicks: 1890, conversions: 32, created_at: new Date().toISOString() },
-        { id: '3', name: 'Retargeting Instagram', platform: 'meta_ads', status: 'paused', budget: 2000, spend: 1850.20, impressions: 89000, clicks: 950, conversions: 12, created_at: new Date().toISOString() },
-    ])
-
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isSyncing, setIsSyncing] = useState(false)
+    const [showAIInsights, setShowAIInsights] = useState(true)
 
-    const [formData, setFormData] = useState({
-        name: '',
-        platform: 'google_ads',
-        budget: 0,
-        status: 'active'
-    })
+    const [campaigns, setCampaigns] = useState<Campaign[]>([
+        {
+            id: '1', name: 'Luxury Launch - Ocean View', platform: 'meta_ads', status: 'active',
+            budget: 15000, spend: 12450.50, impressions: 450000, clicks: 12420, conversions: 154,
+            ctr: 2.76, cpa: 80.84, trend: 'up'
+        },
+        {
+            id: '2', name: 'Google Search - Alto Padrão PR', platform: 'google_ads', status: 'active',
+            budget: 25000, spend: 18200.00, impressions: 65000, clicks: 3890, conversions: 89,
+            ctr: 5.98, cpa: 204.49, trend: 'neutral'
+        },
+        {
+            id: '3', name: 'Retargeting High Performance', platform: 'meta_ads', status: 'paused',
+            budget: 5000, spend: 4850.20, impressions: 120000, clicks: 2150, conversions: 42,
+            ctr: 1.79, cpa: 115.48, trend: 'down'
+        },
+    ])
 
-    // Métricas Consolidadas
-    const totalSpend = campaigns.reduce((acc, c) => acc + c.spend, 0)
-    const totalConversions = campaigns.reduce((acc, c) => acc + c.conversions, 0)
-    const totalClicks = campaigns.reduce((acc, c) => acc + c.clicks, 0)
-    const avgCpa = totalConversions > 0 ? totalSpend / totalConversions : 0
-    const avgCtr = totalClicks > 0 ? (totalClicks / campaigns.reduce((acc, c) => acc + c.impressions, 0)) * 100 : 0
+    const stats = useMemo(() => {
+        const totalSpend = campaigns.reduce((acc, c) => acc + c.spend, 0)
+        const totalConversions = campaigns.reduce((acc, c) => acc + c.conversions, 0)
+        const avgCpa = totalConversions > 0 ? totalSpend / totalConversions : 0
+        return { totalSpend, totalConversions, avgCpa }
+    }, [campaigns])
 
     async function handleSync() {
         setIsSyncing(true)
-        // Simula delay de API
         await new Promise(resolve => setTimeout(resolve, 2000))
-        showToast('Dados sincronizados com sucesso!', 'success')
+        showToast('Performance sincronizada em tempo real', 'success')
         setIsSyncing(false)
     }
 
-    function handleCreateCampaign(e: React.FormEvent) {
-        e.preventDefault()
-
-        if (!formData.name || formData.budget <= 0) {
-            showToast('Preencha os dados corretamente', 'error')
-            return
-        }
-
-        const newCampaign: Campaign = {
-            id: Math.random().toString(36).substr(2, 9),
-            name: formData.name,
-            platform: formData.platform as any,
-            status: formData.status as any,
-            budget: Number(formData.budget),
-            spend: 0,
-            impressions: 0,
-            clicks: 0,
-            conversions: 0,
-            created_at: new Date().toISOString()
-        }
-
-        setCampaigns([newCampaign, ...campaigns])
-        showToast('Campanha criada manualmente', 'success')
-        setIsModalOpen(false)
-        setFormData({ name: '', platform: 'google_ads', budget: 0, status: 'active' })
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        show: { opacity: 1, transition: { staggerChildren: 0.1 } }
     }
 
-    function getPlatformColor(platform: string) {
-        switch (platform) {
-            case 'google_ads': return 'text-blue-600 bg-blue-50 border-blue-200'
-            case 'meta_ads': return 'text-purple-600 bg-purple-50 border-purple-200'
-            default: return 'text-slate-600 bg-slate-50 border-slate-200'
-        }
+    const itemVariants = {
+        hidden: { y: 20, opacity: 0 },
+        show: { y: 0, opacity: 1 }
     }
 
     return (
-        <div className="p-8">
+        <div className="space-y-10 pb-20">
             {toasts.map(toast => (
                 <Toast key={toast.id} message={toast.message} type={toast.type} onClose={() => removeToast(toast.id)} />
             ))}
 
-            <div className="flex items-center justify-between mb-8">
+            {/* Header Area */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-imi-900">Anúncios & Performance</h1>
-                    <p className="text-slate-600 mt-1">Gestão unificada de Google e Meta Ads</p>
+                    <div className="flex items-center gap-2 mb-2">
+                        <div className="w-2 h-2 rounded-full bg-accent-500 shadow-[0_0_8px_rgba(234,179,8,0.5)]" />
+                        <span className="text-[10px] font-black text-imi-400 uppercase tracking-[0.3em]">Performance Command Center</span>
+                    </div>
+                    <h1 className="text-4xl md:text-5xl font-bold text-imi-900 font-display tracking-tight">
+                        Ads & <span className="text-accent-500">Inteligência</span>
+                    </h1>
                 </div>
+
                 <div className="flex gap-3">
-                    <Button variant="outline" onClick={handleSync} disabled={isSyncing}>
-                        <RefreshCw className={`w-4 h-4 mr-2 ${isSyncing ? 'animate-spin' : ''}`} />
-                        {isSyncing ? 'Sincronizando...' : 'Sincronizar Dados'}
+                    <Button variant="outline" onClick={handleSync} disabled={isSyncing} className="h-14 px-8 border-imi-100 bg-white/50 backdrop-blur-md rounded-2xl group active:scale-95 transition-all">
+                        <RefreshCw className={`w-5 h-5 mr-3 text-imi-400 ${isSyncing ? 'animate-spin' : 'group-hover:rotate-180 transition-transform duration-500'}`} />
+                        Sincronizar
                     </Button>
-                    <Button onClick={() => setIsModalOpen(true)}>
-                        <Plus className="w-4 h-4 mr-2" />
-                        Nova Campanha
+                    <Button className="h-14 px-8 bg-imi-900 text-white rounded-2xl shadow-elevated group active:scale-95 transition-all">
+                        <Plus className="w-5 h-5 mr-3 group-hover:rotate-90 transition-transform" />
+                        Otimizar Campanha
                     </Button>
                 </div>
             </div>
 
-            {/* KPI Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                    <div className="flex items-center justify-between mb-4">
-                        <span className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Investimento Total</span>
-                        <div className="p-2 bg-blue-50 rounded-lg"><DollarSign className="w-5 h-5 text-blue-600" /></div>
-                    </div>
-                    <h3 className="text-3xl font-bold text-imi-900">
-                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalSpend)}
-                    </h3>
-                    <p className="text-xs text-green-600 flex items-center mt-2 font-medium">
-                        <TrendingUp className="w-3 h-3 mr-1" /> +12% vs. mês anterior
-                    </p>
-                </div>
+            {/* AI Insights Panel */}
+            <AnimatePresence>
+                {showAIInsights && (
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="bg-gradient-to-r from-imi-900 to-imi-800 rounded-[2.5rem] p-8 relative overflow-hidden shadow-2xl"
+                    >
+                        <div className="absolute top-0 right-0 w-96 h-96 bg-accent-500/10 blur-[100px] -mr-48 -mt-48 rounded-full" />
+                        <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
+                            <div className="flex items-center gap-6">
+                                <div className="w-16 h-16 bg-accent-500/20 rounded-2xl flex items-center justify-center border border-accent-500/30">
+                                    <Sparkles className="text-accent-500 animate-pulse" size={32} />
+                                </div>
+                                <div>
+                                    <h2 className="text-xl font-bold text-white mb-1">IA Performance Insights</h2>
+                                    <p className="text-imi-300 text-sm max-w-xl">
+                                        Detectamos que o CTR em <span className="text-white font-bold">Luxury Launch</span> subiu 15% após o novo criativo. Sugerimos realocar R$ 2.000,00 da campanha de Retargeting.
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="flex gap-3">
+                                <Button className="h-12 px-6 bg-accent-500 text-imi-900 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-accent-400">
+                                    Aplicar Otimização
+                                </Button>
+                                <button onClick={() => setShowAIInsights(false)} className="text-imi-400 hover:text-white transition-colors">
+                                    <X size={20} />
+                                </button>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
-                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                    <div className="flex items-center justify-between mb-4">
-                        <span className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Conversões (Leads)</span>
-                        <div className="p-2 bg-purple-50 rounded-lg"><Target className="w-5 h-5 text-purple-600" /></div>
-                    </div>
-                    <h3 className="text-3xl font-bold text-imi-900">{totalConversions}</h3>
-                    <p className="text-xs text-slate-500 mt-2">CPA Médio: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(avgCpa)}</p>
-                </div>
+            {/* KPI Section */}
+            <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="show"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+            >
+                {[
+                    { label: 'Investimento Mensal', value: stats.totalSpend, icon: DollarSign, trend: '+12.4%', upward: true, color: 'blue' },
+                    { label: 'Conversões Ativas', value: stats.totalConversions, icon: Target, trend: '+5.2%', upward: true, color: 'purple' },
+                    { label: 'CPA Médio (Lead)', value: stats.avgCpa, icon: Activity, trend: '-2.1%', upward: false, color: 'accent' },
+                    { label: 'ROAS Projetado', value: '4.8x', icon: BarChart3, trend: '+0.4x', upward: true, color: 'green' }
+                ].map((kpi, idx) => (
+                    <motion.div
+                        key={idx}
+                        variants={itemVariants}
+                        className="bg-white rounded-[2rem] p-8 border border-imi-50 shadow-soft hover:shadow-card-hover transition-all group"
+                    >
+                        <div className="flex justify-between items-start mb-6">
+                            <div className={`w-12 h-12 rounded-2xl bg-imi-50 flex items-center justify-center text-imi-900 group-hover:bg-imi-900 group-hover:text-white transition-all`}>
+                                <kpi.icon size={24} />
+                            </div>
+                            <div className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-black ${kpi.upward ? 'text-green-600 bg-green-50' : 'text-red-600 bg-red-50'}`}>
+                                {kpi.upward ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+                                {kpi.trend}
+                            </div>
+                        </div>
+                        <div className="space-y-1">
+                            <p className="text-[10px] font-black text-imi-400 uppercase tracking-widest">{kpi.label}</p>
+                            <h3 className="text-3xl font-bold text-imi-900 tracking-tight">
+                                {typeof kpi.value === 'number'
+                                    ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(kpi.value)
+                                    : kpi.value}
+                            </h3>
+                        </div>
+                    </motion.div>
+                ))}
+            </motion.div>
 
-                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                    <div className="flex items-center justify-between mb-4">
-                        <span className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Cliques</span>
-                        <div className="p-2 bg-green-50 rounded-lg"><MousePointerClick className="w-5 h-5 text-green-600" /></div>
-                    </div>
-                    <h3 className="text-3xl font-bold text-imi-900">{totalClicks.toLocaleString()}</h3>
-                    <p className="text-xs text-slate-500 mt-2">CTR Médio: {avgCtr.toFixed(2)}%</p>
+            {/* Sub-Header / Filters */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 px-8 bg-white/50 backdrop-blur-md rounded-3xl border border-imi-100 shadow-soft">
+                <div className="flex items-center gap-4 flex-1 w-full">
+                    <Search className="text-imi-300" size={20} />
+                    <input type="text" placeholder="Filtrar por campanha ou canal..." className="bg-transparent border-none outline-none text-sm font-medium w-full placeholder:text-imi-200" />
+                </div>
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                    <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-imi-50 text-imi-500 text-[10px] font-black uppercase tracking-widest hover:bg-imi-100 transition-all border border-imi-100">
+                        <Filter size={14} /> Canal
+                    </button>
+                    <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-imi-50 text-imi-500 text-[10px] font-black uppercase tracking-widest hover:bg-imi-100 transition-all border border-imi-100">
+                        <Calendar size={14} /> Últimos 30 dias
+                    </button>
                 </div>
             </div>
 
-            {/* Campaigns Table */}
-            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
-                <div className="px-6 py-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
-                    <h3 className="font-bold text-imi-900">Campanhas Ativas</h3>
-                    <span className="text-xs text-slate-500">Última atualização: Hoje, 09:30</span>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left text-sm">
-                        <thead className="bg-white text-slate-500 font-semibold border-b border-slate-100">
-                            <tr>
-                                <th className="px-6 py-4">Nome da Campanha</th>
-                                <th className="px-6 py-4">Plataforma</th>
-                                <th className="px-6 py-4">Status</th>
-                                <th className="px-6 py-4 text-right">Investimento</th>
-                                <th className="px-6 py-4 text-right">Conv.</th>
-                                <th className="px-6 py-4 text-right">CPA</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100">
-                            {campaigns.map((camp) => (
-                                <tr key={camp.id} className="hover:bg-slate-50 transition-colors group">
-                                    <td className="px-6 py-4 font-medium text-imi-900">{camp.name}</td>
-                                    <td className="px-6 py-4">
-                                        <span className={`px-2 py-1 rounded-full text-xs font-bold uppercase ${getPlatformColor(camp.platform)}`}>
+            {/* Campaigns Grid */}
+            <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="show"
+                className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+            >
+                {campaigns.map((camp) => (
+                    <motion.div
+                        key={camp.id}
+                        variants={itemVariants}
+                        className="bg-white rounded-[2.5rem] overflow-hidden border border-imi-100 shadow-soft hover:shadow-card-hover transition-all duration-500 group relative"
+                    >
+                        {/* Platform Header */}
+                        <div className={`h-2 w-full ${camp.platform === 'google_ads' ? 'bg-blue-500' : 'bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500'}`} />
+
+                        <div className="p-8 space-y-6">
+                            <div className="flex justify-between items-start">
+                                <div>
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <span className={`px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-widest border ${camp.platform === 'google_ads' ? 'bg-blue-50 text-blue-600 border-blue-100' : 'bg-purple-50 text-purple-600 border-purple-100'}`}>
                                             {camp.platform.replace('_', ' ')}
                                         </span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <span className={`flex items-center gap-1.5 ${camp.status === 'active' ? 'text-green-600 font-medium' : 'text-slate-400'}`}>
-                                            <span className={`w-2 h-2 rounded-full ${camp.status === 'active' ? 'bg-green-500 animate-pulse' : 'bg-slate-300'}`}></span>
-                                            {camp.status === 'active' ? 'Ativa' : 'Pausada'}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 text-right font-medium text-slate-700">
-                                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(camp.spend)}
-                                    </td>
-                                    <td className="px-6 py-4 text-right font-bold text-imi-900 bg-slate-50/50">
-                                        {camp.conversions}
-                                    </td>
-                                    <td className="px-6 py-4 text-right text-slate-600">
-                                        {camp.conversions > 0
-                                            ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(camp.spend / camp.conversions)
-                                            : '-'
-                                        }
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                                        <span className={`w-1.5 h-1.5 rounded-full ${camp.status === 'active' ? 'bg-green-500 animate-pulse' : 'bg-imi-200'}`} />
+                                    </div>
+                                    <h3 className="text-xl font-bold text-imi-900 group-hover:text-accent-600 transition-colors leading-tight">{camp.name}</h3>
+                                </div>
+                                <button className="p-2 hover:bg-imi-50 rounded-xl transition-colors">
+                                    <MoreVertical size={20} className="text-imi-300" />
+                                </button>
+                            </div>
 
-            {isModalOpen && (
-                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-xl max-w-lg w-full">
-                        <div className="flex items-center justify-between p-6 border-b border-slate-200">
-                            <h2 className="text-xl font-bold text-imi-900">Nova Campanha Manual</h2>
-                            <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-slate-100 rounded-full">
-                                <X className="w-5 h-5 text-slate-500" />
-                            </button>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="p-4 bg-imi-50/50 rounded-2xl border border-imi-50/50">
+                                    <p className="text-[9px] font-black text-imi-400 uppercase tracking-widest mb-1">CTR</p>
+                                    <p className="text-lg font-bold text-imi-900">{camp.ctr}%</p>
+                                </div>
+                                <div className="p-4 bg-imi-50/50 rounded-2xl border border-imi-50/50">
+                                    <p className="text-[9px] font-black text-imi-400 uppercase tracking-widest mb-1">CPA</p>
+                                    <p className="text-lg font-bold text-imi-900">R$ {camp.cpa.toFixed(0)}</p>
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                <div className="flex justify-between text-xs font-bold uppercase tracking-widest text-imi-400">
+                                    <span>Orçamento Utilizado</span>
+                                    <span className="text-imi-900">{((camp.spend / camp.budget) * 100).toFixed(1)}%</span>
+                                </div>
+                                <div className="h-2 w-full bg-imi-50 rounded-full overflow-hidden">
+                                    <motion.div
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${((camp.spend / camp.budget) * 100)}%` }}
+                                        transition={{ duration: 1.5, ease: "easeOut" }}
+                                        className={`h-full rounded-full ${camp.platform === 'google_ads' ? 'bg-blue-500' : 'bg-purple-500'}`}
+                                    />
+                                </div>
+                                <div className="flex justify-between items-center pt-2">
+                                    <div className="flex flex-col">
+                                        <span className="text-[10px] font-black text-imi-300 uppercase">Investido</span>
+                                        <span className="text-sm font-bold text-imi-900">R$ {camp.spend.toLocaleString('pt-BR')}</span>
+                                    </div>
+                                    <div className="flex flex-col text-right">
+                                        <span className="text-[10px] font-black text-imi-300 uppercase text-right">Leads</span>
+                                        <span className="text-sm font-bold text-imi-900">{camp.conversions}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="pt-6 border-t border-imi-50 flex gap-2">
+                                <Button className="flex-1 h-12 bg-imi-50 text-imi-900 hover:bg-imi-900 hover:text-white rounded-xl font-black text-[10px] uppercase tracking-widest transition-all">
+                                    Detalhes
+                                </Button>
+                                <Button variant="outline" className="w-12 h-12 p-0 border-imi-100 hover:border-imi-900 rounded-xl flex items-center justify-center">
+                                    <ArrowUpRight size={20} />
+                                </Button>
+                            </div>
                         </div>
-                        <form onSubmit={handleCreateCampaign} className="p-6 space-y-4">
-                            <Input
-                                label="Nome da Campanha"
-                                value={formData.name}
-                                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                                required
-                            />
-                            <div>
-                                <label className="block text-sm font-semibold text-imi-900 mb-2">Plataforma</label>
-                                <select
-                                    value={formData.platform}
-                                    onChange={(e) => setFormData(prev => ({ ...prev, platform: e.target.value }))}
-                                    className="w-full h-11 px-4 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-imi-900"
-                                >
-                                    <option value="google_ads">Google Ads</option>
-                                    <option value="meta_ads">Meta Ads (Facebook/Instagram)</option>
-                                    <option value="linkedin_ads">LinkedIn Ads</option>
-                                    <option value="tiktok_ads">TikTok Ads</option>
-                                </select>
-                            </div>
-                            <Input
-                                label="Orçamento Mensal (R$)"
-                                type="number"
-                                value={formData.budget}
-                                onChange={(e) => setFormData(prev => ({ ...prev, budget: Number(e.target.value) }))}
-                                required
-                            />
-                            <div className="pt-4 flex gap-3">
-                                <Button type="submit" className="flex-1">Criar Campanha</Button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
+                    </motion.div>
+                ))}
+            </motion.div>
         </div>
     )
 }

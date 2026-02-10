@@ -24,7 +24,7 @@ import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 
 const sidebarItems = [
-    { label: 'Dashboard', href: '/backoffice', icon: LayoutDashboard },
+    { label: 'Dashboard', href: '/backoffice/dashboard', icon: LayoutDashboard },
     { label: 'Imóveis', href: '/backoffice/imoveis', icon: Building2 },
     { label: 'Construtoras', href: '/backoffice/construtoras', icon: Building },
     { label: 'Leads', href: '/backoffice/leads', icon: Users },
@@ -75,7 +75,7 @@ export default function Sidebar() {
                                     <item.icon size={20} className={isActive ? 'text-accent-500' : ''} />
                                     <span className="font-medium">{item.label}</span>
                                     {item.badge && (
-                                        <span className="ml-auto px-2 py-0.5 text-[9px] font-black bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-full uppercase tracking-wider">
+                                        <span className="ml-auto px-2 py-0.5 text-[9px] font-black bg-gradient-to-r from-accent-500 to-gold-600 text-white rounded-full uppercase tracking-wider">
                                             {item.badge}
                                         </span>
                                     )}
@@ -157,7 +157,7 @@ export default function Sidebar() {
                                                 <item.icon size={24} className={isActive ? 'text-accent-500' : ''} />
                                                 <span className="font-semibold text-lg">{item.label}</span>
                                                 {item.badge && (
-                                                    <span className="ml-auto px-2 py-1 text-[10px] font-black bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-full uppercase tracking-wider">
+                                                    <span className="ml-auto px-2 py-1 text-[10px] font-black bg-gradient-to-r from-accent-500 to-gold-600 text-white rounded-full uppercase tracking-wider">
                                                         {item.badge}
                                                     </span>
                                                 )}

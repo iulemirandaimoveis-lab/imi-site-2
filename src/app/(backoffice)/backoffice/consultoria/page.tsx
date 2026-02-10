@@ -2,7 +2,13 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Plus, Edit, Trash2, CheckCircle, Clock, X, Calendar, Phone, Mail } from 'lucide-react'
+import {
+    Plus, Edit, Trash2, CheckCircle, Clock, X,
+    Calendar, Phone, Mail, User, MessageSquare,
+    ChevronRight, Filter, Search, Ghost, UserCheck,
+    CalendarDays
+} from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import Textarea from '@/components/ui/Textarea'
@@ -10,14 +16,11 @@ import Toast, { useToast } from '@/components/ui/Toast'
 
 interface Consultation {
     id: string
-    client_name: string
-    client_email: string
-    client_phone: string | null
-    consultation_type: string
+    name: string
+    email: string
+    phone: string | null
+    description: string | null
     status: string
-    notes: string | null
-    scheduled_at: string | null
-    completed_at: string | null
     created_at: string
 }
 
@@ -28,17 +31,15 @@ export default function ConsultationPage() {
     const [isLoading, setIsLoading] = useState(true)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [editingConsultation, setEditingConsultation] = useState<Consultation | null>(null)
-    const [filterStatus, setFilterStatus] = useState<string>('all')
     const [isSaving, setIsSaving] = useState(false)
+    const [filterStatus, setFilterStatus] = useState<string>('all')
 
     const [formData, setFormData] = useState({
-        client_name: '',
-        client_email: '',
-        client_phone: '',
-        consultation_type: 'avaliacao',
-        status: 'pending',
-        notes: '',
-        scheduled_at: ''
+        name: '',
+        email: '',
+        phone: '',
+        description: '',
+        status: 'pending'
     })
 
     const fetchConsultations = useCallback(async () => {
@@ -54,14 +55,10 @@ export default function ConsultationPage() {
             }
 
             const { data, error } = await query
-            if (error) {
-                console.error('Error fetching consultations:', error)
-                throw error
-            }
+            if (error) throw error
             setConsultations(data || [])
         } catch (err: any) {
-            console.error('Caught error:', err)
-            showToast(err.message || 'Erro ao carregar consultorias', 'error')
+            showToast('Erro ao carregar consultorias', 'error')
         } finally {
             setIsLoading(false)
         }
@@ -73,37 +70,17 @@ export default function ConsultationPage() {
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
-
-        if (!formData.client_name || !formData.client_email) {
-            showToast('Nome e Email são obrigatórios', 'error')
-            return
-        }
+        if (!formData.name || !formData.email) { showToast('Nome e Email são obrigatórios', 'error'); return }
 
         setIsSaving(true)
         try {
-            const payload = {
-                ...formData,
-                scheduled_at: formData.scheduled_at || null
-            }
-
             if (editingConsultation) {
-                const { error } = await supabase
-                    .from('consultations')
-                    .update(payload)
-                    .eq('id', editingConsultation.id)
-                if (error) {
-                    console.error('Error updating consultation:', error)
-                    throw error
-                }
+                const { error } = await supabase.from('consultations').update(formData).eq('id', editingConsultation.id)
+                if (error) throw error
                 showToast('Consultoria atualizada', 'success')
             } else {
-                const { error } = await supabase
-                    .from('consultations')
-                    .insert([payload])
-                if (error) {
-                    console.error('Error inserting consultation:', error)
-                    throw error
-                }
+                const { error } = await supabase.from('consultations').insert([formData])
+                if (error) throw error
                 showToast('Consultoria agendada', 'success')
             }
 
@@ -111,7 +88,6 @@ export default function ConsultationPage() {
             resetForm()
             fetchConsultations()
         } catch (err: any) {
-            console.error('Caught error:', err)
             showToast(err.message || 'Erro ao salvar', 'error')
         } finally {
             setIsSaving(false)
@@ -120,302 +96,191 @@ export default function ConsultationPage() {
 
     async function handleDelete(id: string) {
         if (!confirm('Excluir este agendamento?')) return
-
         try {
-            const { error } = await supabase
-                .from('consultations')
-                .delete()
-                .eq('id', id)
-
-            if (error) {
-                console.error('Error deleting consultation:', error)
-                throw error
-            }
-            showToast('Consultoria excluída', 'success')
+            const { error } = await supabase.from('consultations').delete().eq('id', id)
+            if (error) throw error
+            showToast('Removido com sucesso', 'success')
             fetchConsultations()
         } catch (err: any) {
-            console.error('Caught error:', err)
             showToast('Erro ao excluir', 'error')
         }
     }
 
-    async function handleComplete(id: string) {
-        try {
-            const { error } = await supabase
-                .from('consultations')
-                .update({
-                    status: 'completed',
-                    completed_at: new Date().toISOString()
-                })
-                .eq('id', id)
-
-            if (error) {
-                console.error('Error completing consultation:', error)
-                throw error
-            }
-            showToast('Consultoria marcada como concluída', 'success')
-            fetchConsultations()
-        } catch (err: any) {
-            console.error('Caught error:', err)
-            showToast('Erro ao atualizar status', 'error')
-        }
-    }
-
-    function openEditModal(consultation: Consultation) {
-        setEditingConsultation(consultation)
-        setFormData({
-            client_name: consultation.client_name,
-            client_email: consultation.client_email,
-            client_phone: consultation.client_phone || '',
-            consultation_type: consultation.consultation_type,
-            status: consultation.status,
-            notes: consultation.notes || '',
-            scheduled_at: consultation.scheduled_at ? new Date(consultation.scheduled_at).toISOString().slice(0, 16) : ''
-        })
-        setIsModalOpen(true)
-    }
-
     function resetForm() {
-        setFormData({
-            client_name: '',
-            client_email: '',
-            client_phone: '',
-            consultation_type: 'avaliacao',
-            status: 'pending',
-            notes: '',
-            scheduled_at: ''
-        })
+        setFormData({ name: '', email: '', phone: '', description: '', status: 'pending' })
         setEditingConsultation(null)
     }
 
-    function getStatusColor(status: string) {
-        switch (status) {
-            case 'pending': return 'bg-yellow-100 text-yellow-800 border-yellow-200'
-            case 'scheduled': return 'bg-blue-100 text-blue-800 border-blue-200'
-            case 'completed': return 'bg-green-100 text-green-800 border-green-200'
-            case 'cancelled': return 'bg-red-100 text-red-800 border-red-200'
-            default: return 'bg-slate-100 text-slate-800 border-slate-200'
-        }
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        show: { opacity: 1, transition: { staggerChildren: 0.1 } }
     }
 
-    function getStatusLabel(status: string) {
-        switch (status) {
-            case 'pending': return 'Pendente'
-            case 'scheduled': return 'Agendada'
-            case 'completed': return 'Concluída'
-            case 'cancelled': return 'Cancelada'
-            default: return status
-        }
+    const itemVariants = {
+        hidden: { y: 20, opacity: 0 },
+        show: { y: 0, opacity: 1 }
     }
 
     if (isLoading) {
         return (
-            <div className="p-8">
-                <div className="animate-pulse space-y-4">
-                    <div className="h-8 bg-slate-200 rounded w-1/4"></div>
-                    <div className="grid gap-4">
-                        {[1, 2, 3].map(i => <div key={i} className="h-24 bg-slate-200 rounded-xl"></div>)}
-                    </div>
-                </div>
+            <div className="flex flex-col gap-6 p-8 h-[60vh] justify-center items-center">
+                <div className="w-10 h-10 border-4 border-imi-100 border-t-accent-500 rounded-full animate-spin" />
+                <p className="text-imi-300 font-bold uppercase tracking-widest text-xs">Acessando Agenda...</p>
             </div>
         )
     }
 
     return (
-        <div className="p-8">
+        <div className="space-y-10 pb-20">
             {toasts.map(toast => (
                 <Toast key={toast.id} message={toast.message} type={toast.type} onClose={() => removeToast(toast.id)} />
             ))}
 
-            <div className="flex items-center justify-between mb-8">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-imi-900">Agenda & Consultoria</h1>
-                    <p className="text-slate-600 mt-1">Gerencie os agendamentos e leads</p>
+                    <div className="flex items-center gap-2 mb-2">
+                        <div className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+                        <span className="text-[10px] font-black text-imi-400 uppercase tracking-[0.3em]">Gestão de Atendimento</span>
+                    </div>
+                    <h1 className="text-4xl md:text-5xl font-bold text-imi-900 font-display tracking-tight">
+                        Agenda & <span className="text-accent-500">Consultoria</span>
+                    </h1>
                 </div>
-                <Button onClick={() => setIsModalOpen(true)}>
-                    <Plus className="w-5 h-5 mr-2" />
-                    Novo Agendamento
-                </Button>
+
+                <div className="flex gap-3">
+                    <Button onClick={() => { resetForm(); setIsModalOpen(true); }} className="h-14 px-8 bg-imi-900 text-white rounded-2xl shadow-elevated group active:scale-95 transition-all">
+                        <Plus className="w-5 h-5 mr-3 group-hover:rotate-90 transition-transform" />
+                        Novo Agendamento
+                    </Button>
+                </div>
             </div>
 
+            {/* Filters */}
             <div className="flex gap-2 overflow-x-auto pb-4 mb-2 scrollbar-hide">
-                {['all', 'pending', 'scheduled', 'completed'].map(status => (
+                {['all', 'pending', 'scheduled', 'completed', 'cancelled'].map(status => (
                     <button
                         key={status}
                         onClick={() => setFilterStatus(status)}
-                        className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${filterStatus === status
-                            ? 'bg-imi-900 text-white shadow-md'
-                            : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+                        className={`px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${filterStatus === status
+                            ? 'bg-imi-900 text-white shadow-soft scale-105'
+                            : 'bg-white border border-imi-100 text-imi-400 hover:bg-imi-50'
                             }`}
                     >
-                        {status === 'all' ? 'Todos' : getStatusLabel(status)}
+                        {status === 'all' ? 'Todos' : status}
                     </button>
                 ))}
             </div>
 
-            <div className="grid gap-4">
+            {/* List */}
+            <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="show"
+                className="grid grid-cols-1 gap-6"
+            >
                 {consultations.length === 0 ? (
-                    <div className="p-8 text-center bg-slate-50 rounded-xl border border-dashed border-slate-300">
-                        <p className="text-slate-500">Nenhum agendamento encontrado.</p>
+                    <div className="text-center py-32 bg-white rounded-[3rem] border border-dashed border-imi-100">
+                        <Ghost className="mx-auto text-imi-100 mb-6" size={64} />
+                        <p className="text-imi-400 font-medium tracking-wide">Nenhum atendimento agendado nesta categoria.</p>
                     </div>
                 ) : (
-                    consultations.map((consultation) => (
-                        <div key={consultation.id} className="bg-white rounded-xl p-6 border border-slate-200 hover:border-imi-200 transition-all shadow-sm hover:shadow-md">
-                            <div className="flex flex-col md:flex-row justify-between gap-4">
-                                <div className="flex-1 space-y-3">
-                                    <div className="flex items-center justify-between">
-                                        <h3 className="text-xl font-bold text-imi-900 flex items-center gap-2">
-                                            {consultation.client_name}
-                                            <span className={`px-2 py-0.5 rounded-full text-xs border ${getStatusColor(consultation.status)}`}>
-                                                {getStatusLabel(consultation.status)}
-                                            </span>
-                                        </h3>
-                                    </div>
-
-                                    <div className="grid md:grid-cols-2 gap-2 text-sm text-slate-600">
-                                        <div className="flex items-center gap-2">
-                                            <Mail className="w-4 h-4 text-slate-400" /> {consultation.client_email}
-                                        </div>
-                                        {consultation.client_phone && (
-                                            <div className="flex items-center gap-2">
-                                                <Phone className="w-4 h-4 text-slate-400" /> {consultation.client_phone}
-                                            </div>
-                                        )}
-                                        <div className="flex items-center gap-2 capitalize">
-                                            <span className="bg-slate-100 px-2 py-0.5 rounded text-xs font-semibold">Tipo: {consultation.consultation_type.replace('_', ' ')}</span>
-                                        </div>
-                                        {consultation.scheduled_at && (
-                                            <div className="flex items-center gap-2 text-blue-700 font-medium">
-                                                <Clock className="w-4 h-4" />
-                                                {new Date(consultation.scheduled_at).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {consultation.notes && (
-                                        <div className="p-3 bg-slate-50 rounded border border-slate-100 text-sm text-slate-700 italic border-l-4 border-l-imi-200">
-                                            "{consultation.notes}"
-                                        </div>
-                                    )}
+                    consultations.map((item) => (
+                        <motion.div
+                            key={item.id}
+                            variants={itemVariants}
+                            className="bg-white rounded-[2.5rem] p-10 border border-imi-100 shadow-soft hover:shadow-card-hover transition-all duration-500 group flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8"
+                        >
+                            <div className="flex items-center gap-6 flex-1">
+                                <div className="w-20 h-20 bg-imi-50 rounded-[2rem] flex items-center justify-center text-imi-900 group-hover:bg-imi-900 group-hover:text-white transition-all duration-500">
+                                    <User size={32} />
                                 </div>
-
-                                <div className="flex items-start gap-2 border-t pt-4 md:border-t-0 md:pt-0 md:border-l md:pl-4">
-                                    {consultation.status !== 'completed' && (
-                                        <Button size="sm" onClick={() => handleComplete(consultation.id)} title="Concluir" className="bg-green-600 hover:bg-green-700">
-                                            <CheckCircle className="w-4 h-4" />
-                                        </Button>
-                                    )}
-                                    <Button size="sm" variant="outline" onClick={() => openEditModal(consultation)} title="Editar">
-                                        <Edit className="w-4 h-4" />
-                                    </Button>
-                                    <Button size="sm" variant="outline" onClick={() => handleDelete(consultation.id)} title="Excluir" className="text-red-600 hover:bg-red-50 hover:border-red-200">
-                                        <Trash2 className="w-4 h-4" />
-                                    </Button>
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-3">
+                                        <h3 className="text-2xl font-bold text-imi-900">{item.name}</h3>
+                                        <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${item.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-imi-100 text-imi-900'}`}>{item.status}</span>
+                                    </div>
+                                    <div className="flex flex-wrap gap-4 text-xs font-medium text-imi-400 italic">
+                                        <span className="flex items-center gap-2"><Mail size={14} /> {item.email}</span>
+                                        {item.phone && <span className="flex items-center gap-2"><Phone size={14} /> {item.phone}</span>}
+                                        <span className="flex items-center gap-2"><CalendarDays size={14} /> {new Date(item.created_at).toLocaleDateString()}</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+
+                            <div className="flex-1 lg:max-w-md">
+                                <p className="text-sm text-imi-500 line-clamp-2 leading-relaxed bg-imi-50/50 p-4 rounded-2xl border border-imi-50 italic">
+                                    {item.description || 'Sem observações adicionais.'}
+                                </p>
+                            </div>
+
+                            <div className="flex gap-2">
+                                <button onClick={() => { setEditingConsultation(item); setFormData({ name: item.name, email: item.email, phone: item.phone || '', description: item.description || '', status: item.status }); setIsModalOpen(true); }} className="w-12 h-12 rounded-2xl bg-imi-50 flex items-center justify-center text-imi-400 hover:text-imi-900 transition-all border border-transparent hover:border-imi-100">
+                                    <Edit size={20} />
+                                </button>
+                                <button onClick={() => handleDelete(item.id)} className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center text-red-300 hover:text-red-600 transition-all border border-transparent hover:border-red-100">
+                                    <Trash2 size={20} />
+                                </button>
+                                <button className="w-14 h-12 rounded-2xl bg-imi-900 text-white flex items-center justify-center hover:bg-accent-500 hover:text-imi-900 transition-all shadow-soft">
+                                    <ChevronRight size={24} />
+                                </button>
+                            </div>
+                        </motion.div>
                     ))
                 )}
-            </div>
+            </motion.div>
 
-            {isModalOpen && (
-                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                        <div className="sticky top-0 bg-white border-b border-slate-200 px-8 py-6 flex items-center justify-between z-10">
-                            <h2 className="text-2xl font-bold text-imi-900">
-                                {editingConsultation ? 'Editar Agendamento' : 'Novo Agendamento'}
-                            </h2>
-                            <button onClick={() => { setIsModalOpen(false); resetForm(); }} className="p-2 hover:bg-slate-100 rounded-full">
-                                <X className="w-6 h-6 text-slate-500" />
-                            </button>
-                        </div>
-
-                        <form onSubmit={handleSubmit} className="p-8 space-y-6">
-                            <Input
-                                label="Nome do Cliente *"
-                                value={formData.client_name}
-                                onChange={(e) => setFormData(prev => ({ ...prev, client_name: e.target.value }))}
-                                required
-                            />
-
-                            <div className="grid md:grid-cols-2 gap-4">
-                                <Input
-                                    label="Email *"
-                                    type="email"
-                                    value={formData.client_email}
-                                    onChange={(e) => setFormData(prev => ({ ...prev, client_email: e.target.value }))}
-                                    required
-                                />
-                                <Input
-                                    label="Telefone / WhatsApp"
-                                    value={formData.client_phone}
-                                    onChange={(e) => setFormData(prev => ({ ...prev, client_phone: e.target.value }))}
-                                    placeholder="(00) 00000-0000"
-                                />
-                            </div>
-
-                            <div className="grid md:grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-sm font-semibold text-imi-900 mb-2">Tipo de Consultoria</label>
-                                    <select
-                                        value={formData.consultation_type}
-                                        onChange={(e) => setFormData(prev => ({ ...prev, consultation_type: e.target.value }))}
-                                        className="w-full h-11 px-4 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-imi-900"
-                                    >
-                                        <option value="avaliacao">Avaliação de Imóvel</option>
-                                        <option value="credito">Crédito Imobiliário</option>
-                                        <option value="investimento">Consultoria de Investimento</option>
-                                        <option value="compra">Assessoria de Compra</option>
-                                        <option value="venda">Assessoria de Venda</option>
-                                    </select>
+            {/* Modal */}
+            <AnimatePresence>
+                {isModalOpen && (
+                    <div className="fixed inset-0 bg-imi-900/40 backdrop-blur-md z-50 flex items-center justify-end p-0 sm:p-4 overflow-hidden">
+                        <motion.div
+                            initial={{ x: '100%' }}
+                            animate={{ x: 0 }}
+                            exit={{ x: '100%' }}
+                            className="bg-white w-full max-w-2xl h-full shadow-2xl overflow-y-auto"
+                        >
+                            <div className="p-12 space-y-10">
+                                <div className="flex items-center justify-between">
+                                    <h2 className="text-3xl font-bold text-imi-900 font-display">Registrar Atendimento</h2>
+                                    <button onClick={() => setIsModalOpen(false)} className="w-12 h-12 rounded-2xl bg-imi-50 flex items-center justify-center text-imi-400">
+                                        <X size={24} />
+                                    </button>
                                 </div>
-                                <Input
-                                    label="Data e Hora"
-                                    type="datetime-local"
-                                    value={formData.scheduled_at}
-                                    onChange={(e) => setFormData(prev => ({ ...prev, scheduled_at: e.target.value }))}
-                                />
-                            </div>
 
-                            <div>
-                                <label className="block text-sm font-semibold text-imi-900 mb-2">Status</label>
-                                <div className="flex gap-4">
-                                    {['pending', 'scheduled', 'completed', 'cancelled'].map(status => (
-                                        <label key={status} className="flex items-center gap-2 cursor-pointer">
-                                            <input
-                                                type="radio"
-                                                name="status"
-                                                value={status}
-                                                checked={formData.status === status}
-                                                onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value }))}
-                                                className="w-4 h-4 text-imi-900 focus:ring-imi-900"
-                                            />
-                                            <span className="text-sm capitalize">{getStatusLabel(status)}</span>
-                                        </label>
-                                    ))}
-                                </div>
-                            </div>
+                                <form onSubmit={handleSubmit} className="space-y-8">
+                                    <div className="space-y-6">
+                                        <Input label="Nome Completo *" value={formData.name} onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))} placeholder="Ex: Roberto Carlos" className="h-14 rounded-2xl border-imi-100" />
 
-                            <Textarea
-                                label="Notas / Observações"
-                                value={formData.notes}
-                                onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-                                rows={4}
-                                placeholder="Detalhes sobre o interesse do cliente..."
-                            />
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <Input label="Email *" value={formData.email} onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))} placeholder="email@dominio.com" className="h-14 rounded-2xl border-imi-100" />
+                                            <Input label="WhatsApp" value={formData.phone} onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))} placeholder="(00) 00000-0000" className="h-14 rounded-2xl border-imi-100" />
+                                        </div>
 
-                            <div className="flex gap-4 pt-4 border-t border-slate-200">
-                                <Button type="submit" className="flex-1 h-12" disabled={isSaving}>
-                                    {isSaving ? 'Salvando...' : (editingConsultation ? 'Salvar Alterações' : 'Confirmar Agendamento')}
-                                </Button>
-                                <Button type="button" variant="outline" className="flex-1 h-12" onClick={() => { setIsModalOpen(false); resetForm(); }} disabled={isSaving}>
-                                    Cancelar
-                                </Button>
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-imi-400 uppercase tracking-widest block">Status do Lead</label>
+                                            <select value={formData.status} onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value }))} className="w-full h-14 bg-white border border-imi-100 rounded-2xl px-6 outline-none focus:ring-2 focus:ring-accent-500/20 transition-all font-bold text-sm">
+                                                <option value="pending">Pendente</option>
+                                                <option value="scheduled">Agendado</option>
+                                                <option value="completed">Concluído</option>
+                                                <option value="cancelled">Cancelado</option>
+                                            </select>
+                                        </div>
+
+                                        <Textarea label="Descrição do Interesse" value={formData.description} onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))} rows={6} className="rounded-[2rem] border-imi-100 p-8 text-lg" placeholder="Detalhes da consultoria ou serviço desejado..." />
+                                    </div>
+
+                                    <div className="pt-10">
+                                        <Button type="submit" disabled={isSaving} className="w-full h-16 bg-imi-900 text-white rounded-3xl shadow-elevated font-black text-xs uppercase tracking-widest hover:bg-accent-500 hover:text-imi-900 transition-all">
+                                            {isSaving ? 'Processando...' : 'Confirmar Agendamento'}
+                                        </Button>
+                                    </div>
+                                </form>
                             </div>
-                        </form>
+                        </motion.div>
                     </div>
-                </div>
-            )}
+                )}
+            </AnimatePresence>
         </div>
     )
 }

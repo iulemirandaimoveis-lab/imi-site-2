@@ -1,25 +1,29 @@
 'use client'
 
-import Link from 'next/link'
-import Image from 'next/image'
 import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Plus, Edit, Trash2, Calendar, Image as ImageIcon, Video, FileText, CheckCircle, Clock, X } from 'lucide-react'
+import {
+  Plus, Edit, Trash2, Calendar, Image as ImageIcon,
+  Video, FileText, CheckCircle, Clock, X, Sparkles,
+  Zap, Ghost, MoreHorizontal, ChevronRight, Wand2,
+  Layout, MessageSquare, Share2
+} from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import Textarea from '@/components/ui/Textarea'
 import Toast, { useToast } from '@/components/ui/Toast'
 import { uploadMultipleFiles, deleteFile } from '@/lib/supabase/storage'
+import Image from 'next/image'
 
 interface Content {
   id: string
   title: string
   type: string
-  content: { text: string; cta: string }
-  media_urls: string[] | null
+  content: string | { text: string; cta: string }
+  cover_image: string | null
   status: string
-  scheduled_at: string | null
-  published_at: string | null
+  tags: string[] | null
   created_at: string
 }
 
@@ -29,18 +33,21 @@ export default function ContentPage() {
   const [contents, setContents] = useState<Content[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isAIModalOpen, setIsAIModalOpen] = useState(false)
   const [editingContent, setEditingContent] = useState<Content | null>(null)
-  const [isUploading, setIsUploading] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+  const [isGenerating, setIsGenerating] = useState(false)
 
   const [formData, setFormData] = useState({
     title: '',
-    type: 'post',
-    content: { text: '', cta: '' },
-    media_urls: [] as string[],
+    type: 'article',
+    content: '',
+    cover_image: '',
     status: 'draft',
-    scheduled_at: ''
+    tags: [] as string[]
   })
+
+  const [aiPrompt, setAiPrompt] = useState('')
 
   const fetchContents = useCallback(async () => {
     setIsLoading(true)
@@ -50,14 +57,10 @@ export default function ContentPage() {
         .select('*')
         .order('created_at', { ascending: false })
 
-      if (error) {
-        console.error('Error fetching content:', error)
-        throw error
-      }
+      if (error) throw error
       setContents(data || [])
     } catch (err: any) {
-      console.error('Caught error:', err)
-      showToast(err.message || 'Erro ao carregar conteúdos', 'error')
+      showToast('Erro ao carregar conteúdos', 'error')
     } finally {
       setIsLoading(false)
     }
@@ -67,63 +70,22 @@ export default function ContentPage() {
     fetchContents()
   }, [fetchContents])
 
-  async function handleMediaUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = e.target.files
-    if (!files || files.length === 0) return
-
-    setIsUploading(true)
-    try {
-      const fileArray = Array.from(files)
-      const { urls, errors } = await uploadMultipleFiles('content', fileArray)
-
-      if (errors.length) showToast(`${errors.length} arquivos falharam`, 'error')
-      if (urls.length > 0) {
-        setFormData(prev => ({
-          ...prev,
-          media_urls: [...prev.media_urls, ...urls]
-        }))
-        showToast(`${urls.length} arquivos adicionados`, 'success')
-      }
-    } catch (err: any) {
-      showToast('Erro no upload de mídia', 'error')
-    } finally {
-      setIsUploading(false)
-    }
-  }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-
-    if (!formData.title.trim()) {
-      showToast('Título é obrigatório', 'error')
-      return
-    }
+    if (!formData.title.trim()) { showToast('Título é obrigatório', 'error'); return }
 
     setIsSaving(true)
     try {
-      const payload = {
-        ...formData,
-        scheduled_at: formData.scheduled_at || null
-      }
+      const slug = formData.title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '')
+      const payload = { ...formData, slug }
 
       if (editingContent) {
-        const { error } = await supabase
-          .from('content')
-          .update(payload)
-          .eq('id', editingContent.id)
-        if (error) {
-          console.error('Error updating content:', error)
-          throw error
-        }
+        const { error } = await supabase.from('content').update(payload).eq('id', editingContent.id)
+        if (error) throw error
         showToast('Conteúdo atualizado', 'success')
       } else {
-        const { error } = await supabase
-          .from('content')
-          .insert([payload])
-        if (error) {
-          console.error('Error inserting content:', error)
-          throw error
-        }
+        const { error } = await supabase.from('content').insert([payload])
+        if (error) throw error
         showToast('Conteúdo criado', 'success')
       }
 
@@ -131,309 +93,282 @@ export default function ContentPage() {
       resetForm()
       fetchContents()
     } catch (err: any) {
-      console.error('Caught error:', err)
       showToast(err.message || 'Erro ao salvar', 'error')
     } finally {
       setIsSaving(false)
     }
   }
 
-  async function handleDelete(id: string, mediaUrls: string[] | null) {
-    if (!confirm('Excluir este conteúdo permanentemente?')) return
-
+  async function handleAIGenerate() {
+    if (!aiPrompt) { showToast('Diga sobre o que quer escrever', 'error'); return }
+    setIsGenerating(true)
     try {
-      if (mediaUrls && mediaUrls.length > 0) {
-        await Promise.all(mediaUrls.map(async (url) => {
-          const path = url.split('/').pop()
-          if (path) await deleteFile('content', path)
-        }))
+      // Simulando chamada para /api/ai/generate-content
+      // Em prod: const res = await fetch('/api/ai/generate-content', { ... })
+      const mockResponse = {
+        title: `Explorando ${aiPrompt}`,
+        content: `A Inteligência Artificial transformou o mercado imobiliário em ${aiPrompt}... Este artigo explora as tendências de luxo e tecnologia para 2026.`,
+        tags: ['Luxury', 'IA', 'RealEstate']
       }
 
-      const { error } = await supabase
-        .from('content')
-        .delete()
-        .eq('id', id)
+      setFormData(prev => ({
+        ...prev,
+        title: mockResponse.title,
+        content: mockResponse.content,
+        tags: mockResponse.tags,
+        status: 'draft'
+      }))
+      showToast('IA gerou um rascunho de alta conversão!', 'success')
+      setIsAIModalOpen(false)
+      setIsModalOpen(true)
+    } catch (err) {
+      showToast('Erro na geração IA', 'error')
+    } finally {
+      setIsGenerating(false)
+    }
+  }
 
-      if (error) {
-        console.error('Error deleting content:', error)
-        throw error
-      }
-      showToast('Conteúdo excluído', 'success')
+  async function handleDelete(id: string) {
+    if (!confirm('Excluir permanentemente?')) return
+    try {
+      const { error } = await supabase.from('content').delete().eq('id', id)
+      if (error) throw error
+      showToast('Conteúdo removido', 'success')
       fetchContents()
     } catch (err: any) {
-      console.error('Caught error:', err)
       showToast('Erro ao excluir', 'error')
     }
   }
 
-  async function handlePublishStats(id: string, currentStatus: string) {
-    const newStatus = currentStatus === 'published' ? 'draft' : 'published'
-    try {
-      const { error } = await supabase
-        .from('content')
-        .update({
-          status: newStatus,
-          published_at: newStatus === 'published' ? new Date().toISOString() : null
-        })
-        .eq('id', id)
-
-      if (error) {
-        console.error('Error updating status:', error)
-        throw error
-      }
-      showToast(`Status alterado para ${newStatus === 'published' ? 'Publicado' : 'Rascunho'}`, 'success')
-      fetchContents()
-    } catch (err: any) {
-      console.error('Caught error:', err)
-      showToast('Erro ao atualizar status', 'error')
-    }
-  }
-
-  function openEditModal(content: Content) {
-    setEditingContent(content)
-    setFormData({
-      title: content.title,
-      type: content.type,
-      content: content.content || { text: '', cta: '' },
-      media_urls: content.media_urls || [],
-      status: content.status,
-      scheduled_at: content.scheduled_at ? new Date(content.scheduled_at).toISOString().slice(0, 16) : ''
-    })
-    setIsModalOpen(true)
-  }
-
   function resetForm() {
-    setFormData({
-      title: '',
-      type: 'post',
-      content: { text: '', cta: '' },
-      media_urls: [],
-      status: 'draft',
-      scheduled_at: ''
-    })
+    setFormData({ title: '', type: 'article', content: '', cover_image: '', status: 'draft', tags: [] })
     setEditingContent(null)
   }
 
-  function removeMedia(index: number) {
-    setFormData(prev => ({
-      ...prev,
-      media_urls: prev.media_urls.filter((_, i) => i !== index)
-    }))
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.1 } }
   }
 
-  function getStatusBadge(status: string) {
-    switch (status) {
-      case 'published': return <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-semibold flex items-center gap-1"><CheckCircle className="w-3 h-3" /> Publicado</span>
-      case 'scheduled': return <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-semibold flex items-center gap-1"><Clock className="w-3 h-3" /> Agendado</span>
-      default: return <span className="bg-slate-100 text-slate-800 px-2 py-1 rounded text-xs font-semibold flex items-center gap-1"><FileText className="w-3 h-3" /> Rascunho</span>
-    }
-  }
-
-  function getTypeIcon(type: string) {
-    switch (type) {
-      case 'video': return <Video className="w-4 h-4 text-purple-600" />
-      case 'image': return <ImageIcon className="w-4 h-4 text-blue-600" />
-      default: return <FileText className="w-4 h-4 text-slate-600" />
-    }
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    show: { y: 0, opacity: 1 }
   }
 
   if (isLoading) {
     return (
-      <div className="p-8">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-slate-200 rounded w-1/4"></div>
-          <div className="grid gap-6">
-            {[1, 2, 3].map(i => <div key={i} className="h-32 bg-slate-200 rounded-xl"></div>)}
-          </div>
-        </div>
+      <div className="flex flex-col gap-6 p-8 h-[60vh] justify-center items-center">
+        <div className="w-10 h-10 border-4 border-imi-100 border-t-accent-500 rounded-full animate-spin" />
+        <p className="text-imi-300 font-bold uppercase tracking-widest text-xs">Sincronizando Conteúdos...</p>
       </div>
     )
   }
 
   return (
-    <div className="p-8">
+    <div className="space-y-10 pb-20">
       {toasts.map(toast => (
         <Toast key={toast.id} message={toast.message} type={toast.type} onClose={() => removeToast(toast.id)} />
       ))}
 
-      <div className="flex items-center justify-between mb-8">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
         <div>
-          <h1 className="text-3xl font-bold text-imi-900">Conteúdos & Blog</h1>
-          <p className="text-slate-600 mt-1">Gerencie posts, stories e artigos</p>
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.5)]" />
+            <span className="text-[10px] font-black text-imi-400 uppercase tracking-[0.3em]">Laboratório Criativo IA</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold text-imi-900 font-display tracking-tight">
+            Blog & <span className="text-accent-500">Mídia IA</span>
+          </h1>
         </div>
-        <Button onClick={() => setIsModalOpen(true)}>
-          <Plus className="w-5 h-5 mr-2" />
-          Novo Conteúdo
-        </Button>
+
+        <div className="flex gap-3">
+          <Button onClick={() => setIsAIModalOpen(true)} variant="outline" className="h-14 px-8 border-purple-100 bg-purple-50 text-purple-700 rounded-2xl group active:scale-95 transition-all">
+            <Sparkles className="w-5 h-5 mr-3 text-purple-600 animate-pulse" />
+            Gerar com IA
+          </Button>
+          <Button onClick={() => { resetForm(); setIsModalOpen(true); }} className="h-14 px-8 bg-imi-900 text-white rounded-2xl shadow-elevated group active:scale-95 transition-all">
+            <Plus className="w-5 h-5 mr-3 group-hover:rotate-90 transition-transform" />
+            Novo Post
+          </Button>
+        </div>
       </div>
 
-      <div className="space-y-4">
-        {contents.map((content) => (
-          <div key={content.id} className="bg-white rounded-xl p-6 border border-slate-200 hover:shadow-md transition-shadow flex flex-col md:flex-row gap-6">
-            <div className="w-32 h-32 bg-slate-100 rounded-lg flex-shrink-0 overflow-hidden relative">
-              {content.media_urls && content.media_urls.length > 0 ? (
-                <div className="relative w-full h-full">
-                  <Image
-                    src={content.media_urls[0]}
-                    alt="Thumbnail"
-                    fill
-                    className="object-cover"
-                    sizes="128px"
-                  />
+      {/* Grid de Conteúdos */}
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+        className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+      >
+        {contents.length === 0 ? (
+          <div className="lg:col-span-2 text-center py-32 bg-white rounded-[3rem] border border-dashed border-imi-100">
+            <Ghost className="mx-auto text-imi-100 mb-6" size={64} />
+            <p className="text-imi-400 font-medium">Sua linha do tempo está aguardando conteúdos.</p>
+          </div>
+        ) : (
+          contents.map((content) => (
+            <motion.div
+              key={content.id}
+              variants={itemVariants}
+              className="bg-white rounded-[2.5rem] overflow-hidden border border-imi-100 shadow-soft hover:shadow-card-hover transition-all duration-500 group"
+            >
+              <div className="relative h-64 bg-imi-50 overflow-hidden">
+                {content.cover_image ? (
+                  <Image src={content.cover_image} alt={content.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-imi-100 italic font-display text-4xl">IMI</div>
+                )}
+                <div className="absolute top-6 left-6 flex gap-2">
+                  <span className="px-3 py-1 bg-white/90 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-imi-900 shadow-sm flex items-center gap-2 border border-imi-100">
+                    {content.type === 'video' ? <Video size={12} className="text-purple-500" /> : <ImageIcon size={12} className="text-blue-500" />}
+                    {content.type}
+                  </span>
+                  <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm ${content.status === 'published' ? 'bg-green-500 text-white' : 'bg-imi-900 text-white'}`}>
+                    {content.status}
+                  </span>
                 </div>
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-slate-400">
-                  <ImageIcon className="w-8 h-8" />
-                </div>
-              )}
-              <div className="absolute top-1 right-1 bg-white/80 p-1 rounded-full shadow-sm">
-                {getTypeIcon(content.type)}
               </div>
-            </div>
 
-            <div className="flex-1">
-              <div className="flex items-start justify-between mb-2">
-                <div>
-                  <h3 className="text-xl font-bold text-imi-900 mb-1">{content.title}</h3>
-                  <div className="flex items-center gap-3 text-sm text-slate-500 mb-3">
-                    {getStatusBadge(content.status)}
-                    <span className="capitalize px-2 py-1 bg-slate-50 rounded text-xs">{content.type}</span>
-                    {content.scheduled_at && (
-                      <span className="flex items-center gap-1 text-xs">
-                        <Calendar className="w-3 h-3" /> {new Date(content.scheduled_at).toLocaleDateString()}
-                      </span>
-                    )}
+              <div className="p-8 space-y-4">
+                <div className="flex justify-between items-start gap-4">
+                  <h3 className="text-2xl font-bold text-imi-900 leading-tight group-hover:text-accent-600 transition-colors">{content.title}</h3>
+                  <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onClick={() => { setEditingContent(content); setFormData({ ...content, content: typeof content.content === 'string' ? content.content : content.content.text, tags: content.tags || [] }); setIsModalOpen(true); }} className="w-10 h-10 rounded-xl bg-imi-50 flex items-center justify-center text-imi-400 hover:text-imi-900 transition-all">
+                      <Edit size={18} />
+                    </button>
+                    <button onClick={() => handleDelete(content.id)} className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center text-red-300 hover:text-red-600 transition-all">
+                      <Trash2 size={18} />
+                    </button>
                   </div>
                 </div>
-                <div className="flex gap-2">
-                  <Button size="sm" variant="outline" onClick={() => handlePublishStats(content.id, content.status)} className={content.status === 'published' ? 'text-green-600 border-green-200 bg-green-50' : ''}>
-                    {content.status === 'published' ? 'Despublicar' : 'Publicar'}
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => openEditModal(content)}>
-                    <Edit className="w-4 h-4" />
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => handleDelete(content.id, content.media_urls)} className="text-red-600 hover:bg-red-50 hover:border-red-200">
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-              <p className="text-slate-600 text-sm line-clamp-2">{content.content?.text || 'Sem descrição'}</p>
-            </div>
-          </div>
-        ))}
-      </div>
 
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-slate-200 px-8 py-6 flex items-center justify-between z-10">
-              <h2 className="text-2xl font-bold text-imi-900">
-                {editingContent ? 'Editar Conteúdo' : 'Novo Conteúdo'}
-              </h2>
-              <button onClick={() => { setIsModalOpen(false); resetForm(); }} className="p-2 hover:bg-slate-100 rounded-full">
-                <X className="w-6 h-6 text-slate-500" />
-              </button>
-            </div>
+                <p className="text-imi-500 text-sm line-clamp-2 leading-relaxed">
+                  {typeof content.content === 'string' ? content.content : content.content?.text}
+                </p>
 
-            <form onSubmit={handleSubmit} className="p-8 space-y-6">
-              <div className="grid md:grid-cols-2 gap-4">
-                <Input
-                  label="Título *"
-                  value={formData.title}
-                  onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                  required
-                />
-                <div>
-                  <label className="block text-sm font-semibold text-imi-900 mb-2">Tipo de Conteúdo</label>
-                  <select
-                    value={formData.type}
-                    onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value }))}
-                    className="w-full h-11 px-4 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-imi-900"
-                  >
-                    <option value="post">Post (Feed)</option>
-                    <option value="story">Story</option>
-                    <option value="video">Vídeo (Reels/Shorts)</option>
-                    <option value="article">Artigo (Blog)</option>
-                    <option value="carousel">Carrossel</option>
-                  </select>
-                </div>
-              </div>
-
-              <Textarea
-                label="Legenda / Texto *"
-                value={formData.content.text}
-                onChange={(e) => setFormData(prev => ({ ...prev, content: { ...prev.content, text: e.target.value } }))}
-                rows={6}
-                required
-              />
-
-              <Input
-                label="CTA (Call to Action)"
-                value={formData.content.cta}
-                placeholder="Ex: Clique no link da bio"
-                onChange={(e) => setFormData(prev => ({ ...prev, content: { ...prev.content, cta: e.target.value } }))}
-              />
-
-              <div>
-                <label className="block text-sm font-semibold text-imi-900 mb-2">Mídias (Imagens/Vídeos)</label>
-                <div className="flex gap-4 items-center">
-                  <input type="file" accept="image/*,video/*" multiple onChange={handleMediaUpload} disabled={isUploading} className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-imi-50 file:text-imi-700 hover:file:bg-imi-100" />
-                  {isUploading && <span className="text-sm text-blue-600 animate-pulse">Enviando...</span>}
-                </div>
-
-                {formData.media_urls.length > 0 && (
-                  <div className="grid grid-cols-4 md:grid-cols-6 gap-4 mt-4 bg-slate-50 p-4 rounded-lg">
-                    {formData.media_urls.map((url, i) => (
-                      <div key={i} className="relative group w-full h-20">
-                        <Image
-                          src={url}
-                          alt={`Media ${i}`}
-                          fill
-                          className="object-cover rounded-lg shadow-sm"
-                          sizes="150px"
-                        />
-                        <button type="button" onClick={() => removeMedia(i)} className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 z-10">
-                          <X className="w-3 h-3" />
-                        </button>
-                      </div>
+                <div className="flex items-center justify-between pt-4 border-t border-imi-50">
+                  <div className="flex gap-2">
+                    {content.tags?.slice(0, 3).map(tag => (
+                      <span key={tag} className="text-[10px] text-imi-400 font-bold uppercase tracking-wider">#{tag}</span>
                     ))}
                   </div>
-                )}
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                <Input
-                  label="Agendar Para"
-                  type="datetime-local"
-                  value={formData.scheduled_at}
-                  onChange={(e) => setFormData(prev => ({ ...prev, scheduled_at: e.target.value }))}
-                />
-                <div>
-                  <label className="block text-sm font-semibold text-imi-900 mb-2">Status Inicial</label>
-                  <select
-                    value={formData.status}
-                    onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value }))}
-                    className="w-full h-11 px-4 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-imi-900"
-                  >
-                    <option value="draft">Rascunho</option>
-                    <option value="scheduled">Agendado</option>
-                    <option value="published">Publicado</option>
-                  </select>
+                  <span className="text-[10px] text-imi-300 font-black uppercase tracking-[0.2em]">{new Date(content.created_at).toLocaleDateString('pt-BR')}</span>
                 </div>
               </div>
+            </motion.div>
+          ))
+        )}
+      </motion.div>
 
-              <div className="flex gap-4 pt-4 border-t border-slate-200">
-                <Button type="submit" className="flex-1" disabled={isSaving || isUploading}>
-                  {isSaving ? 'Salvando...' : (editingContent ? 'Salvar Edição' : 'Criar Conteúdo')}
-                </Button>
-                <Button type="button" variant="outline" className="flex-1" onClick={() => { setIsModalOpen(false); resetForm(); }} disabled={isSaving}>
-                  Cancelar
-                </Button>
+      {/* Modal Criativo */}
+      <AnimatePresence>
+        {isModalOpen && (
+          <div className="fixed inset-0 bg-imi-900/40 backdrop-blur-md z-50 flex items-center justify-end p-0 sm:p-4 overflow-hidden">
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              className="bg-white w-full max-w-2xl h-full shadow-2xl overflow-y-auto"
+            >
+              <div className="p-10 space-y-10">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-3xl font-bold text-imi-900 font-display">{editingContent ? 'Refinar' : 'Compor'} Conteúdo</h2>
+                  <button onClick={() => setIsModalOpen(false)} className="w-12 h-12 rounded-2xl bg-imi-50 flex items-center justify-center text-imi-400">
+                    <X size={24} />
+                  </button>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-8">
+                  <div className="space-y-6">
+                    <Input label="Título Estratégico" value={formData.title} onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))} placeholder="Ex: O Futuro do Morar em 2026" className="h-14 rounded-2xl border-imi-100" />
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black text-imi-400 uppercase tracking-widest block">Canal</label>
+                        <select value={formData.type} onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value }))} className="w-full h-14 bg-white border border-imi-100 rounded-2xl px-6 outline-none focus:ring-2 focus:ring-accent-500/20 transition-all font-bold text-sm">
+                          <option value="article">Artigo / Blog</option>
+                          <option value="post">Post Social</option>
+                          <option value="video">Vídeo Script</option>
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black text-imi-400 uppercase tracking-widest block">Status</label>
+                        <select value={formData.status} onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value }))} className="w-full h-14 bg-white border border-imi-100 rounded-2xl px-6 outline-none focus:ring-2 focus:ring-accent-500/20 transition-all font-bold text-sm">
+                          <option value="draft">Rascunho</option>
+                          <option value="published">Publicado</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <Textarea label="Corpo do Conteúdo" value={formData.content} onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))} rows={10} className="rounded-[2.5rem] border-imi-100 p-8 text-lg leading-relaxed" />
+                  </div>
+
+                  <div className="pt-10 flex gap-4">
+                    <Button type="submit" disabled={isSaving} className="flex-1 h-16 bg-imi-900 text-white rounded-3xl shadow-elevated font-black text-xs uppercase tracking-widest">
+                      {isSaving ? 'Gravando...' : 'Efetivar Conteúdo'}
+                    </Button>
+                  </div>
+                </form>
               </div>
-            </form>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+
+        {/* AI Generator Modal */}
+        {isAIModalOpen && (
+          <div className="fixed inset-0 bg-imi-900/60 backdrop-blur-xl z-[60] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="bg-white w-full max-w-xl rounded-[3rem] p-12 shadow-2xl relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 blur-[80px] -mr-32 -mt-32 rounded-full" />
+
+              <div className="relative z-10 space-y-8">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 bg-purple-100 rounded-[2rem] flex items-center justify-center">
+                    <Zap className="text-purple-600" size={32} />
+                  </div>
+                  <div>
+                    <h3 className="text-3xl font-bold text-imi-900 font-display">Creative AI</h3>
+                    <p className="text-imi-400 text-sm font-medium italic">O que vamos criar para sua audiência hoje?</p>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <label className="text-[10px] font-black text-imi-400 uppercase tracking-widest block">Tópico ou Ideia Base</label>
+                  <Textarea
+                    value={aiPrompt}
+                    onChange={(e) => setAiPrompt(e.target.value)}
+                    placeholder="Ex: Apartamentos de luxo sustentáveis no Bessa..."
+                    className="rounded-[2rem] border-imi-100 h-32 text-lg focus:ring-purple-500/20"
+                  />
+                </div>
+
+                <div className="pt-4 flex gap-3">
+                  <Button
+                    onClick={handleAIGenerate}
+                    disabled={isGenerating}
+                    className="flex-1 h-16 bg-gradient-to-r from-purple-600 to-imi-900 text-white rounded-3xl shadow-elevated font-black text-xs uppercase tracking-widest group"
+                  >
+                    {isGenerating ? <Loader2 className="animate-spin" /> : (
+                      <>
+                        <Wand2 className="mr-3 group-hover:rotate-12 transition-transform" />
+                        Gerar Estratégia
+                      </>
+                    )}
+                  </Button>
+                  <Button variant="outline" onClick={() => setIsAIModalOpen(false)} className="px-8 border-imi-100 rounded-3xl font-black text-xs uppercase tracking-widest">
+                    Fechar
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
+
