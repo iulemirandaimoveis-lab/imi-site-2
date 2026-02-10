@@ -16,11 +16,9 @@ export default function Error({ error }: { error: Error }) {
 
             <div className="bg-slate-50 p-4 rounded-lg text-left w-full max-w-2xl overflow-auto border border-slate-200 mb-6 max-h-60">
                 <p className="text-xs font-bold text-red-600 mb-2 font-mono">{error.name}: {error.message}</p>
-                {error.stack && (
-                    <pre className="text-[10px] text-slate-500 font-mono whitespace-pre-wrap leading-relaxed">
-                        {error.stack}
-                    </pre>
-                )}
+                <pre className="text-[10px] text-slate-500 font-mono whitespace-pre-wrap leading-relaxed">
+                    {error.stack}
+                </pre>
             </div>
 
             <button
