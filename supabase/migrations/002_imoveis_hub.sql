@@ -1,64 +1,67 @@
--- 002: Imoveis Hub - novas colunas e tabelas
--- Executar no Supabase SQL Editor ANTES do deploy
+-- 002: Imoveis Hub - Advanced Asset Management & Analytics
+-- Este arquivo centraliza a inteligência de dados para o módulo de Imóveis.
+-- Executar no Supabase SQL Editor para habilitar filtros avançados e tracking.
 
--- 1. Novas colunas em developments
-ALTER TABLE developments ADD COLUMN IF NOT EXISTS tipo TEXT DEFAULT 'apartamento' CHECK (tipo IN ('apartamento','casa','flat','lote','comercial','resort'));
-ALTER TABLE developments ADD COLUMN IF NOT EXISTS status_comercial TEXT DEFAULT 'rascunho' CHECK (status_comercial IN ('rascunho','publicado','campanha','privado'));
-ALTER TABLE developments ADD COLUMN IF NOT EXISTS pais TEXT DEFAULT 'Brasil';
-ALTER TABLE developments ADD COLUMN IF NOT EXISTS publico_alvo TEXT;
-ALTER TABLE developments ADD COLUMN IF NOT EXISTS argumentos_venda JSONB DEFAULT '[]';
-ALTER TABLE developments ADD COLUMN IF NOT EXISTS tipologias TEXT;
-ALTER TABLE developments ADD COLUMN IF NOT EXISTS metragem TEXT;
-ALTER TABLE developments ADD COLUMN IF NOT EXISTS quartos TEXT;
-ALTER TABLE developments ADD COLUMN IF NOT EXISTS suites TEXT;
-ALTER TABLE developments ADD COLUMN IF NOT EXISTS vagas TEXT;
+-- 1. Evolução da tabela developments para o padrão IMI Pro
+ALTER TABLE developments ADD COLUMN IF NOT EXISTS type TEXT DEFAULT 'apartment' CHECK (type IN ('apartment','house','penthouse','studio','land','commercial','resort'));
+ALTER TABLE developments ADD COLUMN IF NOT EXISTS status_commercial TEXT DEFAULT 'draft' CHECK (status_commercial IN ('draft','published','campaign','private','sold'));
+ALTER TABLE developments ADD COLUMN IF NOT EXISTS country TEXT DEFAULT 'Brazil';
+ALTER TABLE developments ADD COLUMN IF NOT EXISTS target_audience TEXT;
+ALTER TABLE developments ADD COLUMN IF NOT EXISTS selling_points JSONB DEFAULT '[]';
+
+-- Garantir colunas numéricas para filtros de precisão (Min/Max)
+ALTER TABLE developments ADD COLUMN IF NOT EXISTS bedrooms INT DEFAULT 0;
+ALTER TABLE developments ADD COLUMN IF NOT EXISTS bathrooms INT DEFAULT 0;
+ALTER TABLE developments ADD COLUMN IF NOT EXISTS parking_spaces INT DEFAULT 0;
+ALTER TABLE developments ADD COLUMN IF NOT EXISTS area_from DECIMAL(10,2);
+ALTER TABLE developments ADD COLUMN IF NOT EXISTS area_to DECIMAL(10,2);
+ALTER TABLE developments ADD COLUMN IF NOT EXISTS units_count INT DEFAULT 1;
+ALTER TABLE developments ADD COLUMN IF NOT EXISTS floor_count INT;
+
+-- Colunas de Performance
+ALTER TABLE developments ADD COLUMN IF NOT EXISTS views_count INT DEFAULT 0;
 ALTER TABLE developments ADD COLUMN IF NOT EXISTS leads_count INT DEFAULT 0;
-ALTER TABLE developments ADD COLUMN IF NOT EXISTS score INT DEFAULT 0;
-ALTER TABLE developments ADD COLUMN IF NOT EXISTS created_by TEXT;
-ALTER TABLE developments ADD COLUMN IF NOT EXISTS updated_by TEXT;
+ALTER TABLE developments ADD COLUMN IF NOT EXISTS inventory_score INT DEFAULT 0;
+ALTER TABLE developments ADD COLUMN IF NOT EXISTS updated_by UUID REFERENCES auth.users(id);
 
--- 2. Tracked links para campanhas
+-- 2. Sistema de Links Rastreados (Campaign Intelligence)
 CREATE TABLE IF NOT EXISTS tracked_links (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    development_id UUID REFERENCES developments(id) ON DELETE CASCADE,
-    channel TEXT NOT NULL CHECK (channel IN ('instagram','google','whatsapp','email','linkedin','tiktok','other')),
+    property_id UUID REFERENCES developments(id) ON DELETE CASCADE,
+    short_code TEXT UNIQUE NOT NULL,
+    original_url TEXT NOT NULL,
     utm_source TEXT,
     utm_medium TEXT,
     utm_campaign TEXT,
-    short_code TEXT UNIQUE NOT NULL,
     clicks INT DEFAULT 0,
-    leads_generated INT DEFAULT 0,
+    unique_clicks INT DEFAULT 0,
+    last_click_at TIMESTAMPTZ,
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 ALTER TABLE tracked_links ENABLE ROW LEVEL SECURITY;
-
--- Drop policy if exists to make migration idempotent
 DROP POLICY IF EXISTS "auth_all_tracked_links" ON tracked_links;
-
 CREATE POLICY "auth_all_tracked_links" ON tracked_links FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
--- 3. Timeline de eventos do imovel
-CREATE TABLE IF NOT EXISTS development_events (
+-- 3. Timeline de Eventos do Ativo (Asset History)
+CREATE TABLE IF NOT EXISTS property_events (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    development_id UUID REFERENCES developments(id) ON DELETE CASCADE,
-    event_type TEXT NOT NULL CHECK (event_type IN ('criado','publicado','campanha_iniciada','primeiro_lead','pico_interesse','queda_interesse','ajuste_preco','vendido','pausado','atualizado')),
+    property_id UUID REFERENCES developments(id) ON DELETE CASCADE,
+    title TEXT NOT NULL,
     description TEXT,
+    event_date TIMESTAMPTZ DEFAULT NOW(),
+    event_type TEXT CHECK (event_type IN ('creation', 'price_change', 'campaign_start', 'sold', 'visit', 'lead_gen')),
     metadata JSONB DEFAULT '{}',
-    created_by TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-ALTER TABLE development_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE property_events ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "auth_all_property_events" ON property_events;
+CREATE POLICY "auth_all_property_events" ON property_events FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
--- Drop policy if exists to make migration idempotent
-DROP POLICY IF EXISTS "auth_all_dev_events" ON development_events;
-
-CREATE POLICY "auth_all_dev_events" ON development_events FOR ALL TO authenticated USING (true) WITH CHECK (true);
-
--- 4. Funcao para calcular score do imovel (0-100)
-CREATE OR REPLACE FUNCTION calculate_development_score(dev_id UUID)
+-- 4. Função de Cálculo de Score de Autoridade (IMI Engine)
+CREATE OR REPLACE FUNCTION calculate_property_score(dev_id UUID)
 RETURNS INT AS $$
 DECLARE
     s INT := 0;
@@ -66,24 +69,29 @@ DECLARE
 BEGIN
     SELECT * INTO dev FROM developments WHERE id = dev_id;
     IF NOT FOUND THEN RETURN 0; END IF;
+    
+    -- Critérios de Qualidade de Cadastro
     IF dev.name IS NOT NULL AND dev.name != '' THEN s := s + 10; END IF;
     IF dev.description IS NOT NULL AND dev.description != '' THEN s := s + 10; END IF;
-    IF dev.short_description IS NOT NULL AND dev.short_description != '' THEN s := s + 5; END IF;
+    IF dev.price_from IS NOT NULL AND dev.price_from > 0 THEN s := s + 15; END IF;
+    
+    -- Critérios de Mídia (Baseado no objeto JSONB images)
     IF dev.images IS NOT NULL AND (dev.images->>'main') != '' THEN s := s + 15; END IF;
-    IF dev.images IS NOT NULL AND jsonb_array_length(COALESCE(dev.images->'gallery', '[]'::jsonb)) > 0 THEN s := s + 10; END IF;
-    IF dev.images IS NOT NULL AND jsonb_array_length(COALESCE(dev.images->'videos', '[]'::jsonb)) > 0 THEN s := s + 10; END IF;
-    IF dev.images IS NOT NULL AND jsonb_array_length(COALESCE(dev.images->'floorPlans', '[]'::jsonb)) > 0 THEN s := s + 10; END IF;
-    IF dev.price_min IS NOT NULL AND dev.price_min > 0 THEN s := s + 10; END IF;
-    IF dev.developer IS NOT NULL AND dev.developer != '' THEN s := s + 5; END IF;
-    IF dev.leads_count > 0 THEN s := s + 5; END IF;
-    IF dev.leads_count > 5 THEN s := s + 5; END IF;
-    IF dev.leads_count > 20 THEN s := s + 5; END IF;
+    IF jsonb_array_length(COALESCE(dev.images->'gallery', '[]'::jsonb)) > 3 THEN s := s + 10; END IF;
+    IF jsonb_array_length(COALESCE(dev.images->'floorPlans', '[]'::jsonb)) > 0 THEN s := s + 10; END IF;
+    
+    -- Critérios de Performance
+    IF dev.views_count > 100 THEN s := s + 10; END IF;
+    IF dev.leads_count > 5 THEN s := s + 10; END IF;
+    IF dev.is_highlighted THEN s := s + 10; END IF;
+    
     RETURN LEAST(s, 100);
 END;
 $$ LANGUAGE plpgsql;
 
--- 5. Atualizar score e leads_count de todos os developments existentes
-UPDATE developments SET score = calculate_development_score(id);
+-- 5. Sincronização de Dados Iniciais
+UPDATE developments SET inventory_score = calculate_property_score(id);
 UPDATE developments d SET leads_count = (
     SELECT COUNT(*) FROM leads l WHERE l.development_id = d.id
 );
+UPDATE developments d SET bedrooms = (SELECT bedrooms FROM development_units u WHERE u.development_id = d.id LIMIT 1) WHERE bedrooms = 0;
