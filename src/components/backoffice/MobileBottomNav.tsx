@@ -16,10 +16,10 @@ export default function MobileBottomNav() {
     ]
 
     return (
-        <nav className="fixed bottom-0 w-full bg-white dark:bg-card-dark border-t border-gray-200 dark:border-gray-800 pb-safe pt-2 px-6 flex justify-between items-center z-50 h-[80px] shadow-nav">
+        <nav className="fixed bottom-0 w-full bg-white dark:bg-card-dark border-t border-gray-200 dark:border-gray-800 pb-safe pt-2 px-6 flex justify-between items-center z-50 h-[80px] shadow-nav lg:hidden">
             {navItems.map((item, index) => {
                 const isActive = pathname === item.href
-                
+
                 if (item.variant === 'fab') {
                     return (
                         <button
@@ -35,14 +35,13 @@ export default function MobileBottomNav() {
                     <Link
                         key={item.href}
                         href={item.href}
-                        className={`flex flex-col items-center gap-1 transition-colors ${
-                            isActive
+                        className={`flex flex-col items-center gap-1 transition-colors ${isActive
                                 ? 'text-primary'
                                 : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'
-                        }`}
+                            }`}
                     >
-                        <Icon 
-                            name={item.icon} 
+                        <Icon
+                            name={item.icon}
                             filled={isActive}
                         />
                         <span className={`text-[10px] font-medium ${isActive ? 'font-semibold' : ''}`}>
