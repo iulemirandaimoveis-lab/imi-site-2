@@ -1,18 +1,11 @@
 'use client'
 
-import {
-    Users,
-    Building2,
-    TrendingUp,
-    AlertTriangle,
-    ChevronRight,
-    ArrowUp,
-    MoreHorizontal
-} from 'lucide-react'
+import Icon from '@/components/ui/Icon'
+import Badge from '@/components/ui/Badge'
 
 export default function Dashboard() {
     return (
-        <div className="space-y-6 animate-fade-in">
+        <div className="space-y-6 animate-fade-in max-w-2xl mx-auto">
             {/* Greeting */}
             <div className="mb-6">
                 <p className="text-sm text-gray-500 dark:text-gray-400">Bem-vindo de volta,</p>
@@ -24,31 +17,29 @@ export default function Dashboard() {
                 {/* New Leads Card */}
                 <div className="col-span-1 bg-white dark:bg-card-dark p-4 rounded-xl shadow-soft border border-gray-100 dark:border-gray-800 relative overflow-hidden group hover:shadow-card-hover transition-all duration-300">
                     <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
-                        <Users size={32} className="text-primary" />
+                        <Icon name="groups" size={32} className="text-primary" />
                     </div>
                     <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Novos Leads</p>
                     <div className="flex items-end gap-2">
                         <span className="text-3xl font-display font-bold text-text-header-light dark:text-white">42</span>
-                        <span className="text-xs font-medium text-green-500 mb-1.5 flex items-center">
-                            <ArrowUp size={14} /> 12%
+                        <span className="text-xs font-medium text-green-500 mb-1.5 flex items-center gap-0.5">
+                            <Icon name="arrow_upward" size={14} /> 12%
                         </span>
                     </div>
                     <div className="mt-3 h-1 w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                        <div className="h-full bg-primary w-2/3 rounded-full animate-slide-up" style={{ width: '68%' }}></div>
+                        <div className="h-full bg-primary w-2/3 rounded-full" style={{ width: '68%' }}></div>
                     </div>
                 </div>
 
                 {/* Active Properties Card */}
                 <div className="col-span-1 bg-white dark:bg-card-dark p-4 rounded-xl shadow-soft border border-gray-100 dark:border-gray-800 relative overflow-hidden group hover:shadow-card-hover transition-all duration-300">
                     <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
-                        <Building2 size={32} className="text-primary" />
+                        <Icon name="apartment" size={32} className="text-primary" />
                     </div>
                     <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Imóveis Ativos</p>
                     <div className="flex items-end gap-2">
                         <span className="text-3xl font-display font-bold text-text-header-light dark:text-white">18</span>
-                        <span className="text-xs font-medium text-gray-400 mb-1.5 flex items-center">
-                            Total
-                        </span>
+                        <span className="text-xs font-medium text-gray-400 mb-1.5">Total</span>
                     </div>
                     <div className="mt-3 flex gap-1">
                         <div className="h-1 flex-1 bg-blue-500 rounded-full"></div>
@@ -59,7 +50,7 @@ export default function Dashboard() {
 
                 {/* VGV Card (Full Width) */}
                 <div className="col-span-2 bg-imi-dark-blue dark:bg-card-dark p-5 rounded-xl shadow-lg border border-gray-800 dark:border-gray-700 relative overflow-hidden">
-                    <div className="absolute -right-6 -top-6 w-32 h-32 bg-primary/20 rounded-full blur-3xl animate-pulse"></div>
+                    <div className="absolute -right-6 -top-6 w-32 h-32 bg-primary/20 rounded-full blur-3xl"></div>
                     <div className="flex justify-between items-start relative z-10">
                         <div>
                             <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Valor Geral de Vendas (VGV)</p>
@@ -67,7 +58,7 @@ export default function Dashboard() {
                             <p className="text-xs text-primary font-medium">Campanha Q1 2026</p>
                         </div>
                         <div className="bg-white/10 backdrop-blur-md p-2 rounded-lg">
-                            <TrendingUp size={20} className="text-white" />
+                            <Icon name="trending_up" className="text-white" />
                         </div>
                     </div>
                 </div>
@@ -80,15 +71,15 @@ export default function Dashboard() {
                     <button className="text-xs font-medium text-primary hover:text-yellow-600 transition-colors">Ver Todos</button>
                 </div>
                 <div className="space-y-3">
-                    <div className="bg-white dark:bg-card-dark p-4 rounded-xl shadow-soft border-l-4 border-red-500 flex items-start gap-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer">
+                    <div className="bg-white dark:bg-card-dark p-4 rounded-xl shadow-soft border-l-4 border-red-500 flex items-start gap-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer active:scale-[0.99]">
                         <div className="bg-red-50 dark:bg-red-900/20 p-2 rounded-full shrink-0">
-                            <AlertTriangle size={14} className="text-red-500" />
+                            <Icon name="warning" size={14} className="text-red-500" />
                         </div>
                         <div className="flex-1">
                             <h4 className="text-sm font-semibold text-gray-900 dark:text-white">Documentação Pendente</h4>
                             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Imóvel: Edifício Horizon #402. Prazo expira em 24h.</p>
                         </div>
-                        <ChevronRight size={16} className="text-gray-400" />
+                        <Icon name="chevron_right" size={16} className="text-gray-400" />
                     </div>
                 </div>
             </section>
@@ -99,7 +90,7 @@ export default function Dashboard() {
                     <h3 className="font-display font-bold text-lg text-text-header-light dark:text-white">Atividades Recentes</h3>
                 </div>
                 <div className="bg-white dark:bg-card-dark rounded-xl shadow-soft divide-y divide-gray-100 dark:divide-gray-800">
-                    <div className="p-4 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer">
+                    <div className="p-4 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer active:scale-[0.99]">
                         <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center shrink-0 text-blue-600 dark:text-blue-400 font-bold text-xs">
                             JD
                         </div>
@@ -112,7 +103,7 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-                    <div className="p-4 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer">
+                    <div className="p-4 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer active:scale-[0.99]">
                         <div className="w-10 h-10 rounded-full bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center shrink-0 text-purple-600 dark:text-purple-400 font-bold text-xs">
                             MS
                         </div>
